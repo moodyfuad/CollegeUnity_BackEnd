@@ -1,0 +1,6 @@
+@CollegeUnity.API_HostAddress = http://localhost:5091
+
+GET {{CollegeUnity.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
