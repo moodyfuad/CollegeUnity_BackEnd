@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\CollegeUnity.Core\CollegeUnity.Core.csproj" />
     <ProjectReference Include="..\CollegeUnity.EF\CollegeUnity.EF.csproj" />
+    <ProjectReference Include="..\CollegeUnity.Services\CollegeUnity.Services.csproj" />
   </ItemGroup>
 
 </Project>

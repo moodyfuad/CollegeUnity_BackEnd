@@ -9,6 +9,6 @@ namespace CollegeUnity.Core.DomainModels
     public enum Gender
     {
         Male,
-        Female
+        Female ,
     }
 }

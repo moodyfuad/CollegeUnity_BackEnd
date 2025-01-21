@@ -1,4 +1,4 @@
-﻿using CollegeUnity.API.Services;
+﻿using CollegeUnity.Services;
 using CollegeUnity.Core.Constants;
 using CollegeUnity.Core.DomainModels;
 using CollegeUnity.Core.Dtos;
@@ -23,19 +23,11 @@ namespace CollegeUnity.API.Controllers
             _config = configuration;
         }
 
-        [Authorize(AuthenticationSchemes =($"{JwtBearerDefaults.AuthenticationScheme}"))]
+        [Authorize(Roles = nameof(Roles.Student))]
         [HttpGet("AreYouLoggedIn")]
         public IActionResult Check()
         {
-            return Ok(new
-            {
-                Id = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Id)!.Value,
-                Role = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Role)!.Value,
-                BirthDate = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.BirthDate)!.Value,
-                Full_Name = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.FullName)!.Value,
-                Email = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Email)!.Value,
-
-            });
+            return Ok(JwtServices.GetUserClaims(HttpContext));
         }
 
         [HttpPost("Login")]
@@ -50,7 +42,7 @@ namespace CollegeUnity.API.Controllers
             //
             //Get the user info
             // ex 
-            UserModel foundUser = UserModel.DefaultUser();
+            JwtUserDto foundUser = JwtUserDto.DefaultUser();
 
             //
             return Ok(new { token = JwtServices.CreateToken(foundUser, _config) });

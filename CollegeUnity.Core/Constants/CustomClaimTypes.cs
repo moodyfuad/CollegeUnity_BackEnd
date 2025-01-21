@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,7 +10,7 @@ namespace CollegeUnity.Core.Constants
     public class CustomClaimTypes
     {
         public const string Id = "Id";
-        public const string Role = "Role";
+        public const string Role = ClaimTypes.Role;
         public const string FirstName = "FirstName";
         public const string MiddleName = "MiddleName";
         public const string LastName = "LastName";

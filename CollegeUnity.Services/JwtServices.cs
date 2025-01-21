@@ -1,16 +1,20 @@
 ﻿using CollegeUnity.Core.Constants;
 using CollegeUnity.Core.DomainModels;
+using CollegeUnity.Core.Dtos;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace CollegeUnity.API.Services
+namespace CollegeUnity.Services
 {
     public class JwtServices
     {
+        
         public static string CreateToken(
-            in UserModel user,
+            in JwtUserDto user,
             in IConfiguration _config,
             in DateTime? expireAt = null)
         {
@@ -25,13 +29,34 @@ namespace CollegeUnity.API.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        public static JwtUserDto GetUserClaims(HttpContext context)
+        {
+            var claims = context.User.Claims;
+            JwtUserDto user = new() 
+            {
+                Id = Guid.Parse(claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Id)!.Value),
+                FirstName = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.FirstName)!.Value,
+                MiddleName = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.MiddleName)!.Value,
+                LastName = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.LastName)!.Value,
+                Email = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Email)!.Value,
+                Username = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Username)!.Value,
+                BirthDate = DateOnly.Parse(claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.BirthDate)!.Value),
+                Gender = (Gender)Enum.Parse(typeof(Gender),claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Gender)!.Value),
+                Role = (Roles)Enum.Parse(typeof(Roles),claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Role)!.Value),
+                Position = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Position)!.Value,
+                
+            };
+
+            return user;
+        }
+
         private static SigningCredentials CreateSigningCredentials(in IConfiguration _config)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config[$"Jwt:{JwtKeys.Key}"]!));
             return new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
         }
 
-        private static List<Claim> CreateUserClaims(in UserModel user)
+        private static List<Claim> CreateUserClaims(in JwtUserDto user)
         {
             var claims = new List<Claim>()
         {
@@ -45,6 +70,7 @@ namespace CollegeUnity.API.Services
             new Claim(CustomClaimTypes.Gender, user.Gender.ToString()),
             new Claim(CustomClaimTypes.Email, user.Email),
             new Claim(CustomClaimTypes.BirthDate, user.BirthDate.ToString()),
+            new Claim(CustomClaimTypes.Position, user.Position.ToString()),
         };
             return claims;
         }

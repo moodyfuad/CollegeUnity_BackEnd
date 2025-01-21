@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CollegeUnity.Core.DomainModels;
 
-namespace CollegeUnity.Core.DomainModels
+namespace CollegeUnity.Core.Dtos
 {
-    public class UserModel
+    public class JwtUserDto
     {
         public Guid Id { get; set; }
 
@@ -32,14 +33,15 @@ namespace CollegeUnity.Core.DomainModels
 
         public required string Email { get; set; }
 
-        public required string Password { get; set; }
+        public string Password { get; set; }
 
 
-        public static UserModel DefaultUser()
+        public static JwtUserDto DefaultUser()
         {
-            
+
             return new()
             {
+                Id = Guid.NewGuid(),
                 FirstName = "Mohammed",
                 MiddleName = "Fuad",
                 LastName = "Bamatraf",
@@ -56,5 +58,5 @@ namespace CollegeUnity.Core.DomainModels
 
     }
 
-    
+
 }
