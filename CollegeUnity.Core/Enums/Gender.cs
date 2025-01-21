@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CollegeUnity.Core.DomainModels
+namespace CollegeUnity.Core.Enums
 {
     public enum Gender
     {
         Male,
-        Female ,
+        Female,
     }
 }

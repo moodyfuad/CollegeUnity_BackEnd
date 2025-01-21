@@ -1,6 +1,6 @@
 ﻿using CollegeUnity.Core.Constants;
-using CollegeUnity.Core.DomainModels;
 using CollegeUnity.Core.Dtos;
+using CollegeUnity.Core.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -29,8 +29,9 @@ namespace CollegeUnity.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public static JwtUserDto GetUserClaims(HttpContext context)
+        public static JwtUserDto GetUserClaims(in HttpContext context)
         {
+            
             var claims = context.User.Claims;
             JwtUserDto user = new() 
             {
