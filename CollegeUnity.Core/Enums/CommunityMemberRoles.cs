@@ -6,16 +6,10 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Core.Enums
 {
-    public enum Roles
+    public enum CommunityMemberRoles
     {
+        Normal,
         Admin,
-        Dean,
-        Teacher,
-        StudentAffairsViceDeanShip,
-        RegistrationAdmissionEmployee,
-        HeadOfScientificDepartment,
-
-        
-
+        SuperAdmin
     }
 }
