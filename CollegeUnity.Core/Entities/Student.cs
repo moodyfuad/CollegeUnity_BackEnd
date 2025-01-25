@@ -11,7 +11,6 @@ namespace CollegeUnity.Core.Entities
 {
     public class Student : User
     {
-        [Index(IsUnique = true,IsClustered =true)]
         [Length(11,11)]
         [Required]
         public required string CardId { get; set; }
@@ -28,14 +27,14 @@ namespace CollegeUnity.Core.Entities
         [Required]
         public bool IsLevelEditable { get; set; } = false;
 
-        [InverseProperty(nameof(Request.RequestedBy))]
-        public ICollection<Request>? Requests { get; set; }
+        [InverseProperty(nameof(Request.Student))]
+        public virtual ICollection<Request>? Requests { get; set; }
 
         [InverseProperty(nameof(Subject.InterestedStudents))]
-        public ICollection<Subject>? InterestedSubjects { get; set; }
+        public virtual ICollection<Subject>? InterestedSubjects { get; set; }
 
         [InverseProperty(nameof(Course.RegisteredStudents))]
-        public ICollection<Course>? RegisteredCourses { get; set; }
+        public virtual ICollection<Course>? RegisteredCourses { get; set; }
 
 
         public ICollection<StudentCommunity>? StudentCommunity { get; set; }

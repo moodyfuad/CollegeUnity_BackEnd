@@ -45,12 +45,13 @@ namespace CollegeUnity.Core.Entities
 
         public string? VerificationCode { get; set; }
 
-        public ICollection<PostVote>? Votes { get; set; }
+        public virtual ICollection<PostVote>? Votes { get; set; }
 
-        public ICollection<Feedback>? Feedbacks { get; set; }
+        public virtual ICollection<Feedback>? Feedbacks { get; set; }
 
-        [InverseProperty(nameof(Chat.ChatReceiver))]
-        public ICollection<Chat>? ReceivedChats { get; set; }
+        public virtual ICollection<Chat>? Chats { get; set; }
+
+        public virtual ICollection<ChatMessage>? ChatMessages { get; set; }
         
         
         //[InverseProperty(nameof(ChatMessage.MessageSender))]

@@ -50,7 +50,7 @@ namespace CollegeUnity.Core.Dtos
                 Email = "Email@example.com",
                 Password = "1234",
                 Position = "Student",
-                Role = Roles.Student,
+                Role = Roles.Admin,
                 Gender = Gender.Male
             };
         }

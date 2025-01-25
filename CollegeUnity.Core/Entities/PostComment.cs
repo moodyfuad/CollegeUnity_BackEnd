@@ -20,15 +20,17 @@ namespace CollegeUnity.Core.Entities
         public DateTime? EditedAt { get; set; }
         
 
-        [ForeignKey(nameof(Entities.User))]
+        [ForeignKey(nameof(User))]
         [Required]
         public int UserId { get; set; }
         [Required]
-        public required User User { get; set; }
+        public virtual required User User { get; set; }
 
         [ForeignKey(nameof(Post))]
         [Required]
         public int PostId { get; set; }
+
+        public virtual required Post Post { get; set; }
 
        
     }

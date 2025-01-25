@@ -18,8 +18,10 @@ namespace CollegeUnity.Core.Entities
 
         [Required]
         [ForeignKey(nameof(Post))]
-        public required int PostId { get; set; }
+        public int PostId { get; set; }
 
-        public ICollection<User> SelectedBy { get; set; }
+        public required Post Post { get; set; }
+
+        public virtual ICollection<User> SelectedBy { get; set; }
     }
 }

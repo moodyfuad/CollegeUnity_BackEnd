@@ -17,11 +17,13 @@ namespace CollegeUnity.Core.Entities
         [ForeignKey(nameof(StudentCommunity))]
         public int StudentCommunityId { get; set; }
         [Required]
-        public required StudentCommunity StudentCommunity;
+        public virtual required StudentCommunity StudentCommunity { get; set; }
 
         [Required]
         [ForeignKey(nameof(Community))]
         public int CommunityId { get; set; }
+
+        public virtual required Community Community { get; set; }
 
 
         public CommunityMemberRoles Role  { get => StudentCommunity.Role; }

@@ -14,24 +14,32 @@ namespace CollegeUnity.Core.Entities
         public int Id { get; set; }
 
 
-        [ForeignKey(nameof(Staff))]
         [Required]
-        public int CreatorId { get; set; }
-        [Required]
-        [InverseProperty(nameof(Staff.CreatedChats))]
-        public required Staff ChatCreator { get; set; }
+        [ForeignKey(nameof(User1))]
+        public required int User1Id { get; set; }
 
-        [ForeignKey(nameof(User))]
-        [Required]
-        public int ChatReceiverId { get; set; }
-        [Required]
-        [InverseProperty(nameof(User.ReceivedChats))]
-        public required User ChatReceiver { get; set; }
+        [ForeignKey(nameof(User1Id))]
+        public required virtual User User1 { get; set; }
 
-        public ICollection<ChatMessage>? Messages { get; set; }
+        [Required]
+        [ForeignKey(nameof(User2))]
+        public required int User2Id { get; set; }
 
+        [ForeignKey(nameof(User2Id))]
+        public required virtual  User User2 { get; set; }
+
+        public DateTime CreateAt { get; set; } = DateTime.UtcNow;
+
+        public DateTime LastMessageAt { get; set; }
+        
         [Required]
         public required bool IsChattingEnabled { get; set; }
+        public bool IsHiddenForUser1 { get; set; } = false;
+        public bool IsHiddenForUser2 { get; set; } = false;
+
+
+        public virtual ICollection<ChatMessage>? Messages { get; set; }
+
        
     }
 }

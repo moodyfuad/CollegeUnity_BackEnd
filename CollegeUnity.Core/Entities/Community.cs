@@ -21,9 +21,9 @@ namespace CollegeUnity.Core.Entities
         [Required]
         public required CommunityType CommunityType { get; set; }
 
-        public ICollection<StudentCommunity>? CommunityStudents { get; set; }
+        public virtual ICollection<StudentCommunity>? CommunityStudents { get; set; }
 
-        public ICollection<CommunityMessage>? CommunityMessages { get; set; }
+        public virtual ICollection<CommunityMessage>? CommunityMessages { get; set; }
 
 
 

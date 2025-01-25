@@ -24,18 +24,20 @@ namespace CollegeUnity.Core.Entities
         [Required]
         public required AcceptanceType AcceptanceType { get; set; }
 
-        [ForeignKey(nameof(Staff))]
-        public int TeacherId { get; set; }
+        [ForeignKey(nameof(Teacher))]
+        public int? TeacherId { get; set; }
         [InverseProperty(nameof(Staff.TeacherSubjects))]
-        public  Staff? Teacher { get; set; }
 
-        [Required]
-        [ForeignKey(nameof(Staff))]
-        public int HeadOfScientificDepartmentId { get; set; }
+        public virtual Staff? Teacher { get; set; }
+
+        
+        [ForeignKey(nameof(AssignedBy))]
+        public int? HeadOfScientificDepartmentId { get; set; }
+
         [InverseProperty(nameof(Staff.HeadOfScientificDepartmentSubjects))]
-        public required Staff AssignedBy { get; set; }
+        public virtual Staff? AssignedBy { get; set; }
 
         [InverseProperty(nameof(Student.InterestedSubjects))]
-        public ICollection<Student>? InterestedStudents { get; set; }
+        public virtual ICollection<Student>? InterestedStudents { get; set; }
     }
 }

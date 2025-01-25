@@ -23,7 +23,7 @@ namespace CollegeUnity.API.Controllers
             _config = configuration;
         }
 
-        [Authorize(Roles = nameof(Roles.Student))]
+        //[Authorize(Roles = nameof(Roles.Student))]
         [HttpGet("AreYouLoggedIn")]
         public IActionResult Check()
         {

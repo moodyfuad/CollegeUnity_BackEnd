@@ -23,5 +23,7 @@ namespace CollegeUnity.Core.Entities
         [ForeignKey(nameof(Post))]
         public int PostId { get; set; }
 
+        public required virtual Post Post { get; set; }
+
     }
 }

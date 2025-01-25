@@ -26,16 +26,17 @@ namespace CollegeUnity.Core.Entities
         [Required]
         [ForeignKey(nameof(Student))]
         public int StudentId { get; set; }
+
         [Required]
         [InverseProperty(nameof(Student.Requests))]
-        public required Student RequestedBy { get; set; }
+        public virtual required Student Student { get; set; }
 
         [Required]
         [ForeignKey(nameof(Staff))]
         public int StaffId { get; set; }
         [Required]
         [InverseProperty(nameof(Staff.StudentRequests))]
-        public required Staff RequestedTo { get; set; }
+        public virtual required Staff Staff { get; set; }
 
 
     }

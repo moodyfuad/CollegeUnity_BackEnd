@@ -18,9 +18,9 @@ namespace CollegeUnity.Core.Entities
         [Required]
         public required string Location { get; set; }
         [Required]
-        [ForeignKey(nameof(User))]
+        [ForeignKey(nameof(FromUser))]
         public int UserId { get; set; }
         [Required]
-        public required User FromUser { get; set; }
+        public virtual required User FromUser { get; set; }
     }
 }

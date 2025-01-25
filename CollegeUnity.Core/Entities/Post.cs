@@ -28,17 +28,17 @@ namespace CollegeUnity.Core.Entities
         [Required]
         public required bool IsPublic { get; set; }
 
-        [ForeignKey(nameof(Post))]
+        [ForeignKey(nameof(Staff))]
         [Required]
         public int StaffId { get; set; }
         [Required]
-        public required Staff Staff { get; set; }
+        public virtual required Staff Staff { get; set; }
 
-        public ICollection<PostFile>? PostFiles { get; set; }
+        public virtual ICollection<PostFile>? PostFiles { get; set; }
 
-        public ICollection<PostVote>? Votes { get; set; }
+        public virtual ICollection<PostVote>? Votes { get; set; }
 
-        public ICollection<PostComment>? Comments {  get; set; } 
+        public virtual ICollection<PostComment>? Comments {  get; set; } 
 
         public Major? ForMajor { get; set; }
 

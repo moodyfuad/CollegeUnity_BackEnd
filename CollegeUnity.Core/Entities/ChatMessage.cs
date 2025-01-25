@@ -1,4 +1,5 @@
 ﻿using CollegeUnity.Core.Enums;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -14,20 +15,26 @@ namespace CollegeUnity.Core.Entities
         [Key]
         public int Id { get; set; }
 
-        [ForeignKey(nameof(Chat))]
-        public int ChatId { get; set; }
         [Required]
-        public Chat Chat { get; set; }
-
-        [ForeignKey(nameof(User))]
+        public required int ChatId { get; set; }
         [Required]
-        public required User MessageSender {  get; set; }
 
+        [ForeignKey(nameof(ChatId))]
+        public required virtual Chat Chat { get; set; }
 
-        public required User Receiver {  get; set; }
-        public required string Message { get; set; }
+        public required int SenderId {  get; set; }
+
+        [Required]
+        [ForeignKey(nameof(SenderId))]
+        public required virtual User Sender { get; set; }
+
+        [Required]
+        public required string Content { get; set; }
+
+        [Required]
         public required MessageStatus Status { get; set; }
-        public DateTime SentAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime EditedAt { get; set; }
+
     }
 }
