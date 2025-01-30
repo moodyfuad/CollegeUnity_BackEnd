@@ -14,6 +14,7 @@ namespace CollegeUnity.Core.Enums
         StudentAffairsViceDeanShip,
         RegistrationAdmissionEmployee,
         HeadOfScientificDepartment,
+        Student
 
         
 

@@ -34,6 +34,8 @@ namespace CollegeUnity.Core.Entities
         [Required]
         [Compare(nameof(Password))]
         public required string ConfirmPassword { get; set; }
+
+        public required DateOnly BirthDate { get; set; }
         
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? EditedAt { get; set; }

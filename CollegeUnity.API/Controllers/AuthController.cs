@@ -1,5 +1,4 @@
-﻿using CollegeUnity.Services;
-using CollegeUnity.Core.Constants;
+﻿using CollegeUnity.Core.Constants;
 using CollegeUnity.Core.Dtos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -8,6 +7,10 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using CollegeUnity.Core.Enums;
+using CollegeUnity.Services.AuthenticationServices;
+using CollegeUnity.Core.Dtos.AuthenticationDtos;
+using CollegeUnity.Contract;
+using CollegeUnity.Services;
 
 namespace CollegeUnity.API.Controllers
 {
@@ -17,36 +20,34 @@ namespace CollegeUnity.API.Controllers
     {
 
         private readonly IConfiguration _config;
+        private readonly IServiceManager _serviceManager;
 
-        public AuthController(IConfiguration configuration)
+        public AuthController(IConfiguration configuration, IServiceManager serviceManager)
         {
             _config = configuration;
+            _serviceManager = serviceManager;
         }
 
-        //[Authorize(Roles = nameof(Roles.Student))]
-        [HttpGet("AreYouLoggedIn")]
-        public IActionResult Check()
+        [HttpPost("SignUp")]
+        public async Task<IActionResult> Signup([FromForm]StudentSignUpDto student)
         {
-            return Ok(JwtServices.GetUserClaims(HttpContext));
+           string resultMsg = await _serviceManager.AuthenticationService.SignUp(student);
+            return Ok(resultMsg);
         }
 
         [HttpPost("Login")]
-        public IActionResult Login([FromForm] UserLoginDto user)
+        public async Task<IActionResult> Login([FromForm] StudentLoginDto student)
         {
-            // check if the user exist
-            //.....
-            if (user == null || user.Username != "moody" || user.Password != "1234")
-            {
-                return NotFound();
-            }
-            //
-            //Get the user info
-            // ex 
-            JwtUserDto foundUser = JwtUserDto.DefaultUser();
-
-            //
-            return Ok(new { token = JwtServices.CreateToken(foundUser, _config) });
+            string token = await _serviceManager.AuthenticationService.Login(student);
+            return Ok(token);
+            
         }
 
+        [Authorize(Roles = nameof(Roles.Student))]
+        [HttpGet("TestAuth")]
+        public async Task<IActionResult> Test()
+        {
+            return Ok(AuthenticationService.GetUserClaims(HttpContext));
+        }
     }
 }

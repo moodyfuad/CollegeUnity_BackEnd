@@ -10,6 +10,14 @@ namespace CollegeUnity.Core.Constants
     public class CustomClaimTypes
     {
         public const string Id = "Id";
+        public const string CardId = "CardId";
+        public const string AccountStatus = "AccountStatus";
+        public const string Major = "Major";
+        public const string Level = "Level";
+        public const string AcceptanceType = "AcceptanceType";
+
+        public const string EducationDegree = "EducationDegree";
+
         public const string Role = ClaimTypes.Role;
         public const string FirstName = "FirstName";
         public const string MiddleName = "MiddleName";

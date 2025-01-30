@@ -14,11 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CollegeUnity.Core\CollegeUnity.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ServiceAbstraction\" />
-    <Folder Include="ServiceImplementation\" />
+    <ProjectReference Include="..\Contract\CollegeUnity.Contract.csproj" />
   </ItemGroup>
 
 </Project>

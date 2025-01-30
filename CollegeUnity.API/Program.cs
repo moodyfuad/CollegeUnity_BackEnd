@@ -6,6 +6,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using CollegeUnity.Core.Constants;
 using CollegeUnity.API;
+using CollegeUnity.Contract;
+using CollegeUnity.EF.Repositories;
+using CollegeUnity.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,10 +19,15 @@ builder.Services.AddControllers(options =>
     options.Filters.Add<ModelValidateActionFilter>();
 });
 // 
+
 builder.Services.AddDbContext<CollegeUnityDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
+    //options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Local"));
 });
+
+builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
+builder.Services.AddScoped<IServiceManager, ServiceManager>();
 
 //jwt authentication
 builder.Services.AddCustomJwtAuthentication(builder.Configuration);

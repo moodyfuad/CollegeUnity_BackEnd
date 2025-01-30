@@ -37,7 +37,7 @@ namespace CollegeUnity.Core.Entities
         public virtual ICollection<Course>? RegisteredCourses { get; set; }
 
 
-        public ICollection<StudentCommunity>? StudentCommunity { get; set; }
+        public virtual ICollection<StudentCommunity>? StudentCommunity { get; set; }
 
     }
 }

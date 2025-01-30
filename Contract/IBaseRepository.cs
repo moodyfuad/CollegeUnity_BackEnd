@@ -9,13 +9,19 @@ namespace CollegeUnity.Contract
 {
     public interface IBaseRepository<T>  where T : class
     {
-        Task<IQueryable<T>> GetAsync(Guid id);
-        Task<IQueryable<T>> GetByConditionsAsync(params Expression<Func<T,bool>>[] conditions);
-        Task<IQueryable<T>> GetAllAsync();
-        Task<IQueryable<T>> GetAllByConditionsAsync(params Expression<Func<T, bool>>[] conditions);
-        Task<T> DeleteAsync(Guid id);
-        Task<T> DeleteByConditionsAsync(params Expression<Func<T, bool>>[] conditions);
-        Task<T> UpdateAsync(T entity, T updatedEntity);
+        Task<T> GetByIdAsync(int id);
+
+        Task<T> GetByConditionsAsync(Expression<Func<T,bool>> condition, params Expression<Func<T,object>>[] includes);
+
+        Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[]? includes);
+
+        Task<IEnumerable<T>> GetAllByConditionsAsync(Expression<Func<T, bool>> condition, params Expression<Func<T, object>>[] includes);
+
+        Task<T> Delete(int id);
+
+        Task<T> Delete(T entity);
+
+        Task<T> Update(int Id, T updatedEntity);
         Task<T> CreateAsync(T entity);
 
     }

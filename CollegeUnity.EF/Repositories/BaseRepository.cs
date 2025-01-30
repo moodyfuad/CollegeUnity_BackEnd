@@ -1,4 +1,5 @@
 ﻿using CollegeUnity.Contract;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,46 +17,79 @@ namespace CollegeUnity.EF.Repositories
         {
             _dbContext = context;
         }
+        public async Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[]? includes)
+        {
+            var entity = _dbContext.Set<T>().IgnoreAutoIncludes();
+            if (includes != null && includes.Length > 0)
+            {
+                foreach (var include in includes)
+                {
+                    entity = entity.Include(include);
+                }
+            }
+            return await entity.ToListAsync();
+        }
+
+        public async Task<IEnumerable<T>> GetAllByConditionsAsync(Expression<Func<T, bool>>? condition = null, params Expression<Func<T, object>>[] includes)
+        {
+            var entity = _dbContext.Set<T>().IgnoreAutoIncludes();
+            if (includes != null && includes.Length > 0)
+            {
+                foreach (var include in includes)
+                {
+                    entity = entity.Include(include);
+                }
+            }
+            if (condition != null)
+            {
+                entity = entity.Where(condition);
+            }
+
+            return await entity.ToListAsync();
+        }
+
+        public async Task<T> GetByConditionsAsync(Expression<Func<T, bool>> condition, params Expression<Func<T, object>>[] includes)
+        {
+            var entity = _dbContext.Set<T>().IgnoreAutoIncludes();
+            if (includes != null && includes.Length > 0)
+            {
+                foreach (var include in includes)
+                {
+                    entity = entity.Include(include);
+                }
+            }
+
+            return await entity.SingleOrDefaultAsync(condition);
+        }
+
+        public async Task<T> GetByIdAsync(int id)
+        {
+           return await _dbContext.Set<T>().FindAsync(id);
+        }
 
         public async Task<T> CreateAsync(T entity)
         {
-            _dbContext.Set<T>();
-            throw new NotImplementedException();
+               var entity1 = await _dbContext.Set<T>().AddAsync(entity);
+            return entity1.Entity;
         }
 
-        public async Task<T> DeleteAsync(Guid id)
+        public async Task<T> Delete(int id)
         {
-            throw new NotImplementedException();
+            var entity1 = await GetByIdAsync(id);
+
+            return _dbContext.Set<T>().Remove(entity1).Entity;
         }
 
-        public async Task<T> DeleteByConditionsAsync(params Expression<Func<T, bool>>[] conditions)
+        public async Task<T> Delete(T entity)
         {
-            throw new NotImplementedException();
+            return _dbContext.Set<T>().Remove(entity).Entity;
         }
 
-        public async Task<IQueryable<T>> GetAllAsync()
+       
+        public async Task<T> Update(int Id, T updatedEntity)
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IQueryable<T>> GetAllByConditionsAsync(params Expression<Func<T, bool>>[] conditions)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IQueryable<T>> GetAsync(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IQueryable<T>> GetByConditionsAsync(params Expression<Func<T, bool>>[] conditions)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<T> UpdateAsync(T entity, T updatedEntity)
-        {
-            throw new NotImplementedException();
+            
+            return _dbContext.Set<T>().Update(await GetByIdAsync(Id)).Entity;
         }
     }
 }

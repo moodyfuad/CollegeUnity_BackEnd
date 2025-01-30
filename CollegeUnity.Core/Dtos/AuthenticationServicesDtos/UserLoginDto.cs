@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CollegeUnity.Core.Dtos
+namespace CollegeUnity.Core.Dtos.AuthenticationDtos
 {
-    public class UserLoginDto
+    public abstract class UserLoginDto
     {
+       
         [Required]
         [MinLength(4)]
-        public string? Username { get; set; }
-        [Required]
-        public string? Password{ get; set; }
+        public required string Password { get; set; }
+
     }
 }
