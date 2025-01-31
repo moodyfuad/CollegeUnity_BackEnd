@@ -9,6 +9,7 @@ using CollegeUnity.API;
 using CollegeUnity.Contract;
 using CollegeUnity.EF.Repositories;
 using CollegeUnity.Services;
+using System.Runtime.CompilerServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +24,7 @@ builder.Services.AddControllers(options =>
 builder.Services.AddDbContext<CollegeUnityDbContext>(options =>
 {
     //options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Local"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("FaisalLocal"));
 });
 
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
@@ -33,7 +34,7 @@ builder.Services.AddScoped<IServiceManager, ServiceManager>();
 builder.Services.AddCustomJwtAuthentication(builder.Configuration);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerCusomeGen();
 
 var app = builder.Build();
 
