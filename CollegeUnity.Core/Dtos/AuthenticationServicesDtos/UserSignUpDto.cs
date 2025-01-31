@@ -11,7 +11,8 @@ namespace CollegeUnity.Core.Dtos.AuthenticationDtos
 {
     public abstract class UserSignUpDto
     {
-        
+        [Url]
+        public string? ProfilePicturePath { get; set; }
         [Required(ErrorMessage = "First Name is required")]
         public required string FirstName { get; set; }
         [Required(ErrorMessage = "Middle Name is required")]
@@ -35,14 +36,8 @@ namespace CollegeUnity.Core.Dtos.AuthenticationDtos
         [Required(ErrorMessage = "Birth Date is required")]
         public required DateOnly BirthDate { get; set; }
 
-        [Required]
-        public required AccountStatus AccountStatus { get; set; }
 
-        public string? AccountStatusReason { get; set; }
-        [Url]
-        public string? ProfilePicturePath { get; set; }
-
-        public string? VerificationCode { get; set; }
+        
 
     }
 }

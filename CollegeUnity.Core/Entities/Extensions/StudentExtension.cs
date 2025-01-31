@@ -22,14 +22,14 @@ namespace CollegeUnity.Core.Entities.Extensions
                 MiddleName = dto.MiddleName,
                 LastName = dto.LastName,
                 
-                AccountStatus = dto.AccountStatus,
-                AccountStatusReason = dto.AccountStatusReason,
+                AccountStatus = Enums.AccountStatus.Waiting,
+                AccountStatusReason = null,
                 
                 BirthDate = dto.BirthDate,
                 
                 Password = dto.Password,
                 ConfirmPassword = dto.ConfirmPassword,
-                VerificationCode = dto.VerificationCode,
+                VerificationCode = null,
                 
                 Phone = dto.Phone,
                 Email = dto.Email,
@@ -42,7 +42,7 @@ namespace CollegeUnity.Core.Entities.Extensions
                 EditedAt = null,
                 CreatedAt = DateTime.UtcNow,
 
-                IsLevelEditable = dto.IsLevelEditable,
+                IsLevelEditable = false,
                 
             };
         

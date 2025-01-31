@@ -23,6 +23,5 @@ namespace CollegeUnity.Core.Dtos.AuthenticationDtos
         public required Level Level { get; set; }
         [Required(ErrorMessage = "Acceptance Type is required")]
         public required AcceptanceType AcceptanceType { get; set; }
-        public bool IsLevelEditable { get; set; } = false;
     }
 }
