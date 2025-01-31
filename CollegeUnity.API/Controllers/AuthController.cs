@@ -47,6 +47,7 @@ namespace CollegeUnity.API.Controllers
         [HttpGet("TestAuth")]
         public async Task<IActionResult> Test()
         {
+            throw new Exception("Something went wrong!");
             return Ok(AuthenticationService.GetUserClaims(HttpContext));
         }
     }
