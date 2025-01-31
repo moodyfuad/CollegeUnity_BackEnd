@@ -24,7 +24,7 @@ builder.Services.AddControllers(options =>
 builder.Services.AddDbContext<CollegeUnityDbContext>(options =>
 {
     //options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
-    options.UseSqlServer(builder.Configuration.GetConnectionString("FaisalLocal"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
 });
 
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
@@ -34,7 +34,7 @@ builder.Services.AddScoped<IServiceManager, ServiceManager>();
 builder.Services.AddCustomJwtAuthentication(builder.Configuration);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerCusomeGen();
+builder.Services.AddSwaggerCustomeGen();
 
 var app = builder.Build();
 

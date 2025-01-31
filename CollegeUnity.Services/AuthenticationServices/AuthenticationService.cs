@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿//using AutoMapper;
 using CollegeUnity.Contract;
 using CollegeUnity.Core.Constants;
 using CollegeUnity.Core.Dtos;
@@ -21,13 +21,13 @@ namespace CollegeUnity.Services.AuthenticationServices
     {
         private readonly IRepositoryManager _repositoryManager;
         private readonly IConfiguration _config;
-        private readonly IMapper _mapper;
+        //private readonly IMapper _mapper;
 
-        public AuthenticationService(IRepositoryManager repositoryManager, IConfiguration config,IMapper mapper)
+        public AuthenticationService(IRepositoryManager repositoryManager, IConfiguration config)
         {
             _repositoryManager = repositoryManager;
             _config = config;
-            _mapper = mapper;
+            //_mapper = mapper;
         }
 
         public async Task<string> Login(

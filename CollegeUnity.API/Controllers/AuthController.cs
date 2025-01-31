@@ -42,12 +42,5 @@ namespace CollegeUnity.API.Controllers
             return Ok(token);
             
         }
-
-        [Authorize(Roles = nameof(Roles.Student))]
-        [HttpGet("TestAuth")]
-        public async Task<IActionResult> Test()
-        {
-            return Ok(AuthenticationService.GetUserClaims(HttpContext));
-        }
     }
 }

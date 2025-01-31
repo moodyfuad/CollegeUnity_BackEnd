@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿//using AutoMapper;
 using CollegeUnity.Contract;
 using CollegeUnity.Services.AuthenticationServices;
 using CollegeUnity.Services.ServiceAbstraction;
@@ -15,15 +15,15 @@ namespace CollegeUnity.Services
     {
         private readonly IRepositoryManager _repositoryManager;
         private readonly IConfiguration _configuration;
-        private readonly IMapper _mapper;
+        //private readonly IMapper _mapper;
 
-        public ServiceManager(IRepositoryManager repositoryManager, IConfiguration configuration,IMapper mapper)
+        public ServiceManager(IRepositoryManager repositoryManager, IConfiguration configuration)
         {
             _repositoryManager = repositoryManager;
             _configuration = configuration;
-            _mapper = mapper;
+            //_mapper = mapper;
         }
 
-        public IAuthenticationService AuthenticationService => new AuthenticationService(_repositoryManager, _configuration,_mapper);
+        public IAuthenticationService AuthenticationService => new AuthenticationService(_repositoryManager, _configuration);
     }
 }
