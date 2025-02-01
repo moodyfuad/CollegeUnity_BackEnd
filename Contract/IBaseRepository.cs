@@ -13,15 +13,19 @@ namespace CollegeUnity.Contract
 
         Task<T> GetByConditionsAsync(Expression<Func<T,bool>> condition, params Expression<Func<T,object>>[] includes);
 
-        Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[]? includes);
+        Task<IQueryable<T>> GetAsQueryable();
 
-        Task<IEnumerable<T>> GetAllByConditionsAsync(Expression<Func<T, bool>> condition, params Expression<Func<T, object>>[] includes);
+
+        Task<IEnumerable<T>> GetRangeAsync(params Expression<Func<T, object>>[]? includes);
+
+        Task<IEnumerable<T>> GetRangeByConditionsAsync(Expression<Func<T, bool>> condition, params Expression<Func<T, object>>[] includes);
 
         Task<T> Delete(int id);
 
         Task<T> Delete(T entity);
 
         Task<T> Update(int Id, T updatedEntity);
+        Task<T> Update(T updatedEntity);
         Task<T> CreateAsync(T entity);
 
     }

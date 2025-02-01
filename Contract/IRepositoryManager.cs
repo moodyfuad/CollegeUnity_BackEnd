@@ -10,6 +10,7 @@ namespace CollegeUnity.Contract
     public interface IRepositoryManager
     {
         IStudentRepository StudentRepository { get; }
+        IStaffRepository StaffRepository { get; }
         Task SaveChangesAsync();
     }
 }

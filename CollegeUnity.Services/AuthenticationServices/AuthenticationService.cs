@@ -9,6 +9,7 @@ using CollegeUnity.Services.ServiceAbstraction;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System.Collections.Immutable;
 using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Runtime.CompilerServices;
@@ -32,34 +33,27 @@ namespace CollegeUnity.Services.AuthenticationServices
 
         public async Task<string> Login(
              UserLoginDto userLoginDto,
-             //IConfiguration _config,
              DateTime? expireAt = null)
         {
             switch (userLoginDto)
             {
                 // student log in
                 case StudentLoginDto studentDto:
-                    Student? student = await ValidateStudentCredentials(expireAt, studentDto);
+                    Student? student = await ValidateStudentCredentials(studentDto);
                     return student == null ?
-                        "Your Id or Password is incorrect" 
-                        : CreateToken(student);
-
-                //staff log in
+                        "Your Id or Password is incorrect" : CreateToken(student,expireAt);
+                
+                // staff log in
+                case StaffLoginDto staffDto:
+                    Staff? staff = await ValidateStaffCredentials(staffDto);
+                    return staff == null ?
+                        "Your Email or Password is incorrect" 
+                        : CreateToken(staff,expireAt);
 
                 //default
                 default: return "User Type Error";
             }
 
-        }
-
-        private async Task<Student?> ValidateStudentCredentials(DateTime? expireAt, StudentLoginDto studentDto)
-        {
-            Student? student = 
-                await _repositoryManager.StudentRepository
-                .GetByConditionsAsync(
-                    std => std.CardId == studentDto.CardId && std.Password == studentDto.Password);
-
-            return student;
         }
 
         public async Task<string> SignUp(UserSignUpDto userSignUpDto)
@@ -69,27 +63,26 @@ namespace CollegeUnity.Services.AuthenticationServices
                 case StudentSignUpDto studentDto:
                     return await SignUpStudent(studentDto);
 
-                //case StaffSignUpDto StaffDto:
-                //    return await SignUpStaff(staffDto);
-
                 default: return "error occur!";
             }
 
 
         }
 
-        public static AuthenticationUserDto GetUserClaims(in HttpContext context)
+        public static UserClaimsDto GetUserClaims(in HttpContext context)
         {
-            var claims = context.User.Claims;
+            List<Claim> claims = context.User.Claims.ToList();
 
             Roles userRole = (Roles)Enum.Parse(typeof(Roles), claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Role)!.Value);
+            //string role = claims.Single(claim => claim.Type.Equals(CustomClaimTypes.Role))!.Value;
+
             if (userRole == Roles.Student)
             {
-                return GetStudentClaims(context);
+                return GetStudentClaims(claims);
             }
             else
             {
-                return GetStaffClaims(context);
+                return GetStaffClaims(claims);
             }
         }
     }

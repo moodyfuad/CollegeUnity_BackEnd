@@ -17,7 +17,7 @@ namespace CollegeUnity.EF.Repositories
         {
             _dbContext = context;
         }
-        public async Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[]? includes)
+        public async Task<IEnumerable<T>> GetRangeAsync(params Expression<Func<T, object>>[]? includes)
         {
             var entity = _dbContext.Set<T>().IgnoreAutoIncludes();
             if (includes != null && includes.Length > 0)
@@ -30,7 +30,7 @@ namespace CollegeUnity.EF.Repositories
             return await entity.ToListAsync();
         }
 
-        public async Task<IEnumerable<T>> GetAllByConditionsAsync(Expression<Func<T, bool>>? condition = null, params Expression<Func<T, object>>[] includes)
+        public async Task<IEnumerable<T>> GetRangeByConditionsAsync(Expression<Func<T, bool>>? condition = null, params Expression<Func<T, object>>[] includes)
         {
             var entity = _dbContext.Set<T>().IgnoreAutoIncludes();
             if (includes != null && includes.Length > 0)
@@ -90,6 +90,17 @@ namespace CollegeUnity.EF.Repositories
         {
             
             return _dbContext.Set<T>().Update(await GetByIdAsync(Id)).Entity;
+        }
+        public async Task<T> Update(T updatedEntity)
+        {
+            
+            return _dbContext.Set<T>().Update(updatedEntity).Entity;
+        }
+
+
+        public async Task<IQueryable<T>> GetAsQueryable()
+        {
+            return _dbContext.Set<T>().AsQueryable<T>();
         }
     }
 }

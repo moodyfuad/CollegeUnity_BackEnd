@@ -43,11 +43,12 @@ namespace CollegeUnity.API.Controllers
             
         }
 
-        [Authorize(Roles = nameof(Roles.Student))]
         [HttpGet("TestAuth")]
+        [Authorize(Roles = nameof(Roles.Student))]
         public async Task<IActionResult> Test()
         {
-            throw new Exception("Something went wrong!");
+            //throw new Exception("Something went wrong!");
+            var role = (Roles)Enum.Parse<Roles>(HttpContext.User.Claims.Single(c => c.Type == CustomClaimTypes.Role).Value);
             return Ok(AuthenticationService.GetUserClaims(HttpContext));
         }
     }

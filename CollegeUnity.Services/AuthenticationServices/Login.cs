@@ -14,36 +14,8 @@ namespace CollegeUnity.Services.AuthenticationServices
 {
     public partial class AuthenticationService
     {
-       
-        private static StaffClaimsDto GetStaffClaims(HttpContext context)
-        {
 
-            var claims = context.User.Claims;
-            StaffClaimsDto staff = new StaffClaimsDto()
-            {
-                Id = int.Parse(claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Id)!.Value),
-                FirstName = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.FirstName)!.Value,
-                MiddleName = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.MiddleName)!.Value,
-                LastName = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.LastName)!.Value,
-                Email = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Email)!.Value,
-                BirthDate = DateOnly.Parse(claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.BirthDate)!.Value),
-                Gender = (Gender)Enum.Parse(typeof(Gender), claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Gender)!.Value),
-                Role = (Roles)Enum.Parse(typeof(Roles), claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Role)!.Value),
-                AccountStatus = (AccountStatus)Enum.Parse(typeof(AccountStatus), claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.AccountStatus)!.Value),
-                Phone = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.PhoneNumber)!.Value,
-                Password = "",
-                ConfirmPassword = "",
-
-
-                //staff
-                EducationDegree = (EducationDegree)Enum.Parse(typeof(EducationDegree), claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.EducationDegree)!.Value),
-            };
-            return staff;
-
-        }
-
-
-        private static List<Claim> CreateUserClaims(in User user)
+        private static List<Claim>? CreateUserClaims(in User user)
         {
             switch (user)
             {
@@ -97,6 +69,7 @@ namespace CollegeUnity.Services.AuthenticationServices
             new Claim(CustomClaimTypes.AccountStatus, user.AccountStatus.ToString()),
             new Claim(CustomClaimTypes.PhoneNumber, user.Phone.ToString()),
             new Claim(CustomClaimTypes.Role, GetUserRole(user)),
+            new Claim(CustomClaimTypes.RoleName, GetUserRoleName(user)),
         };
             return claims;
         }
@@ -116,6 +89,44 @@ namespace CollegeUnity.Services.AuthenticationServices
                     return roles;
                 default: return "No Role";
             }
+        }
+
+        private static string GetUserRoleName(User user)
+        {
+            switch (user)
+            {
+                case Student student:
+                    return Roles.Student.AsString();
+                case Staff staff:
+                    var roles = string.Empty;
+                    foreach (var role in staff.Roles)
+                    {
+                        roles += role.AsString() + ",";
+                    }
+                    
+                    return roles.Remove(-1, 1);
+                default: return "No Role";
+            }
+        }
+
+        private async Task<Student?> ValidateStudentCredentials(StudentLoginDto studentDto)
+        {
+            Student? student =
+                await _repositoryManager.StudentRepository
+                .GetByConditionsAsync(
+                    std => std.CardId == studentDto.CardId && std.Password == studentDto.Password);
+
+            return student;
+        }
+
+        private async Task<Staff?> ValidateStaffCredentials(StaffLoginDto staffDto)
+        {
+            Staff? staff =
+                await _repositoryManager.StaffRepository
+                .GetByConditionsAsync(
+                    staff => staff.Email == staffDto.Email && staff.Password == staffDto.Password);
+
+            return staff;
         }
     }
 }

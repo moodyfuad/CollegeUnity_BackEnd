@@ -19,6 +19,7 @@ namespace CollegeUnity.Core.Constants
         public const string EducationDegree = "EducationDegree";
 
         public const string Role = ClaimTypes.Role;
+        public const string RoleName = "RoleName";
         public const string FirstName = "FirstName";
         public const string MiddleName = "MiddleName";
         public const string LastName = "LastName";

@@ -12,7 +12,7 @@ namespace CollegeUnity.Services.ServiceAbstraction
     {
         Task<string> Login(UserLoginDto loginDto, DateTime? expireAt = null);
         Task<string> SignUp(UserSignUpDto userSignUpDto);
-        abstract static AuthenticationUserDto GetUserClaims(in HttpContext context);
+        static abstract UserClaimsDto GetUserClaims(in HttpContext context);
 
     }
 }
