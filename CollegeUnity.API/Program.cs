@@ -6,11 +6,12 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using CollegeUnity.Core.Constants;
 using CollegeUnity.API;
-using CollegeUnity.Contract;
 using CollegeUnity.EF.Repositories;
 using CollegeUnity.Services;
 using System.Runtime.CompilerServices;
 using CollegeUnity.API.Middlerware_Extentions;
+using CollegeUnity.Contract.Services_Contract;
+using CollegeUnity.Contract.EF_Contract;
 
 var builder = WebApplication.CreateBuilder(args);
 

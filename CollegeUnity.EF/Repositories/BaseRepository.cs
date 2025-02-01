@@ -1,4 +1,4 @@
-﻿using CollegeUnity.Contract;
+﻿using CollegeUnity.Contract.EF_Contract;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

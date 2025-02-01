@@ -1,5 +1,5 @@
-﻿using CollegeUnity.Contract;
-using CollegeUnity.Contract.IEntitiesRepository;
+﻿using CollegeUnity.Contract.EF_Contract;
+using CollegeUnity.Contract.EF_Contract.IEntitiesRepository;
 using CollegeUnity.EF.Repositories.EntitiesRepository;
 using System;
 using System.Collections.Generic;

@@ -1,11 +1,11 @@
-﻿using CollegeUnity.Contract.IEntitiesRepository;
+﻿using CollegeUnity.Contract.EF_Contract.IEntitiesRepository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CollegeUnity.Contract
+namespace CollegeUnity.Contract.EF_Contract
 {
     public interface IRepositoryManager
     {

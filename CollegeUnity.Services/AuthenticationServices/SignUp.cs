@@ -1,8 +1,8 @@
 ﻿using CollegeUnity.Core.Constants;
 using CollegeUnity.Core.Dtos.AuthenticationDtos;
 using CollegeUnity.Core.Entities;
-using CollegeUnity.Core.Entities.Extensions;
 using CollegeUnity.Core.Enums;
+using CollegeUnity.Core.MappingExtensions.StudentExtensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +32,7 @@ namespace CollegeUnity.Services.AuthenticationServices
             }
 
             else
-                student = student.MapFrom(studentDto);
+                student = student.MapFrom<StudentSignUpDto>(studentDto);
 
             student = await _repositoryManager.StudentRepository.CreateAsync(student);
             try

@@ -1,11 +1,11 @@
 ﻿//using AutoMapper;
-using CollegeUnity.Contract;
-using CollegeUnity.Core.Constants;
+using CollegeUnity.Contract.EF_Contract;
+using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
+using CollegeUnity.Core.Constants.AuthenticationConstants;
 using CollegeUnity.Core.Dtos;
 using CollegeUnity.Core.Dtos.AuthenticationDtos;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Enums;
-using CollegeUnity.Services.ServiceAbstraction;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -22,7 +22,6 @@ namespace CollegeUnity.Services.AuthenticationServices
     {
         private readonly IRepositoryManager _repositoryManager;
         private readonly IConfiguration _config;
-        //private readonly IMapper _mapper;
 
         public AuthenticationService(IRepositoryManager repositoryManager, IConfiguration config)
         {

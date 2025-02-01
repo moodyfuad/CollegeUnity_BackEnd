@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CollegeUnity.Core.Constants
+namespace CollegeUnity.Core.Constants.AuthenticationConstants
 {
     public static class JwtKeys
     {

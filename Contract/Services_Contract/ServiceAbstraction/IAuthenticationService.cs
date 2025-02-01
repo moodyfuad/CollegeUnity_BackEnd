@@ -1,12 +1,7 @@
 ﻿using CollegeUnity.Core.Dtos.AuthenticationDtos;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CollegeUnity.Services.ServiceAbstraction
+namespace CollegeUnity.Contract.Services_Contract.ServiceAbstraction
 {
     public interface IAuthenticationService
     {

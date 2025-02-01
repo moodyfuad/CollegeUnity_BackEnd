@@ -1,5 +1,4 @@
-﻿using CollegeUnity.Core.Constants;
-using CollegeUnity.Core.Dtos;
+﻿using CollegeUnity.Core.Dtos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +9,8 @@ using CollegeUnity.Core.Enums;
 using CollegeUnity.Services.AuthenticationServices;
 using CollegeUnity.Core.Dtos.AuthenticationDtos;
 using CollegeUnity.Contract;
-using CollegeUnity.Services;
+using CollegeUnity.Core.Constants.AuthenticationConstants;
+using CollegeUnity.Contract.Services_Contract;
 
 namespace CollegeUnity.API.Controllers
 {

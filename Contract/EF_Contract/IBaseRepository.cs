@@ -5,13 +5,13 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CollegeUnity.Contract
+namespace CollegeUnity.Contract.EF_Contract
 {
-    public interface IBaseRepository<T>  where T : class
+    public interface IBaseRepository<T> where T : class
     {
         Task<T> GetByIdAsync(int id);
 
-        Task<T> GetByConditionsAsync(Expression<Func<T,bool>> condition, params Expression<Func<T,object>>[] includes);
+        Task<T> GetByConditionsAsync(Expression<Func<T, bool>> condition, params Expression<Func<T, object>>[] includes);
 
         Task<IQueryable<T>> GetAsQueryable();
 

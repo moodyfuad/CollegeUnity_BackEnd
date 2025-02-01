@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CollegeUnity.Services.ServiceAbstraction
+namespace CollegeUnity.Core.MappingExtensions.StudentExtensions
 {
-    public interface IAdminServices
+    public static partial class StudentExtensions
     {
-
     }
 }

@@ -1,4 +1,4 @@
-﻿using CollegeUnity.Core.Constants;
+﻿using CollegeUnity.Core.Constants.AuthenticationConstants;
 using CollegeUnity.Core.Dtos.AuthenticationDtos;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Enums;

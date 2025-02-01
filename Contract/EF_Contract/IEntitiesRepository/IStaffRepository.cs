@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CollegeUnity.Contract.IEntitiesRepository
+namespace CollegeUnity.Contract.EF_Contract.IEntitiesRepository
 {
     public interface IStaffRepository : IBaseRepository<Staff>
     {

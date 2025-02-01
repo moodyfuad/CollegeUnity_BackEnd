@@ -1,14 +1,15 @@
-﻿using CollegeUnity.Services.ServiceAbstraction;
+﻿using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CollegeUnity.Services
+namespace CollegeUnity.Contract.Services_Contract
 {
     public interface IServiceManager
     {
         IAuthenticationService AuthenticationService { get; }
+        IAdminServices AdminServices{ get; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using CollegeUnity.Core.Constants;
+﻿using CollegeUnity.Core.Constants.AuthenticationConstants;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;

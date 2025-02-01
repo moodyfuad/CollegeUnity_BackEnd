@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CollegeUnity.Core.Entities;
-using CollegeUnity.Contract.IEntitiesRepository;
+using CollegeUnity.Contract.EF_Contract.IEntitiesRepository;
 
 namespace CollegeUnity.EF.Repositories.EntitiesRepository
 {

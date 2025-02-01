@@ -1,4 +1,4 @@
-﻿using CollegeUnity.Contract.IEntitiesRepository;
+﻿using CollegeUnity.Contract.EF_Contract.IEntitiesRepository;
 using CollegeUnity.Core.Entities;
 using System;
 using System.Collections.Generic;
