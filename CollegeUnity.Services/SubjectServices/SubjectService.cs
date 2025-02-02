@@ -27,6 +27,20 @@ namespace CollegeUnity.Services.SubjectServices
             return subject == null ? await _createSubjectAsync(dto) : ApiResponse<Subject>.BadRequest(message: "Subject already exists.");
         }
 
+        public async Task<ApiResponse<IEnumerable<SubjectDto>>> GetAllAsync()
+        {
+            IEnumerable<Subject> subjects = await _repositoryManager.SubjectRepository.GetRangeAsync(
+                includes: new Expression<Func<Subject, object>>[]
+                {
+        i => i.Teacher,
+        i => i.AssignedBy
+                }
+            );
+
+            IEnumerable<SubjectDto> subjectDtos = subjects.MapTo<SubjectDto>();
+            return ApiResponse<IEnumerable<SubjectDto>>.Success(subjectDtos);
+        }
+
         #region Private Methods
         /// <summary>
         /// method to check if the staff id is exists

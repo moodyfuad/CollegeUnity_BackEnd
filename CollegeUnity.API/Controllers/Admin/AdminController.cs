@@ -49,5 +49,14 @@ namespace CollegeUnity.API.Controllers.Admin
             return new JsonResult(response);
         }
 
+        [HttpGet("GetSubjects")]
+        public async Task<IActionResult> GetSubjects()
+        {
+            var response = await _serviceManager.SubjectServices.GetAllAsync();
+            HttpContext.Response.StatusCode = response.StatusCode;
+
+            return new JsonResult(response);
+        }
+
     }
 }

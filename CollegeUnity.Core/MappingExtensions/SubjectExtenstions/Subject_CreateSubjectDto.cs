@@ -23,5 +23,25 @@ namespace CollegeUnity.Core.MappingExtensions.SubjectExtenstions
                 HeadOfScientificDepartmentId = dto.HeadOfScientificDepartmentId,
             };
         }
+
+        public static IEnumerable<SubjectDto> MapTo<T>(this IEnumerable<Subject> subjects) where T : SubjectDto, new()
+        {
+            foreach (var subject in subjects)
+            {
+                yield return new T
+                {
+                    Id = subject.Id,
+                    Name = subject.Name,
+                    Level = subject.Level,
+                    Major = subject.Major,
+                    AcceptanceType = subject.AcceptanceType,
+                    AssignedById = subject.HeadOfScientificDepartmentId == null? null : subject.HeadOfScientificDepartmentId!.Value,
+                    AssignedByName = subject.AssignedBy == null? null : subject.AssignedBy.FirstName + " " + subject.AssignedBy.MiddleName + " " + subject.AssignedBy.LastName,
+                    TeacherId = subject.TeacherId == null? null : subject.TeacherId!.Value,
+                    TeacherName = subject.Teacher == null? null : subject.Teacher.FirstName + " " + subject.Teacher.MiddleName + " " + subject.Teacher.LastName,
+                };
+            }
+        }
+
     }
 }
