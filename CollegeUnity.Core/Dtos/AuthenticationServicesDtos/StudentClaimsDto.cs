@@ -37,7 +37,11 @@ namespace CollegeUnity.Core.Dtos.AuthenticationDtos
                 Email = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Email)!.Value,
                 BirthDate = DateOnly.Parse(claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.BirthDate)!.Value),
                 Gender = (Gender)Enum.Parse(typeof(Gender), claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Gender)!.Value),
-                Role = (Roles)Enum.Parse(typeof(Roles), claims.FirstOrDefault(claim => claim.Type.Equals(CustomClaimTypes.Role))!.Value),
+
+                Role = claims.Where(c => c.Type == CustomClaimTypes.Role)
+               .Select(c => Enum.Parse<Roles>(c.Value))
+               .ToList(),
+
                 RoleString = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Role)!.Value,
 
                 AccountStatus = (AccountStatus)Enum.Parse(typeof(AccountStatus), claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.AccountStatus)!.Value),

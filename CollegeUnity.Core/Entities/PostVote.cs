@@ -22,6 +22,6 @@ namespace CollegeUnity.Core.Entities
 
         public required Post Post { get; set; }
 
-        public virtual ICollection<User> SelectedBy { get; set; }
+        public virtual ICollection<User>? SelectedBy { get; set; }
     }
 }

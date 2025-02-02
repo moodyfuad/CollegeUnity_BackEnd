@@ -72,10 +72,13 @@ namespace CollegeUnity.Services.AuthenticationServices
         {
             List<Claim> claims = context.User.Claims.ToList();
 
-            Roles userRole = (Roles)Enum.Parse(typeof(Roles), claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Role)!.Value);
+            var userRoles = claims.
+                Where(c => c.Type == CustomClaimTypes.Role)
+               .Select(c => Enum.Parse<Roles>(c.Value))
+               .ToList();
             //string role = claims.Single(claim => claim.Type.Equals(CustomClaimTypes.Role))!.Value;
 
-            if (userRole == Roles.Student)
+            if (userRoles.Contains(Roles.Student))
             {
                 return GetStudentClaims(claims);
             }

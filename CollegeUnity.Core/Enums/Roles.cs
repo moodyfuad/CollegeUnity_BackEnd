@@ -13,7 +13,8 @@ namespace CollegeUnity.Core.Enums
         Teacher,
         StudentAffairsViceDeanShip,
         RegistrationAdmissionEmployee,
-        HeadOfScientificDepartment,
+        HeadOfITDepartment,
+        HeadOfCSDepartment,
         Student
             
     }
@@ -33,8 +34,10 @@ namespace CollegeUnity.Core.Enums
                     return "StudentAffairsViceDeanShip";
                 case Roles.RegistrationAdmissionEmployee:
                     return "Registration Admission Employee";
-                case Roles.HeadOfScientificDepartment:
-                    return "Head Of Scientific Department";
+                case Roles.HeadOfITDepartment:
+                    return "Head Of IT Department";
+                case Roles.HeadOfCSDepartment:
+                    return "Head Of CS Department";
                 case Roles.Student:
                     return "Student";
                 default:

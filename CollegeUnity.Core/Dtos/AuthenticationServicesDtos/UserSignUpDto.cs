@@ -25,9 +25,6 @@ namespace CollegeUnity.Core.Dtos.AuthenticationDtos
         [Required(ErrorMessage = "Phone number is required")]
         [Phone(ErrorMessage = "Invalid Phone number")]
         public required string Phone { get; set; }
-        [Required(ErrorMessage = "Gender field is required")]
-        public Gender Gender { get; set; }
-
         [Required(ErrorMessage = "Password is required")]
         public required string Password { get; set; }
         [Required(ErrorMessage = "Please confirm your password")]
@@ -35,6 +32,9 @@ namespace CollegeUnity.Core.Dtos.AuthenticationDtos
         public required string ConfirmPassword { get; set; }
         [Required(ErrorMessage = "Birth Date is required")]
         public required DateOnly BirthDate { get; set; }
+
+        [Required(ErrorMessage = "Gender field is required")]
+        public required Gender Gender { get; set; }
 
 
         

@@ -68,26 +68,27 @@ namespace CollegeUnity.Services.AuthenticationServices
             new Claim(CustomClaimTypes.BirthDate, user.BirthDate.ToString()),
             new Claim(CustomClaimTypes.AccountStatus, user.AccountStatus.ToString()),
             new Claim(CustomClaimTypes.PhoneNumber, user.Phone.ToString()),
-            new Claim(CustomClaimTypes.Role, GetUserRole(user)),
             new Claim(CustomClaimTypes.RoleName, GetUserRoleName(user)),
         };
+            claims.AddRange(GetUserRoleClaims(user));
             return claims;
         }
 
-        private static string GetUserRole(User user)
+        private static List<Claim> GetUserRoleClaims(User user)
         {
             switch (user)
             {
-                case Student student:
-                    return Roles.Student.ToString();
+                case Student:
+                    return [new Claim(CustomClaimTypes.Role, Roles.Student.ToString())];
                 case Staff staff:
-                    var roles = string.Empty;
+                    List<Claim> roleClaims =  [];
                     foreach (var role in staff.Roles)
                     {
-                        roles += role.ToString();
+                        roleClaims.Add(new Claim(CustomClaimTypes.Role, role.ToString()));
                     }
-                    return roles;
-                default: return "No Role";
+
+                    return roleClaims;
+                default: return [];
             }
         }
 
@@ -104,7 +105,7 @@ namespace CollegeUnity.Services.AuthenticationServices
                         roles += role.AsString() + ",";
                     }
                     
-                    return roles.Remove(-1, 1);
+                    return roles;
                 default: return "No Role";
             }
         }

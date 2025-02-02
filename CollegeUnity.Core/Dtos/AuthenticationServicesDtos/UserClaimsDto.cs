@@ -36,7 +36,7 @@ namespace CollegeUnity.Core.Dtos.AuthenticationDtos
         public required AccountStatus AccountStatus { get; set; }
         public required string? AccountStatusString { get; set; }
 
-        public required Roles Role { get; set; }
+        public required List<Roles> Role { get; set; }
         public required string? RoleString { get; set; }
 
         [Required]
