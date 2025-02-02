@@ -15,6 +15,7 @@ namespace CollegeUnity.EF.Repositories
 
         private IStudentRepository _studentRepository;
         private IStaffRepository _staffRepository;
+        private ISubjectRepository _subjectRepository;
         public RepositoryManager(CollegeUnityDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -28,6 +29,12 @@ namespace CollegeUnity.EF.Repositories
         public IStaffRepository StaffRepository
         {
             get => _staffRepository ??= new StaffRepository(_dbContext);
+            private set { }
+        }
+
+        public ISubjectRepository SubjectRepository
+        {
+            get => _subjectRepository ??= new SubjectRepository(_dbContext);
             private set { }
         }
 

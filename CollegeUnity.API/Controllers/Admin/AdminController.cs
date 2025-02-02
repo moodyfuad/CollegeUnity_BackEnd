@@ -1,6 +1,7 @@
 ﻿using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
 using CollegeUnity.Core.Dtos.ResponseDto;
+using CollegeUnity.Core.Dtos.SubjectDtos;
 using CollegeUnity.Core.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,17 +15,17 @@ namespace CollegeUnity.API.Controllers.Admin
     [ApiController]
     public class AdminController : ControllerBase
     {
-        private readonly IAdminServices _adminServices;
+        private readonly IServiceManager _serviceManager;
 
         public AdminController(IServiceManager serviceManager)
         {
-            _adminServices = serviceManager.AdminServices;
+            _serviceManager = serviceManager;
         }
 
         [HttpGet("Staff")]
         public async Task<IActionResult> Get([Required][FromQuery(Name = "Name")] string name) 
         {
-            var response = await _adminServices.SearchStaffBy(name);
+            var response = await _serviceManager.AdminServices.SearchStaffBy(name);
             HttpContext.Response.StatusCode = response.StatusCode;
             
             return new JsonResult(response);
@@ -33,10 +34,19 @@ namespace CollegeUnity.API.Controllers.Admin
         [HttpGet("SearchStudents")]
         public async Task<IActionResult> GetStudent([FromQuery] string name) 
         {
-            var response = await _adminServices.SearchStudentsBy(name);
+            var response = await _serviceManager.AdminServices.SearchStudentsBy(name);
             HttpContext.Response.StatusCode = response.StatusCode;
 
             return new JsonResult(response); 
+        }
+
+        [HttpPost("CreateSubject")]
+        public async Task<IActionResult> CreateNewSubject([FromForm]CreateSubjectDto dto)
+        {
+            var response = await _serviceManager.SubjectServices.CreateSubjectAsync(dto);
+            HttpContext.Response.StatusCode = response.StatusCode;
+
+            return new JsonResult(response);
         }
 
     }

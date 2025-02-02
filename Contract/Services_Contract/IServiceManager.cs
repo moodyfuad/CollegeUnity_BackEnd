@@ -11,5 +11,6 @@ namespace CollegeUnity.Contract.Services_Contract
     {
         IAuthenticationService AuthenticationService { get; }
         IAdminServices AdminServices{ get; }
+        ISubjectServices SubjectServices{ get; }
     }
 }
