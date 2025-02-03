@@ -47,6 +47,28 @@ namespace CollegeUnity.EF.Repositories
 
             return await entity.ToListAsync();
         }
+        
+        public async Task<IEnumerable<T>> GetRangeByConditionsAsync(Expression<Func<T, bool>>[]? condition, params Expression<Func<T, object>>[] includes)
+        {
+            var entity = _dbContext.Set<T>().IgnoreAutoIncludes();
+            if (includes != null && includes.Length > 0)
+            {
+                foreach (var include in includes)
+                {
+                    entity = entity.Include(include);
+                }
+            }
+            if (condition != null)
+            {
+                foreach (var expression in condition)
+                {
+                    entity = entity.Where(expression);
+                }
+                
+            }
+
+            return await entity.AsSingleQuery().ToListAsync();
+        }
 
         public async Task<T> GetByConditionsAsync(Expression<Func<T, bool>> condition, params Expression<Func<T, object>>[] includes)
         {

@@ -19,6 +19,7 @@ namespace CollegeUnity.Contract.EF_Contract
         Task<IEnumerable<T>> GetRangeAsync(params Expression<Func<T, object>>[]? includes);
 
         Task<IEnumerable<T>> GetRangeByConditionsAsync(Expression<Func<T, bool>> condition, params Expression<Func<T, object>>[] includes);
+        Task<IEnumerable<T>> GetRangeByConditionsAsync(Expression<Func<T, bool>>[]? condition, params Expression<Func<T, object>>[] includes);
 
         Task<T> Delete(int id);
 

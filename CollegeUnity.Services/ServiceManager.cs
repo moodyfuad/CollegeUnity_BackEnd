@@ -3,6 +3,7 @@ using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
 using CollegeUnity.Services.AdminServices;
 using CollegeUnity.Services.AuthenticationServices;
+using CollegeUnity.Services.StudentServices;
 using CollegeUnity.Services.SubjectServices;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -29,5 +30,7 @@ namespace CollegeUnity.Services
         public IAdminServices AdminServices => new AdminService(_repositoryManager);
 
         public ISubjectServices SubjectServices => new SubjectService(_repositoryManager);
+
+        public IStudentServices StudentServices => new StudentService(_repositoryManager);
     }
 }
