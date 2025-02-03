@@ -1,6 +1,9 @@
 ﻿using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Core.Dtos.AuthenticationDtos;
+using CollegeUnity.Core.Dtos.ResponseDto;
+using CollegeUnity.Core.Dtos.StudentServiceDtos;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CollegeUnity.API.Controllers.Student
@@ -29,6 +32,35 @@ namespace CollegeUnity.API.Controllers.Student
         {
             string token = await _serviceManager.AuthenticationService.Login(student);
             return Ok(token);
+
+        }
+        
+        [HttpPost("Search")]
+        public async Task<IActionResult> StudentSearch([FromQuery] SearchParameters searchParameters)
+        {
+            try
+            {
+                var result = await _serviceManager.StudentServices.GetStudentsAsync(searchParameters);
+
+
+                if (!result.Any())
+                    return Ok(ApiResponse<List<Core.Entities.Student>>.NotFound());
+
+                if (result.Count().Equals(1))
+                    return Ok(ApiResponse<Core.Entities.Student>.Success(data: result.FirstOrDefault()!));
+
+                if (result.Count() > 1)
+                    return Ok(ApiResponse<List<Core.Entities.Student>>.Success(message: $"[{result.Count()}] records fetched.",data: result.ToList()));
+                else 
+                    return Ok(ApiResponse<string>.InternalServerError(errors :["error fitching students"]));
+
+            }
+            catch (Exception ex)
+            {
+                return Ok(ApiResponse<string>.InternalServerError(errors: [ex.Message]));
+
+            }
+
 
         }
     }

@@ -17,7 +17,5 @@ namespace CollegeUnity.Contract.Services_Contract.ServiceAbstraction
         Task<ApiResponse<IEnumerable<Staff>>> SearchStaffBy(Expression<Func<Staff,bool>> expression);
         Task<ApiResponse<IEnumerable<Staff>>> SearchStaffBy(string name);
         Task<ApiResponse<IEnumerable<CreateStaffDto>>> GetAllStaff();
-        Task<ApiResponse<IEnumerable<Student>>> SearchStudentsBy(string name);
-
     }
 }
