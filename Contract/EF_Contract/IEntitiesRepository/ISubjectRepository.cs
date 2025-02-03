@@ -9,5 +9,6 @@ namespace CollegeUnity.Contract.EF_Contract.IEntitiesRepository
 {
     public interface ISubjectRepository : IBaseRepository<Subject>
     {
+        Task<bool> IsExistById(int id);
     }
 }

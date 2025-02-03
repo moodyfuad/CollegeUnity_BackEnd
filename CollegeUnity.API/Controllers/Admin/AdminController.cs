@@ -58,5 +58,23 @@ namespace CollegeUnity.API.Controllers.Admin
             return new JsonResult(response);
         }
 
+        [HttpDelete("DeleteSubject/{Id}")]
+        public async Task<IActionResult> DeleteSubject(int Id)
+        {
+            var response = await _serviceManager.SubjectServices.DeleteSubject(Id);
+            HttpContext.Response.StatusCode = response.StatusCode;
+
+            return new JsonResult(response);
+        }
+
+        [HttpPut("UpdateSubject")]
+        public async Task<IActionResult> UpdateSubject([FromForm] SubjectDto dto)
+        {
+            var response = await _serviceManager.SubjectServices.UpdateSubject(dto);
+            HttpContext.Response.StatusCode = response.StatusCode;
+
+            return new JsonResult(response);
+        }
+
     }
 }

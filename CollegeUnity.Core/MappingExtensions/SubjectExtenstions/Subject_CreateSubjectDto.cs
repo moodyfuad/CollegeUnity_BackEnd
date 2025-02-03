@@ -43,5 +43,20 @@ namespace CollegeUnity.Core.MappingExtensions.SubjectExtenstions
             }
         }
 
+        public static Subject MapTo<T>(this SubjectDto dto) where T : Subject
+        {
+            return new()
+            {
+                Id = dto.Id,
+                Name = dto.Name,
+                Level = dto.Level,
+                Major = dto.Major,
+                AcceptanceType = dto.AcceptanceType,
+                TeacherId = dto.TeacherId,
+                HeadOfScientificDepartmentId = dto.AssignedById
+            };
+                
+        }
+
     }
 }

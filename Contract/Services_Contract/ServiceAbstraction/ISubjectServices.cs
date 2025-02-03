@@ -12,6 +12,8 @@ namespace CollegeUnity.Contract.Services_Contract.ServiceAbstraction
     public interface ISubjectServices
     {
         Task<ApiResponse<Subject>> CreateSubjectAsync(CreateSubjectDto dto);
+        Task<ApiResponse<Subject>> DeleteSubject(int Id);
         Task<ApiResponse<IEnumerable<SubjectDto>>> GetAllAsync();
+        Task<ApiResponse<Subject>> UpdateSubject(SubjectDto dto);
     }
 }
