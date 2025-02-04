@@ -12,6 +12,7 @@ using CollegeUnity.Contract;
 using CollegeUnity.Core.Constants.AuthenticationConstants;
 using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Dtos.ResponseDto;
 
 namespace CollegeUnity.API.Controllers.Authentication
 {
@@ -27,6 +28,47 @@ namespace CollegeUnity.API.Controllers.Authentication
             _config = configuration;
             _serviceManager = serviceManager;
         }
+
+        [HttpPost("student/login")]
+        public async Task<IActionResult> StudentLogin([FromForm] StudentLoginDto student)
+        {
+            var result = await _serviceManager.AuthenticationService.Login(student);
+            if (result.Success)
+            {
+                var response = ApiResponse<StudentLoginDto>.Success(data: (StudentLoginDto)result);
+                return new JsonResult(response);
+            }
+            else
+            {
+                string errors = "";
+                foreach (var msg in result.ErrorMessages) errors += msg;
+                var response = ApiResponse<StudentLoginDto>.NotFound(errors);
+                return new JsonResult(response);
+            }
+
+        }
+
+        [HttpPost("staff/login1")]
+        public async Task<IActionResult> StaffLogin([FromForm] StaffLoginDto staff)
+        {
+            var result = await _serviceManager.AuthenticationService.Login(staff);
+            if (result.Success)
+            {
+                var response = ApiResponse<StaffLoginDto>.Success(data: (StaffLoginDto)result);
+                return new JsonResult(response);
+            }
+            else
+            {
+                string errors = "";
+                foreach (var msg in result.ErrorMessages) errors += msg;
+                var response = ApiResponse<StaffLoginDto>.NotFound(errors);
+                return new JsonResult(response);
+            }
+
+        }
+
+
+
 
 
         [HttpGet("Test/Student/IsAuthenticated")]

@@ -1,5 +1,6 @@
 ﻿using CollegeUnity.Contract.EF_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
+using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Dtos.SubjectDtos;
 using CollegeUnity.Core.Entities;
@@ -65,9 +66,10 @@ namespace CollegeUnity.Services.SubjectServices
             return ApiResponse<Subject>.NotFound();
         }
 
-        public async Task<ApiResponse<IEnumerable<SubjectDto>>> GetAllAsync()
+        public async Task<ApiResponse<IEnumerable<SubjectDto>>> GetAllAsync(SubjectParameters subjectParameters)
         {
             IEnumerable<Subject> subjects = await _repositoryManager.SubjectRepository.GetRangeAsync(
+                subjectParameters,
                 includes: new Expression<Func<Subject, object>>[]
                 {
                     i => i.Teacher,

@@ -13,7 +13,7 @@ namespace CollegeUnity.Services.StudentServices
 {
     public partial class StudentService
     {
-        private async Task<IEnumerable<Student>> _GetStudentsAsync(SearchParameters para)
+        private async Task<IEnumerable<Student>> _GetStudentsAsync(StudentSearchParameters para)
         {
             //var studentsAsQuery = await _repositoryManager.StudentRepository.GetAsQueryable();
 
@@ -64,7 +64,7 @@ namespace CollegeUnity.Services.StudentServices
             #endregion
 
             return await _repositoryManager.StudentRepository.GetRangeByConditionsAsync(
-                condition: [.. expressions]
+                condition: [.. expressions],para
                 );
         }
 

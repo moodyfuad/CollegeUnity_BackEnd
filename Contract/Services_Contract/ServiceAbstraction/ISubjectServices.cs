@@ -1,5 +1,6 @@
 ﻿using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Dtos.SubjectDtos;
+using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Entities;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace CollegeUnity.Contract.Services_Contract.ServiceAbstraction
     {
         Task<ApiResponse<Subject>> CreateSubjectAsync(CreateSubjectDto dto);
         Task<ApiResponse<Subject>> DeleteSubject(int Id);
-        Task<ApiResponse<IEnumerable<SubjectDto>>> GetAllAsync();
+        Task<ApiResponse<IEnumerable<SubjectDto>>> GetAllAsync(SubjectParameters subjectParameters);
         Task<ApiResponse<Subject>> UpdateSubject(SubjectDto dto);
     }
 }

@@ -20,7 +20,7 @@ namespace CollegeUnity.Services.StudentServices
         }
 
 
-        public async Task<IEnumerable<Student>> GetStudentsAsync(SearchParameters parameters)
+        public async Task<IEnumerable<Student>> GetStudentsAsync(StudentSearchParameters parameters)
         {
             var students = await _GetStudentsAsync(parameters);
 

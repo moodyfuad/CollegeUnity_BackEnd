@@ -1,4 +1,5 @@
-﻿using CollegeUnity.Core.Enums;
+﻿using CollegeUnity.Core.Dtos.QueryStrings;
+using CollegeUnity.Core.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Core.Dtos.StudentServiceDtos
 {
-    public class SearchParameters
+    public class StudentSearchParameters : QueryStringParameters
     {
         public string? CardId {get;set;}
         public string? FirstName {get;set;}

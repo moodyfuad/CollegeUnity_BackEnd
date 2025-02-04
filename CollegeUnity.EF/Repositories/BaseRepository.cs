@@ -1,4 +1,6 @@
 ﻿using CollegeUnity.Contract.EF_Contract;
+using CollegeUnity.Core.Dtos.QueryStrings;
+using CollegeUnity.Core.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -17,7 +19,9 @@ namespace CollegeUnity.EF.Repositories
         {
             _dbContext = context;
         }
-        public async Task<IEnumerable<T>> GetRangeAsync(params Expression<Func<T, object>>[]? includes)
+        public async Task<PagedList<T>> GetRangeAsync(
+            QueryStringParameters queryStringParameters,
+            params Expression<Func<T, object>>[]? includes)
         {
             var entity = _dbContext.Set<T>().IgnoreAutoIncludes();
             if (includes != null && includes.Length > 0)
@@ -27,10 +31,13 @@ namespace CollegeUnity.EF.Repositories
                     entity = entity.Include(include);
                 }
             }
-            return await entity.ToListAsync();
+            return await PagedList<T>.ToPagedListAsync(entity,queryStringParameters.PageNumber,queryStringParameters.PageSize);
         }
 
-        public async Task<IEnumerable<T>> GetRangeByConditionsAsync(Expression<Func<T, bool>>? condition = null, params Expression<Func<T, object>>[] includes)
+        public async Task<PagedList<T>> GetRangeByConditionsAsync(
+            Expression<Func<T, bool>> condition,
+            QueryStringParameters queryStringParameters,
+            params Expression<Func<T, object>>[] includes)
         {
             var entity = _dbContext.Set<T>().IgnoreAutoIncludes();
             if (includes != null && includes.Length > 0)
@@ -45,10 +52,13 @@ namespace CollegeUnity.EF.Repositories
                 entity = entity.Where(condition);
             }
 
-            return await entity.ToListAsync();
+            return await PagedList<T>.ToPagedListAsync(entity,queryStringParameters.PageNumber,queryStringParameters.PageSize);
         }
         
-        public async Task<IEnumerable<T>> GetRangeByConditionsAsync(Expression<Func<T, bool>>[]? condition, params Expression<Func<T, object>>[] includes)
+        public async Task<PagedList<T>> GetRangeByConditionsAsync(
+            Expression<Func<T, bool>>[]? condition,
+            QueryStringParameters queryStringParameters,
+            params Expression<Func<T, object>>[] includes)
         {
             var entity = _dbContext.Set<T>().IgnoreAutoIncludes();
             if (includes != null && includes.Length > 0)
@@ -67,7 +77,7 @@ namespace CollegeUnity.EF.Repositories
                 
             }
 
-            return await entity.AsSingleQuery().ToListAsync();
+            return await PagedList<T>.ToPagedListAsync(entity.AsSingleQuery(),queryStringParameters.PageNumber,queryStringParameters.PageSize);
         }
 
         public async Task<T> GetByConditionsAsync(Expression<Func<T, bool>> condition, params Expression<Func<T, object>>[] includes)

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CollegeUnity.Core.Dtos.QueryStrings;
+using CollegeUnity.Core.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -16,10 +18,16 @@ namespace CollegeUnity.Contract.EF_Contract
         Task<IQueryable<T>> GetAsQueryable();
 
 
-        Task<IEnumerable<T>> GetRangeAsync(params Expression<Func<T, object>>[]? includes);
+        Task<PagedList<T>> GetRangeAsync(QueryStringParameters queryStringParameters, params Expression<Func<T, object>>[]? includes);
 
-        Task<IEnumerable<T>> GetRangeByConditionsAsync(Expression<Func<T, bool>> condition, params Expression<Func<T, object>>[] includes);
-        Task<IEnumerable<T>> GetRangeByConditionsAsync(Expression<Func<T, bool>>[]? condition, params Expression<Func<T, object>>[] includes);
+        Task<PagedList<T>> GetRangeByConditionsAsync(
+            Expression<Func<T, bool>> condition,
+            QueryStringParameters queryStringParameters,
+            params Expression<Func<T, object>>[] includes);
+
+        Task<PagedList<T>> GetRangeByConditionsAsync(Expression<Func<T, bool>>[]? condition,
+            QueryStringParameters queryStringParameters,
+            params Expression<Func<T, object>>[] includes);
 
         Task<T> Delete(int id);
 

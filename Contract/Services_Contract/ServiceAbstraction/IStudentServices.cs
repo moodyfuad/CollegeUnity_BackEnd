@@ -12,7 +12,7 @@ namespace CollegeUnity.Contract.Services_Contract.ServiceAbstraction
 {
     public interface IStudentServices
     {
-        Task<IEnumerable<Student>> GetStudentsAsync(SearchParameters searchParameters);
+        Task<IEnumerable<Student>> GetStudentsAsync(StudentSearchParameters searchParameters);
             
     }
 }

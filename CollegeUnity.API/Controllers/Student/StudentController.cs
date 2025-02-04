@@ -26,17 +26,9 @@ namespace CollegeUnity.API.Controllers.Student
             string resultMsg = await _serviceManager.AuthenticationService.SignUp(student);
             return Ok(resultMsg);
         }
-
-        [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromForm] StudentLoginDto student)
-        {
-            string token = await _serviceManager.AuthenticationService.Login(student);
-            return Ok(token);
-
-        }
         
         [HttpPost("Search")]
-        public async Task<IActionResult> StudentSearch([FromQuery] SearchParameters searchParameters)
+        public async Task<IActionResult> StudentSearch([FromQuery] StudentSearchParameters searchParameters)
         {
             try
             {

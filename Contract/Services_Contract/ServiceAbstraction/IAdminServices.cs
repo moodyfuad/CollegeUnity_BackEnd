@@ -1,4 +1,5 @@
 ﻿using CollegeUnity.Core.Dtos.AdminServiceDtos;
+using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Entities;
 using System;
@@ -14,8 +15,8 @@ namespace CollegeUnity.Contract.Services_Contract.ServiceAbstraction
     {
         Task<ApiResponse<CreateStaffDto>> CreateStaffAccount(CreateStaffDto staffDto);
 
-        Task<ApiResponse<IEnumerable<Staff>>> SearchStaffBy(Expression<Func<Staff,bool>> expression);
-        Task<ApiResponse<IEnumerable<Staff>>> SearchStaffBy(string name);
-        Task<ApiResponse<IEnumerable<CreateStaffDto>>> GetAllStaff();
+        Task<ApiResponse<IEnumerable<Staff>>> SearchStaffBy(Expression<Func<Staff,bool>> expression, StaffParameters staffParameters);
+        Task<ApiResponse<IEnumerable<Staff>>> SearchStaffBy(string name, StaffParameters staffParameters);
+        Task<ApiResponse<IEnumerable<CreateStaffDto>>> GetAllStaff(StaffParameters staffParameters);
     }
 }

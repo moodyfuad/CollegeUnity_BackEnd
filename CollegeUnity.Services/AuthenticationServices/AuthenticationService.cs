@@ -30,7 +30,7 @@ namespace CollegeUnity.Services.AuthenticationServices
             //_mapper = mapper;
         }
 
-        public async Task<string> Login(
+        public async Task<UserLoginDto> Login(
              UserLoginDto userLoginDto,
              DateTime? expireAt = null)
         {
@@ -40,17 +40,18 @@ namespace CollegeUnity.Services.AuthenticationServices
                 case StudentLoginDto studentDto:
                     Student? student = await ValidateStudentCredentials(studentDto);
                     return student == null ?
-                        "Your Id or Password is incorrect" : CreateToken(student,expireAt);
+                        StudentLoginDto.Failed (["Your Id or Password is incorrect"]) :
+                        StudentLoginDto.Success(CreateToken(student,expireAt));
                 
                 // staff log in
                 case StaffLoginDto staffDto:
                     Staff? staff = await ValidateStaffCredentials(staffDto);
                     return staff == null ?
-                        "Your Email or Password is incorrect" 
-                        : CreateToken(staff,expireAt);
+                        StaffLoginDto.Failed([ "Your Email or Password is incorrect" ]):
+                        StaffLoginDto.Success(CreateToken(staff,expireAt));
 
                 //default
-                default: return "User Type Error";
+                default: return StaffLoginDto.Failed(["User Type Error"]);
             }
 
         }

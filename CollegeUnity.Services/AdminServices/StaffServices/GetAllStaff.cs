@@ -1,4 +1,5 @@
 ﻿using CollegeUnity.Core.Dtos.AdminServiceDtos;
+using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.MappingExtensions.StaffExtensions;
@@ -12,9 +13,9 @@ namespace CollegeUnity.Services.AdminServices
 {
     public partial class AdminService
     {
-        public async Task<ApiResponse<IEnumerable<CreateStaffDto>>> _GetAllStaff()
+        public async Task<ApiResponse<IEnumerable<CreateStaffDto>>> _GetAllStaff(StaffParameters staffParameters)
         {
-            IEnumerable<Staff>? staff = await _repositoryManager.StaffRepository.GetRangeAsync();
+            IEnumerable<Staff>? staff = await _repositoryManager.StaffRepository.GetRangeAsync(staffParameters);
             if (staff == null || !staff.Any())
             {
                 return  ApiResponse<IEnumerable<CreateStaffDto>>.NotFound(message: "NO staff members");

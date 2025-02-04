@@ -1,6 +1,7 @@
 ﻿using CollegeUnity.API.Controllers.Student;
 using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
+using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Dtos.StudentServiceDtos;
 using CollegeUnity.Core.Dtos.SubjectDtos;
@@ -26,15 +27,15 @@ namespace CollegeUnity.API.Controllers.Admin
         }
 
         [HttpGet("Staff")]
-        public async Task<IActionResult> Get([Required][FromQuery(Name = "Name")] string name) 
+        public async Task<IActionResult> Get([Required][FromQuery(Name = "Name")] string name, StaffParameters staffParameters) 
         {
-            var response = await _serviceManager.AdminServices.SearchStaffBy(name);
+            var response = await _serviceManager.AdminServices.SearchStaffBy(name,staffParameters);
             HttpContext.Response.StatusCode = response.StatusCode;
             
             return new JsonResult(response); 
         }
         [HttpGet("SearchStudents")]
-        public async Task<IActionResult> GetStudent([FromQuery] SearchParameters parameters) 
+        public async Task<IActionResult> GetStudent([FromQuery] StudentSearchParameters parameters) 
         {
             //return await new StudentController(serviceManager: _serviceManager);
            /* var response = await _serviceManager.StudentServices.GetStudentsAsync(parameters);
@@ -53,16 +54,16 @@ namespace CollegeUnity.API.Controllers.Admin
         }
 
         [HttpGet("GetSubjects")]
-        public async Task<IActionResult> GetSubjects()
+        public async Task<IActionResult> GetSubjects(SubjectParameters subjectParameters)
         {
-            var response = await _serviceManager.SubjectServices.GetAllAsync();
+            var response = await _serviceManager.SubjectServices.GetAllAsync(subjectParameters);
             HttpContext.Response.StatusCode = response.StatusCode;
 
             return new JsonResult(response);
         }
 
         [HttpDelete("DeleteSubject/{Id}")]
-        public async Task<IActionResult> DeleteSubject(int Id)
+        public async Task<IActionResult> DeleteSubject(int Id, StaffParameters staffParameters)
         {
             var response = await _serviceManager.SubjectServices.DeleteSubject(Id);
             HttpContext.Response.StatusCode = response.StatusCode;

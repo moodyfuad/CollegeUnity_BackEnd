@@ -1,6 +1,7 @@
 ﻿using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
 using CollegeUnity.Core.Dtos.AdminServiceDtos;
+using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,16 +22,16 @@ namespace CollegeUnity.API.Controllers.Staff
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery] StaffParameters staffParameters)
         {
-            var response = await _adminServices.GetAllStaff();
+            var response = await _adminServices.GetAllStaff(staffParameters);
             return new JsonResult(response);
         }
 
         [HttpGet("{FirstName}")]
-        public async Task<IActionResult> Get(string FirstName)
+        public async Task<IActionResult> Get(string FirstName, StaffParameters staffParameters)
         {
-            var response = await _adminServices.SearchStaffBy(FirstName);
+            var response = await _adminServices.SearchStaffBy(FirstName, staffParameters);
             return new JsonResult(response);
         }
 

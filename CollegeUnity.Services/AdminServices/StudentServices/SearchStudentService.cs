@@ -1,4 +1,5 @@
-﻿using CollegeUnity.Core.Entities;
+﻿using CollegeUnity.Core.Dtos.QueryStrings;
+using CollegeUnity.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,10 @@ namespace CollegeUnity.Services.AdminServices
 {
     public partial class AdminService
     {
-        private async Task<IEnumerable<Student>> _SearchStudentBy(string name)
+        private async Task<IEnumerable<Student>> _SearchStudentBy(string name, StudentParameters studentParameters)
         {
             return await _repositoryManager.StudentRepository.GetRangeByConditionsAsync(
-                s => s.FirstName.Contains(name));
+                s => s.FirstName.Contains(name), studentParameters);
         }
     }
 }
