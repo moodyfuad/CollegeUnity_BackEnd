@@ -3,6 +3,7 @@ using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
 using CollegeUnity.Core.Dtos.StudentServiceDtos;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Enums;
+using CollegeUnity.Core.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace CollegeUnity.Services.StudentServices
         }
 
 
-        public async Task<IEnumerable<Student>> GetStudentsAsync(StudentSearchParameters parameters)
+        public async Task<PagedList<Student>> GetStudentsAsync(StudentSearchParameters parameters)
         {
             var students = await _GetStudentsAsync(parameters);
 

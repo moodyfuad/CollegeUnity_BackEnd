@@ -1,6 +1,7 @@
 ﻿using CollegeUnity.Core.Dtos.StudentServiceDtos;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Enums;
+using CollegeUnity.Core.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace CollegeUnity.Contract.Services_Contract.ServiceAbstraction
 {
     public interface IStudentServices
     {
-        Task<IEnumerable<Student>> GetStudentsAsync(StudentSearchParameters searchParameters);
+        Task<PagedList<Student>> GetStudentsAsync(StudentSearchParameters searchParameters);
             
     }
 }

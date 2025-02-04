@@ -2,9 +2,13 @@
 using CollegeUnity.Core.Dtos.AuthenticationDtos;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Dtos.StudentServiceDtos;
+using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace CollegeUnity.API.Controllers.Student
 {
@@ -30,21 +34,31 @@ namespace CollegeUnity.API.Controllers.Student
         [HttpPost("Search")]
         public async Task<IActionResult> StudentSearch([FromQuery] StudentSearchParameters searchParameters)
         {
+           
             try
             {
                 var result = await _serviceManager.StudentServices.GetStudentsAsync(searchParameters);
 
+                var meta = new
+                {
+                    PageNumber = result.CurrentPage,
+                    TotalPages = result.TotalPages,
+                    PageSize = result.PageSize,
+                    HasPrevious = result.HasPrevious,
+                    HasNext = result.HasNext,
+                };
 
+                Response.Headers.Append("X-Pagination", JsonConvert.SerializeObject(meta));
                 if (!result.Any())
                     return Ok(ApiResponse<List<Core.Entities.Student>>.NotFound());
 
-                if (result.Count().Equals(1))
+                if (result.Count.Equals(1))
                     return Ok(ApiResponse<Core.Entities.Student>.Success(data: result.FirstOrDefault()!));
 
-                if (result.Count() > 1)
-                    return Ok(ApiResponse<List<Core.Entities.Student>>.Success(message: $"[{result.Count()}] records fetched.",data: result.ToList()));
+                if (result.Count > 1)
+                    return Ok(ApiResponse<PagedList<Core.Entities.Student>>.Success(message: $"[{result.Count}] records fetched.",data: result));
                 else 
-                    return Ok(ApiResponse<string>.InternalServerError(errors :["error fitching students"]));
+                    return Ok(ApiResponse<string>.InternalServerError(errors :["error fetching students"]));
 
             }
             catch (Exception ex)

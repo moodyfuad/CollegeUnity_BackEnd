@@ -1,6 +1,7 @@
 ﻿using CollegeUnity.Core.Dtos.StudentServiceDtos;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Enums;
+using CollegeUnity.Core.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace CollegeUnity.Services.StudentServices
 {
     public partial class StudentService
     {
-        private async Task<IEnumerable<Student>> _GetStudentsAsync(StudentSearchParameters para)
+        private async Task<PagedList<Student>> _GetStudentsAsync(StudentSearchParameters para)
         {
             //var studentsAsQuery = await _repositoryManager.StudentRepository.GetAsQueryable();
 
