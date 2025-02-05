@@ -43,42 +43,5 @@ namespace CollegeUnity.API.Controllers.Admin
 
             return Ok("Not implemented"); 
         }
-
-        [HttpPost("CreateSubject")]
-        public async Task<IActionResult> CreateNewSubject([FromForm]CreateSubjectDto dto)
-        {
-            var response = await _serviceManager.SubjectServices.CreateSubjectAsync(dto);
-            HttpContext.Response.StatusCode = response.StatusCode;
-
-            return new JsonResult(response);
-        }
-
-        [HttpGet("GetSubjects")]
-        public async Task<IActionResult> GetSubjects(SubjectParameters subjectParameters)
-        {
-            var response = await _serviceManager.SubjectServices.GetAllAsync(subjectParameters);
-            HttpContext.Response.StatusCode = response.StatusCode;
-
-            return new JsonResult(response);
-        }
-
-        [HttpDelete("DeleteSubject/{Id}")]
-        public async Task<IActionResult> DeleteSubject(int Id, StaffParameters staffParameters)
-        {
-            var response = await _serviceManager.SubjectServices.DeleteSubject(Id);
-            HttpContext.Response.StatusCode = response.StatusCode;
-
-            return new JsonResult(response);
-        }
-
-        [HttpPut("UpdateSubject")]
-        public async Task<IActionResult> UpdateSubject([FromForm] SubjectDto dto)
-        {
-            var response = await _serviceManager.SubjectServices.UpdateSubject(dto);
-            HttpContext.Response.StatusCode = response.StatusCode;
-
-            return new JsonResult(response);
-        }
-
     }
 }

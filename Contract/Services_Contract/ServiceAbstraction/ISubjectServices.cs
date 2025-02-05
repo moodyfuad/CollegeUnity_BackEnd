@@ -12,9 +12,10 @@ namespace CollegeUnity.Contract.Services_Contract.ServiceAbstraction
 {
     public interface ISubjectServices
     {
-        Task<ApiResponse<Subject>> CreateSubjectAsync(CreateSubjectDto dto);
-        Task<ApiResponse<Subject>> DeleteSubject(int Id);
-        Task<ApiResponse<IEnumerable<SubjectDto>>> GetAllAsync(SubjectParameters subjectParameters);
-        Task<ApiResponse<Subject>> UpdateSubject(SubjectDto dto);
+        Task<bool> CreateSubjectAsync(CreateSubjectDto dto);
+        Task<bool> DeleteSubjectAsync(int Id);
+        Task<IEnumerable<SubjectDto>?> GetAllAsync(SubjectParameters subjectParameters);
+        Task<bool> UpdateSubjectAsync(SubjectDto dto);
+        Task<bool> IsExistAsync(int Id);
     }
 }

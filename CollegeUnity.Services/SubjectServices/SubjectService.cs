@@ -42,31 +42,41 @@ namespace CollegeUnity.Services.SubjectServices
             _repositoryManager = repositoryManager;
         }
 
-        public async Task<ApiResponse<Subject>> CreateSubjectAsync(CreateSubjectDto dto)
+        public async Task<bool> IsExistAsync(int Id)
+        {
+            return await _repositoryManager.SubjectRepository.IsExistById(Id);
+        }
+
+        public async Task<bool> CreateSubjectAsync(CreateSubjectDto dto)
         {
             Subject subject = await _checkSubjectExistsAsync(new CheckSubject(name: dto.Name, major: dto.Major, level: dto.Level, acceptanceType: dto.AcceptanceType));
-            return subject == null ? await _createSubjectAsync(dto) : ApiResponse<Subject>.BadRequest(message: "Subject already exists.");
-        }
-
-        public async Task<ApiResponse<Subject>> DeleteSubject(int Id)
-        {
-            Subject subject = await _repositoryManager.SubjectRepository.GetByIdAsync(Id);
-            return subject != null ? await _deleteSubject(subject) : ApiResponse<Subject>.NotFound();
-        }
-
-        public async Task<ApiResponse<Subject>> UpdateSubject(SubjectDto dto)
-        {
-            bool isExist = await _repositoryManager.SubjectRepository.IsExistById(dto.Id);
-            if (isExist)
+            
+            if (subject == null)
             {
-                Subject subject = await _checkSubjectExistsAsync(new CheckSubject(name: dto.Name, major: dto.Major, level: dto.Level, acceptanceType: dto.AcceptanceType));
-                return subject == null ? await _updateSubject(dto) : ApiResponse<Subject>.BadRequest("Subject already exists with these information.");
+                await _createSubjectAsync(dto);
+                return true;
             }
-
-            return ApiResponse<Subject>.NotFound();
+            return false;
         }
 
-        public async Task<ApiResponse<IEnumerable<SubjectDto>>> GetAllAsync(SubjectParameters subjectParameters)
+        public async Task<bool> DeleteSubjectAsync(int Id)
+        {
+            return await _deleteSubject(Id);
+        }
+
+        public async Task<bool> UpdateSubjectAsync(SubjectDto dto)
+        {
+            Subject subject = await _checkSubjectExistsAsync(new CheckSubject(name: dto.Name, major: dto.Major, level: dto.Level, acceptanceType: dto.AcceptanceType));
+
+            if (subject == null) 
+            {
+                await _updateSubject(dto);
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<IEnumerable<SubjectDto>> GetAllAsync(SubjectParameters subjectParameters)
         {
             IEnumerable<Subject> subjects = await _repositoryManager.SubjectRepository.GetRangeAsync(
                 subjectParameters,
@@ -78,7 +88,7 @@ namespace CollegeUnity.Services.SubjectServices
             );
 
             IEnumerable<SubjectDto> subjectDtos = subjects.MapTo<SubjectDto>();
-            return ApiResponse<IEnumerable<SubjectDto>>.Success(subjectDtos);
+            return subjectDtos;
         }
 
         #region Shared Private Methods
@@ -114,12 +124,7 @@ namespace CollegeUnity.Services.SubjectServices
         #endregion
 
         #region Private Methods for Create Subject
-        /// <summary>
-        /// a method for create a new subject
-        /// </summary>
-        /// <param name="dto"></param>
-        /// <returns></returns>
-        private async Task<ApiResponse<Subject>> _createSubjectAsync(CreateSubjectDto dto)
+        private async Task<Subject> _createSubjectAsync(CreateSubjectDto dto)
         {
             Subject subject = dto.MapTo<Subject>();
             //To assign the teacher and creater of the subject
@@ -127,25 +132,26 @@ namespace CollegeUnity.Services.SubjectServices
             subject.AssignedBy = await GetStaffByIdAsync(dto.HeadOfScientificDepartmentId);
             await _repositoryManager.SubjectRepository.CreateAsync(subject);
             await _repositoryManager.SaveChangesAsync();
-            return ApiResponse<Subject>.Created(data: subject);
+            return subject;
         }
         #endregion
 
         #region Private Methods for Update Subject
-        public async Task<ApiResponse<Subject>> _updateSubject(SubjectDto dto)
+        public async Task<Subject> _updateSubject(SubjectDto dto)
         {
             Subject subject = dto.MapTo<Subject>();
             await _repositoryManager.SubjectRepository.Update(subject);
             await _repositoryManager.SaveChangesAsync();
-            return ApiResponse<Subject>.Success(null, "Record updated successfully");
+            return subject;
         }
         #endregion
 
         #region Private Methods for Delete Subject
-        public async Task<ApiResponse<Subject>> _deleteSubject(Subject subject)
+        public async Task<bool> _deleteSubject(int Id)
         {
-            await _repositoryManager.SubjectRepository.Delete(subject);
-            return ApiResponse<Subject>.Success(null, "Record deleted successfully");
+            await _repositoryManager.SubjectRepository.Delete(Id);
+            await _repositoryManager.SaveChangesAsync();
+            return true;
         }
         #endregion
     }
