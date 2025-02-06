@@ -1,10 +1,13 @@
 ﻿using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Core.Dtos.AuthenticationDtos;
+using CollegeUnity.Core.Dtos.AuthenticationServicesDtos;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Dtos.StudentServiceDtos;
 using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Enums;
 using CollegeUnity.Core.Helpers;
 using EmailService.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -31,7 +34,7 @@ namespace CollegeUnity.API.Controllers.Student
             string resultMsg = await _serviceManager.AuthenticationService.SignUp(student);
             return Ok(resultMsg);
         }
-        
+
         [HttpPost("Search")]
         public async Task<IActionResult> StudentSearch([FromQuery] StudentSearchParameters searchParameters)
         {
@@ -71,51 +74,48 @@ namespace CollegeUnity.API.Controllers.Student
 
         }
 
-
         [HttpPost("{email}/PasswordResetCode")]
         public async Task<IActionResult> RequestPasswordResetCode(string email)
         {
-            var result = await _serviceManager.StudentServices.SendResetPasswordRequest(email);
-            var response = (
-            (result.IsSuccess) ?
+            var result = await this._serviceManager.AuthenticationService.SendResetPasswordRequest(email, Roles.Student);
+            var response =
+            result.IsSuccess ?
                  ApiResponse<Result>.Success(result)
             :
-                 ApiResponse<Result>.NotFound(message: result.Message));
-            
-            HttpContext.Response.StatusCode = response.StatusCode;
+                 ApiResponse<Result>.NotFound(message: result.Message);
+
+            this.HttpContext.Response.StatusCode = response.StatusCode;
             return new JsonResult(response);
         }
-        
-        
+
         [HttpPost("{email}/PasswordResetCode/check{ResetCode}")]
-        public async Task<IActionResult> CheckPasswordResetCode(string email, string ResetCode)
+        [Authorize(Roles = $"{nameof(AuthenticationRoles.ForgotPassword)}")]
+        public async Task<IActionResult> CheckPasswordResetCode(string email, string resetCode)
         {
-            var result = await _serviceManager.StudentServices.CheckResetPasswordCode(email,ResetCode);
-            var response = (
-            (result) ?
-                 ApiResponse<string>.Success($"Redirect to [{HttpContext.Request.PathBase}/PasswordReset/ResetCode/newPassword/Reset")
+            var result = await this._serviceManager.StudentServices.CheckResetPasswordCode(email, resetCode);
+            var response =
+            result ?
+                 ApiResponse<string>.Success($"Redirect to [{this.HttpContext.Request.PathBase}/PasswordReset/ResetCode/newPassword/Reset")
             :
-                 ApiResponse<string>.BadRequest("Invalid Code"));
-            
-            HttpContext.Response.StatusCode = response.StatusCode;
-            return new JsonResult (response);
+                 ApiResponse<string>.BadRequest("Invalid Code");
+
+            this.HttpContext.Response.StatusCode = response.StatusCode;
+            return new JsonResult(response);
         }
-        
-        
-        [HttpPost("{email}/PasswordReset/ResetCode/{resetCode}/newPassword{newPassword}/Reset")]
-        public async Task<IActionResult> ResetPassword(string email,string resetCode, string newPassword)
+
+        [Authorize(Roles = $"{nameof(AuthenticationRoles.ForgotPassword)}")]
+        [HttpPost("{email}/PasswordReset/ResetCode/{resetCode}/newPassword")]
+        public async Task<IActionResult> ResetPassword(string email, string resetCode, [FromForm] string newPassword)
         {
-            var result = await _serviceManager.StudentServices.ResetPassword(email,resetCode,newPassword);
-            var response = (
-            (result) ?
+            var result = await this._serviceManager.StudentServices.ResetPassword(email, resetCode, newPassword);
+            var response =
+            result ?
                  ApiResponse<string>.Success(null,"Password Reset Successfully")
             :
-                 ApiResponse<string>.InternalServerError(errors: ["failed resetting the password"]));
-            
+                 ApiResponse<string>.InternalServerError(errors: ["failed resetting the password"]);
+
             HttpContext.Response.StatusCode = response.StatusCode;
             return new JsonResult( response);
         }
-
-
     }
 }

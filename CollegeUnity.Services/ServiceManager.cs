@@ -32,13 +32,14 @@ namespace CollegeUnity.Services
             _emailServices= emailServices;
         }
 
-        public IAuthenticationService AuthenticationService => new AuthenticationService(_repositoryManager, _configuration);
+        public IAuthenticationService AuthenticationService => new AuthenticationService(_repositoryManager, _configuration,_emailServices);
 
         public IAdminServices AdminServices => new AdminService(_repositoryManager);
 
         public ISubjectServices SubjectServices => new SubjectService(_repositoryManager);
 
-        public IStudentServices StudentServices => new StudentService(_repositoryManager, _emailServices);
+        //public IStudentServices StudentServices => new StudentService(_repositoryManager, _emailServices);
+        public IStudentServices StudentServices => new StudentService(_repositoryManager);
 
         public IPostServices PostServices => new PostService(_repositoryManager, PostFilesServices);
         public IStaffServices StaffServices => new StaffService(_repositoryManager);

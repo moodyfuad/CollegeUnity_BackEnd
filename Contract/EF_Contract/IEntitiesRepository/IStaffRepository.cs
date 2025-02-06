@@ -10,5 +10,6 @@ namespace CollegeUnity.Contract.EF_Contract.IEntitiesRepository
     public interface IStaffRepository : IBaseRepository<Staff>
     {
         Task<bool> IsExistById(int id);
+        Task<Staff> GetByEmail(string email);
     }
 }

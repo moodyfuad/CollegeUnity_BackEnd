@@ -30,5 +30,7 @@ namespace CollegeUnity.Core.Constants.AuthenticationConstants
         public const string Email = "Email";
         public const string PhoneNumber = "PhoneNumber";
         public const string Position = "Position";
+
+        public const string PasswordResetCode = "PasswordResetCode";
     }
 }

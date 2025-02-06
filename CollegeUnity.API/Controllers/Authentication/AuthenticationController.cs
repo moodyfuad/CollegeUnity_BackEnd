@@ -1,17 +1,9 @@
-﻿using CollegeUnity.Core.Dtos;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using CollegeUnity.Core.Enums;
 using CollegeUnity.Services.AuthenticationServices;
 using CollegeUnity.Core.Dtos.AuthenticationDtos;
-using CollegeUnity.Contract;
-using CollegeUnity.Core.Constants.AuthenticationConstants;
 using CollegeUnity.Contract.Services_Contract;
-using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Dtos.ResponseDto;
 
 namespace CollegeUnity.API.Controllers.Authentication

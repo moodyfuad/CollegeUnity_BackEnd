@@ -1,11 +1,14 @@
-﻿//using AutoMapper;
-using CollegeUnity.Contract.EF_Contract;
+﻿using CollegeUnity.Contract.EF_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
 using CollegeUnity.Core.Constants.AuthenticationConstants;
 using CollegeUnity.Core.Dtos;
 using CollegeUnity.Core.Dtos.AuthenticationDtos;
+using CollegeUnity.Core.Dtos.AuthenticationServicesDtos;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Enums;
+using EmailService;
+using EmailService.EmailService;
+using EmailService.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -22,12 +25,13 @@ namespace CollegeUnity.Services.AuthenticationServices
     {
         private readonly IRepositoryManager _repositoryManager;
         private readonly IConfiguration _config;
+        private readonly IEmailServices _emailServices;
 
-        public AuthenticationService(IRepositoryManager repositoryManager, IConfiguration config)
+        public AuthenticationService(IRepositoryManager repositoryManager, IConfiguration config, IEmailServices emailServices)
         {
             _repositoryManager = repositoryManager;
             _config = config;
-            //_mapper = mapper;
+            _emailServices = emailServices;
         }
 
         public async Task<UserLoginDto> Login(
@@ -87,6 +91,12 @@ namespace CollegeUnity.Services.AuthenticationServices
             {
                 return GetStaffClaims(claims);
             }
+        }
+
+        public async Task<Result> SendResetPasswordRequest(string email, Roles role)
+        {
+            DateTime CodeExpriresAt = DateTime.UtcNow.AddMinutes(5);
+            return await _SendResetPasswordRequest(email, role, CodeExpriresAt);
         }
     }
 }

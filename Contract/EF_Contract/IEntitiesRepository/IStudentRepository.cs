@@ -9,5 +9,6 @@ namespace CollegeUnity.Contract.EF_Contract.IEntitiesRepository
 {
     public interface IStudentRepository : IBaseRepository<Student>
     {
+        Task<Student> GetByEmail(string email);
     }
 }

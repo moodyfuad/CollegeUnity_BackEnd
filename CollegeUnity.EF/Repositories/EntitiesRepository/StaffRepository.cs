@@ -17,6 +17,11 @@ namespace CollegeUnity.EF.Repositories.EntitiesRepository
             _context = context;
         }
 
+        public async Task<Staff> GetByEmail(string email)
+        {
+            return await GetByConditionsAsync(s => s.Email.ToLower().Equals(email));
+        }
+
         public async Task<bool> IsExistById(int id)
         {
             return await _context.Staffs.AnyAsync(s => s.Id == id);

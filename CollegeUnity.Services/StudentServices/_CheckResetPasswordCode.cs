@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,14 +12,17 @@ namespace CollegeUnity.Services.StudentServices
     {
         private async Task<bool> _CheckResetPasswordCode(string email, string code)
         {
-            var student = await _repositoryManager.StudentRepository.GetByConditionsAsync(
-                s => s.Email.ToLower().Equals(email.ToLower())
-                && s.VerificationCode!= null 
-                &&s.VerificationCode.Equals(code));
+            var student = await _repositoryManager.StudentRepository.GetByEmail(email);
+            if (student == null)
+            { 
+                return false;
+            }
+            else
+            {
+                bool notNull = student.VerificationCode == null ? false : true;
 
-            var result = student != null;
-
-            return result;
+                return notNull ? code == student.VerificationCode : false;
+            }
         }
     }
 }

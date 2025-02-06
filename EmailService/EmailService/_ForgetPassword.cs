@@ -14,10 +14,13 @@ namespace EmailService.EmailService
 {
     public partial class EmailServices
     {
+
+        
         private async Task<Result> _ForgetPassword(string name, string emailAddress, IConfiguration configuration)
         {
             try
             {
+                
                 var receiver = new ForgetPasswordDto(emailAddress, name);
 
                 string subject = receiver.Subject;
@@ -31,11 +34,14 @@ namespace EmailService.EmailService
                 bool result = response.StatusCode == System.Net.HttpStatusCode.Accepted;
 
                 if (result) {
-
-                    return Result.Success("Reset Code Sent, Please Check Your Email", receiver.ResetCode); 
+                    // add the token to the result
+                    string token = "";
+                    return Result.Success("Reset Code Sent, Please Check Your Email", emailAddress, receiver.ResetCode);
                 }
                 else
+                {
                     return Result.Fail("Something went Wrong!, Please try again later.");
+                }
             }
             catch (Exception ex)
             {

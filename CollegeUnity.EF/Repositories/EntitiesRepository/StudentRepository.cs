@@ -11,8 +11,16 @@ namespace CollegeUnity.EF.Repositories.EntitiesRepository
 {
     public class StudentRepository : BaseRepository<Student>, IStudentRepository 
     {
+        private readonly CollegeUnityDbContext _context;
+
         public StudentRepository(CollegeUnityDbContext context) : base(context)
         {
+            _context = context;
+        }
+
+        public async Task<Student> GetByEmail(string email)
+        {
+            return await GetByConditionsAsync(s => s.Email.ToLower().Equals(email.ToLower()));
         }
     }
 }

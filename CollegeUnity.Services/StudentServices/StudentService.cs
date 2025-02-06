@@ -18,12 +18,13 @@ namespace CollegeUnity.Services.StudentServices
     public partial class StudentService : IStudentServices
     {
         private readonly IRepositoryManager _repositoryManager;
-        private readonly IEmailServices _emailServices;
+        //private readonly IEmailServices _emailServices;
 
-        public StudentService(IRepositoryManager repositoryManager, IEmailServices emailServices)
+        //public StudentService(IRepositoryManager repositoryManager, IEmailServices emailServices)
+        public StudentService(IRepositoryManager repositoryManager)
         {
             _repositoryManager = repositoryManager;
-            _emailServices = emailServices;
+            //_emailServices = emailServices;
         }
 
 
@@ -41,7 +42,8 @@ namespace CollegeUnity.Services.StudentServices
         public async Task<bool> ResetPassword(string email,string code, string newPassword)
         {
             try{
-                var student = await _repositoryManager.StudentRepository.GetByConditionsAsync(s => s.Email == email && code.Equals(s.VerificationCode)); 
+                var student = await _repositoryManager.StudentRepository.GetByConditionsAsync(s => s.Email == email && code.Equals(s.VerificationCode));
+
             student.Password = newPassword;
             student.ConfirmPassword = newPassword;
             student = await _repositoryManager.StudentRepository.Update(student);
@@ -53,11 +55,6 @@ namespace CollegeUnity.Services.StudentServices
             {
                 return false;
             }
-        }
-
-        public async Task<Result> SendResetPasswordRequest(string email)
-        {
-            return await _SendResetPasswordRequest(email);
         }
     }
 }
