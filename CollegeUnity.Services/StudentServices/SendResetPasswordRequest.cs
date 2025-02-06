@@ -27,6 +27,7 @@ namespace CollegeUnity.Services.StudentServices
 
                     if (!result.IsSuccess)
                     {
+                        result.ResetCode = "Verification Code Sent To Your Email";
                         return result;
                     }
                     else
