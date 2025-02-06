@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CollegeUnity.Core\CollegeUnity.Core.csproj" />
+    <ProjectReference Include="..\EmailService\EmailService.csproj" />
   </ItemGroup>
 
 </Project>

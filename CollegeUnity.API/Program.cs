@@ -12,6 +12,8 @@ using System.Runtime.CompilerServices;
 using CollegeUnity.API.Middlerware_Extentions;
 using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.EF_Contract;
+using EmailService;
+using EmailService.EmailService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +33,7 @@ builder.Services.AddDbContext<CollegeUnityDbContext>(options =>
 
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 builder.Services.AddScoped<IServiceManager, ServiceManager>();
+builder.Services.AddScoped<IEmailServices, EmailServices>();
 
 //jwt authentication
 builder.Services.AddCustomJwtAuthentication(builder.Configuration);
