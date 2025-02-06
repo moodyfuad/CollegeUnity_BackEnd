@@ -3,6 +3,9 @@ using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
 using CollegeUnity.Services.AdminServices;
 using CollegeUnity.Services.AuthenticationServices;
+using CollegeUnity.Services.PostFilesServices;
+using CollegeUnity.Services.PostServices;
+using CollegeUnity.Services.StaffServices;
 using CollegeUnity.Services.StudentServices;
 using CollegeUnity.Services.SubjectServices;
 using EmailService;
@@ -36,5 +39,10 @@ namespace CollegeUnity.Services
         public ISubjectServices SubjectServices => new SubjectService(_repositoryManager);
 
         public IStudentServices StudentServices => new StudentService(_repositoryManager, _emailServices);
+
+        public IPostServices PostServices => new PostService(_repositoryManager, PostFilesServices);
+        public IStaffServices StaffServices => new StaffService(_repositoryManager);
+
+        public IPostFilesServices PostFilesServices => new PostFilesService(_repositoryManager);
     }
 }

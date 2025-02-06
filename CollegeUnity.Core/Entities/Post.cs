@@ -12,8 +12,7 @@ namespace CollegeUnity.Core.Entities
     public class Post
     {
         [Key]
-        [Required]
-        public required int Id { get; set; }
+        public int Id { get; set; }
 
         [Required]
         public required string Content { get; set; }
@@ -32,7 +31,7 @@ namespace CollegeUnity.Core.Entities
         [Required]
         public int StaffId { get; set; }
         [Required]
-        public virtual required Staff Staff { get; set; }
+        public virtual Staff Staff { get; set; }
 
         public virtual ICollection<PostFile>? PostFiles { get; set; }
 

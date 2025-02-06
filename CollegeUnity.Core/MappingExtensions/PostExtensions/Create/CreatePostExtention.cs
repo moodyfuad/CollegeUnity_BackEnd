@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CollegeUnity.Core.MappingExtensions.SubjectExtenstions
+namespace CollegeUnity.Core.MappingExtensions.PostExtensions.Create
 {
-    public static partial class SubjectExtention
+    public partial class CreatePostExtention
     {
     }
 }

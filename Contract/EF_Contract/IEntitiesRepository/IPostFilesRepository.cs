@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Contract.EF_Contract.IEntitiesRepository
 {
-    public interface IStaffRepository : IBaseRepository<Staff>
+    public interface IPostFilesRepository : IBaseRepository<PostFile>
     {
-        Task<bool> IsExistById(int id);
+        Task AddRangeAsync(IEnumerable<PostFile> postFiles);
+
     }
 }

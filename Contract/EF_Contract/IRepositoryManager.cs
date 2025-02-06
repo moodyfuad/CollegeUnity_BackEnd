@@ -12,6 +12,8 @@ namespace CollegeUnity.Contract.EF_Contract
         IStudentRepository StudentRepository { get; }
         IStaffRepository StaffRepository { get; }
         ISubjectRepository SubjectRepository { get; }
+        IPostRepository PostRepository { get; }
+        IPostFilesRepository PostFilesRepository { get; }
         Task SaveChangesAsync();
     }
 }
