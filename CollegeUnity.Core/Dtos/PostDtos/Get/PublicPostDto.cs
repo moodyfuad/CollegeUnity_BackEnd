@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Core.Dtos.PostDtos.Get
 {
-    public class PublicPostMapper
+    public class PublicPostDto
     {
         public int Id { get; set; }
         public string Content { get; set; }

@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Core.MappingExtensions.PostExtensions.Get
 {
-    public static class GetPublicPostMapper
+    public static class PublicPostMapper
     {
-        public static T ToPublicPostMapper<T>(this Post post) where T : PublicPostMapper, new()
+        public static T ToPublicPostMapper<T>(this Post post) where T : PublicPostDto, new()
         {
             return new T
             {
@@ -31,7 +31,7 @@ namespace CollegeUnity.Core.MappingExtensions.PostExtensions.Get
             };
         }
 
-        public static IEnumerable<T> ToPublicPostMappers<T>(this IEnumerable<Post> posts) where T : PublicPostMapper, new()
+        public static IEnumerable<T> ToPublicPostMappers<T>(this IEnumerable<Post> posts) where T : PublicPostDto, new()
         {
             return posts.Select(post => post.ToPublicPostMapper<T>());
         }

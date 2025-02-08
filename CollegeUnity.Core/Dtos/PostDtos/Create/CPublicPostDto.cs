@@ -14,17 +14,7 @@ namespace CollegeUnity.Core.Dtos.PostDtos.Create
     /// <summary>
     /// this class for create public post
     /// </summary>
-    public class CPublicPostDto
+    public class CPublicPostDto : PostDto
     {
-
-        [Required]
-        public required string Content { get; set; }
-
-        [Required]
-        public required Priority Priority { get; set; }
-
-        [Required]
-        public required int StaffId { get; set; }
-        public List<IFormFile>? PictureFiles {  get; set; }
     }
 }

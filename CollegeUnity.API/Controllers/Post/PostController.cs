@@ -36,14 +36,26 @@ namespace CollegeUnity.API.Controllers.Post
             return new JsonResult(ApiResponse<bool?>.BadRequest("Something wrong, try again."));
         }
 
+        [HttpPost("Batch/Create")]
+        public async Task<IActionResult> CreateBatchPost([FromForm] CBatchPostDto dto)
+        {
+            bool isExist = await _staffServices.IsExistAsync(dto.StaffId);
+            if (isExist)
+            {
+                await _postServices.CreateBatchPostAsync(dto);
+                return new JsonResult(ApiResponse<bool?>.Created(null));
+            }
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest("Something wrong, try again."));
+        }
+
         [HttpGet("Public")]
         public async Task<IActionResult> GetPublicPost([FromQuery] PostParameters postParameters)
         {
             var posts = await _postServices.GetPublicPostAsync(postParameters);
-            if (posts != null)
+            if (posts.Count() > 0)
             {
-                var postMapper = posts.ToPublicPostMappers<PublicPostMapper>();
-                return new JsonResult(ApiResponse<IEnumerable<PublicPostMapper>>.Success(data: postMapper));
+                return new JsonResult(ApiResponse<IEnumerable<PublicPostDto>>.Success(data: posts));
             }
             return new JsonResult(ApiResponse<IEnumerable<Core.Entities.Post>?>.NotFound("No Posts yet."));
         }

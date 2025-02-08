@@ -2,9 +2,11 @@
 using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
 using CollegeUnity.Core.Dtos.PostDtos.Create;
+using CollegeUnity.Core.Dtos.PostDtos.Get;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.MappingExtensions.PostExtensions.Create;
+using CollegeUnity.Core.MappingExtensions.PostExtensions.Get;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,24 +25,32 @@ namespace CollegeUnity.Services.PostServices
             _postFilesServices = postFilesServices;
         }
 
-        public Task<bool> CreateBatchPostAsync()
+        public async Task<IEnumerable<PublicPostDto>> GetPublicPostAsync(PostParameters postParameters)
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IEnumerable<Post>> GetPublicPostAsync(PostParameters postParameters)
-        {
-            return await _repositoryManager.PostRepository.GetRangeByConditionsAsync(
-                p => p.IsPublic == true, 
+            IEnumerable<Post> posts = await _repositoryManager.PostRepository.GetRangeByConditionsAsync(
+                p => p.IsPublic == true,
                 postParameters,
                 [
                     i => i.PostFiles,
                     i => i.Staff
                 ]
             );
+            return posts.ToPublicPostMappers<PublicPostDto>();
         }
 
         public async Task CreatePublicPostAsync(CPublicPostDto dto)
+        {
+            Post post = dto.ToPost<Post>();
+            post = await _repositoryManager.PostRepository.CreateAsync(post);
+            await _repositoryManager.SaveChangesAsync();
+
+            if (dto.PictureFiles != null)
+            {
+                await _postFilesServices.CreatePostFiles(dto.PictureFiles, post.Id);
+            }
+        }
+
+        public async Task CreateBatchPostAsync(CBatchPostDto dto)
         {
             Post post = dto.ToPost<Post>();
             post = await _repositoryManager.PostRepository.CreateAsync(post);
