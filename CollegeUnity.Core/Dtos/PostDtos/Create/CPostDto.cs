@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Core.Dtos.PostDtos.Create
 {
-    public abstract class PostDto
+    public abstract class CPostDto
     {
         [Required]
         public required string Content { get; set; }

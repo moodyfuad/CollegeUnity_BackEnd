@@ -11,7 +11,7 @@ namespace CollegeUnity.Core.Dtos.PostDtos.Create
     /// <summary>
     /// this class for create a patch post by level, major and acceptance type
     /// </summary>
-    public class CBatchPostDto : PostDto
+    public class CBatchPostDto : CPostDto
     {
         [Required]
         public Major? ForMajor { get; set; }

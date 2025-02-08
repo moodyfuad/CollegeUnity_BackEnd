@@ -14,7 +14,7 @@ namespace CollegeUnity.Core.Dtos.PostDtos.Create
     /// <summary>
     /// this class for create public post
     /// </summary>
-    public class CPublicPostDto : PostDto
+    public class CPublicPostDto : CPostDto
     {
     }
 }

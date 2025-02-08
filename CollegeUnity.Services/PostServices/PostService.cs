@@ -25,19 +25,6 @@ namespace CollegeUnity.Services.PostServices
             _postFilesServices = postFilesServices;
         }
 
-        public async Task<IEnumerable<PublicPostDto>> GetPublicPostAsync(PostParameters postParameters)
-        {
-            IEnumerable<Post> posts = await _repositoryManager.PostRepository.GetRangeByConditionsAsync(
-                p => p.IsPublic == true,
-                postParameters,
-                [
-                    i => i.PostFiles,
-                    i => i.Staff
-                ]
-            );
-            return posts.ToPublicPostMappers<PublicPostDto>();
-        }
-
         public async Task CreatePublicPostAsync(CPublicPostDto dto)
         {
             Post post = dto.ToPost<Post>();
@@ -50,6 +37,19 @@ namespace CollegeUnity.Services.PostServices
             }
         }
 
+        public async Task<IEnumerable<GPublicPostDto>> GetPublicPostAsync(PublicPostParameters postParameters)
+        {
+            IEnumerable<Post> posts = await _repositoryManager.PostRepository.GetRangeByConditionsAsync(
+                p => p.IsPublic == true,
+                postParameters,
+                [
+                    i => i.PostFiles,
+                    i => i.Staff
+                ]
+            );
+            return posts.ToGPostMappers<GPublicPostDto>();
+        }
+
         public async Task CreateBatchPostAsync(CBatchPostDto dto)
         {
             Post post = dto.ToPost<Post>();
@@ -60,6 +60,21 @@ namespace CollegeUnity.Services.PostServices
             {
                 await _postFilesServices.CreatePostFiles(dto.PictureFiles, post.Id);
             }
+        }
+
+        public async Task<IEnumerable<GBatchPostDto>> GetBatchPostAsync(BatchPostParameters batchPostParameters)
+        {
+            IEnumerable<Post> posts = await _repositoryManager.PostRepository.GetRangeByConditionsAsync(
+                p => p.IsPublic == false && p.ForMajor == batchPostParameters.ForMajor &&
+                p.ForLevel == batchPostParameters.ForLevel &&
+                p.ForAcceptanceType == batchPostParameters.ForAcceptanceType,
+                batchPostParameters,
+                [
+                    i => i.PostFiles,
+                    i => i.Staff
+                ]
+            );
+            return posts.ToGPostMappers<GBatchPostDto>();
         }
 
         public Task<bool> CreateSubjectPostAsync()
@@ -81,7 +96,7 @@ namespace CollegeUnity.Services.PostServices
         #region private methods for create post
         private async Task CreatePostFiles()
         {
-        } 
+        }
         #endregion
     }
 }

@@ -50,14 +50,25 @@ namespace CollegeUnity.API.Controllers.Post
         }
 
         [HttpGet("Public")]
-        public async Task<IActionResult> GetPublicPost([FromQuery] PostParameters postParameters)
+        public async Task<IActionResult> GetPublicPost([FromQuery] PublicPostParameters postParameters)
         {
             var posts = await _postServices.GetPublicPostAsync(postParameters);
             if (posts.Count() > 0)
             {
-                return new JsonResult(ApiResponse<IEnumerable<PublicPostDto>>.Success(data: posts));
+                return new JsonResult(ApiResponse<IEnumerable<GPublicPostDto>>.Success(data: posts));
             }
-            return new JsonResult(ApiResponse<IEnumerable<Core.Entities.Post>?>.NotFound("No Posts yet."));
+            return new JsonResult(ApiResponse<IEnumerable<GPublicPostDto>?>.NotFound("No Posts yet."));
+        }
+
+        [HttpGet("Batch")]
+        public async Task<IActionResult> GetBatchPost([FromQuery] BatchPostParameters batchPostParameters)
+        {
+            var posts = await _postServices.GetBatchPostAsync(batchPostParameters);
+            if (posts.Count() > 0)
+            {
+                return new JsonResult(ApiResponse<IEnumerable<GBatchPostDto>>.Success(data: posts));
+            }
+            return new JsonResult(ApiResponse<IEnumerable<GBatchPostDto>?>.NotFound("No Posts yet."));
         }
     }
 }

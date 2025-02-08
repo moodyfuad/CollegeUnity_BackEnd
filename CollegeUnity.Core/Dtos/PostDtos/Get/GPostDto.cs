@@ -10,13 +10,12 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Core.Dtos.PostDtos.Get
 {
-    public class PublicPostDto
+    public abstract class GPostDto
     {
         public int Id { get; set; }
         public string Content { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? EditedAt { get; set; }
-        public Priority Priority { get; set; }
         public bool IsPublic { get; set; }
         public StaffInfo Staff { get; set; }
         public IEnumerable<string>? PostFiles { get; set; }

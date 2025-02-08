@@ -23,7 +23,7 @@ namespace CollegeUnity.Core.MappingExtensions.PostExtensions.Create
             };
         }
 
-        // CPatchPostDto to Post
+        // CBatchPostDto to Post
         public static Post ToPost<T>(this CBatchPostDto dto) where T : Post
         {
             return new Post

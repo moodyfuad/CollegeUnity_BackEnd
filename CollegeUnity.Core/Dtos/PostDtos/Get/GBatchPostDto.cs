@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CollegeUnity.Core.Dtos.QueryStrings
+namespace CollegeUnity.Core.Dtos.PostDtos.Get
 {
-    public class PostParameters : QueryStringParameters
+    public class GBatchPostDto : GPostDto
     {
     }
 }
