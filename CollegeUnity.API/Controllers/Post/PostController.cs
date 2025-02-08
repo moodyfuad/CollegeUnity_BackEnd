@@ -1,7 +1,10 @@
 ﻿using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
 using CollegeUnity.Core.Dtos.PostDtos.Create;
+using CollegeUnity.Core.Dtos.PostDtos.Get;
+using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
+using CollegeUnity.Core.MappingExtensions.PostExtensions.Get;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,6 +34,18 @@ namespace CollegeUnity.API.Controllers.Post
             }
 
             return new JsonResult(ApiResponse<bool?>.BadRequest("Something wrong, try again."));
+        }
+
+        [HttpGet("Public")]
+        public async Task<IActionResult> GetPublicPost([FromQuery] PostParameters postParameters)
+        {
+            var posts = await _postServices.GetPublicPostAsync(postParameters);
+            if (posts != null)
+            {
+                var postMapper = posts.ToPublicPostMappers<PublicPostMapper>();
+                return new JsonResult(ApiResponse<IEnumerable<PublicPostMapper>>.Success(data: postMapper));
+            }
+            return new JsonResult(ApiResponse<IEnumerable<Core.Entities.Post>?>.NotFound("No Posts yet."));
         }
     }
 }

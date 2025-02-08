@@ -34,11 +34,15 @@ namespace CollegeUnity.API.Controllers.Subject
         }
 
         [HttpGet("Subjects")]
-        public async Task<IActionResult> GetSubjects(SubjectParameters subjectParameters)
+        public async Task<IActionResult> GetSubjects([FromQuery] SubjectParameters subjectParameters)
         {
             var response = await _serviceManager.SubjectServices.GetAllAsync(subjectParameters);
 
-            return new JsonResult(response);
+            if (response != null)
+            {
+                return new JsonResult(ApiResponse<IEnumerable<SubjectDto>>.Success(data: response));
+            }
+            return new JsonResult(ApiResponse<SubjectDto>.NotFound("No Subjects yet."));
         }
 
         [HttpDelete("Delete/{Id}")]

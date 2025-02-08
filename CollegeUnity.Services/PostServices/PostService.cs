@@ -2,6 +2,7 @@
 using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
 using CollegeUnity.Core.Dtos.PostDtos.Create;
+using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.MappingExtensions.PostExtensions.Create;
 using System;
@@ -27,6 +28,18 @@ namespace CollegeUnity.Services.PostServices
             throw new NotImplementedException();
         }
 
+        public async Task<IEnumerable<Post>> GetPublicPostAsync(PostParameters postParameters)
+        {
+            return await _repositoryManager.PostRepository.GetRangeByConditionsAsync(
+                p => p.IsPublic == true, 
+                postParameters,
+                [
+                    i => i.PostFiles,
+                    i => i.Staff
+                ]
+            );
+        }
+
         public async Task CreatePublicPostAsync(CPublicPostDto dto)
         {
             Post post = dto.ToPost<Post>();
@@ -48,6 +61,7 @@ namespace CollegeUnity.Services.PostServices
         {
             throw new NotImplementedException();
         }
+
 
         public Task<bool> UpdateAsync()
         {
