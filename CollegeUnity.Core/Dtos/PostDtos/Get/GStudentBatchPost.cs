@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CollegeUnity.Core.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Core.Dtos.PostDtos.Get
 {
-    public class GBatchPostDto : GPostDto
+    public class GStudentBatchPost : GPostDto
     {
-        public bool IsPublic { get; set; }
+        public string SubjectName { get; set; }
     }
 }

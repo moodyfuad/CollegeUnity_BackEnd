@@ -1,4 +1,5 @@
 ﻿using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace CollegeUnity.Contract.EF_Contract.IEntitiesRepository
     public interface ISubjectRepository : IBaseRepository<Subject>
     {
         Task<bool> IsExistById(int id);
+        Task<List<int>> GetDistinctSubjects(Level level, Major major, AcceptanceType acceptanceType);
     }
 }

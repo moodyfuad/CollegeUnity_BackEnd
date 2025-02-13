@@ -68,12 +68,30 @@ namespace CollegeUnity.Services.SubjectServices
         {
             Subject subject = await _checkSubjectExistsAsync(new CheckSubject(name: dto.Name, major: dto.Major, level: dto.Level, acceptanceType: dto.AcceptanceType));
 
-            if (subject == null) 
+            if (subject == null)
             {
                 await _updateSubject(dto);
                 return true;
             }
+
             return false;
+        }
+
+        public async Task<bool> SubjectStudyCheck(int subjectId, int teacherId)
+        {
+            Subject subject = await _repositoryManager.SubjectRepository.GetByConditionsAsync(
+                condition: s => s.TeacherId == teacherId && s.Id == subjectId
+            );
+
+            if (subject != null)
+                return true;
+            else
+                return false;
+        }
+
+        public async Task<List<int>> GetStudentSubject(Level level, Major major, AcceptanceType acceptanceType)
+        {
+            return await _repositoryManager.SubjectRepository.GetDistinctSubjects(level, major, acceptanceType);
         }
 
         public async Task<IEnumerable<SubjectDto>> GetAllAsync(SubjectParameters subjectParameters)
