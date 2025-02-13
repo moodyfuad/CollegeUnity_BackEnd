@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Core.Dtos.QueryStrings
 {
-    public class BatchPostParameters : QueryStringParameters
+    public class PublicAndBatchPostParameters : QueryStringParameters
     {
         [Required]
         public Major ForMajor { get; set; }

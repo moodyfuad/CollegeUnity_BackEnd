@@ -45,6 +45,9 @@ namespace CollegeUnity.Core.Entities
 
         public AcceptanceType? ForAcceptanceType { get; set;}
 
-        // For Subject 
+        // For Subject
+        [ForeignKey(nameof(Subject))]
+        public int? SubjectId {get; set;}
+        public Subject? Subject{ get; set; }
     }
 }

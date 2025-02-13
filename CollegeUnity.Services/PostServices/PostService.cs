@@ -47,6 +47,7 @@ namespace CollegeUnity.Services.PostServices
                     i => i.Staff
                 ]
             );
+
             return posts.ToGPostMappers<GPublicPostDto>();
         }
 
@@ -62,18 +63,17 @@ namespace CollegeUnity.Services.PostServices
             }
         }
 
-        public async Task<IEnumerable<GBatchPostDto>> GetBatchPostAsync(BatchPostParameters batchPostParameters)
+        public async Task<IEnumerable<GBatchPostDto>> GetPublicAndBatchPostAsync(PublicAndBatchPostParameters batchPostParameters)
         {
             IEnumerable<Post> posts = await _repositoryManager.PostRepository.GetRangeByConditionsAsync(
-                p => p.IsPublic == false && p.ForMajor == batchPostParameters.ForMajor &&
+                p => p.IsPublic == true && p.ForMajor == batchPostParameters.ForMajor &&
                 p.ForLevel == batchPostParameters.ForLevel &&
                 p.ForAcceptanceType == batchPostParameters.ForAcceptanceType,
                 batchPostParameters,
                 [
                     i => i.PostFiles,
                     i => i.Staff
-                ]
-            );
+                ]);
             return posts.ToGPostMappers<GBatchPostDto>();
         }
 
@@ -92,11 +92,5 @@ namespace CollegeUnity.Services.PostServices
         {
             throw new NotImplementedException();
         }
-
-        #region private methods for create post
-        private async Task CreatePostFiles()
-        {
-        }
-        #endregion
     }
 }

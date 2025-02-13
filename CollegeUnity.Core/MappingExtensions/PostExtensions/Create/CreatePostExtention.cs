@@ -34,7 +34,7 @@ namespace CollegeUnity.Core.MappingExtensions.PostExtensions.Create
                 ForAcceptanceType = dto.ForAcceptanceType,
                 ForLevel = dto.ForLevel,
                 ForMajor = dto.ForMajor,
-                IsPublic = false,
+                IsPublic = true,
                 StaffId = dto.StaffId,
             };
         }

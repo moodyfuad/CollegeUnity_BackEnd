@@ -39,5 +39,7 @@ namespace CollegeUnity.Core.Entities
 
         [InverseProperty(nameof(Student.InterestedSubjects))]
         public virtual ICollection<Student>? InterestedStudents { get; set; }
+        public List<Post> Posts { get; set; }
+
     }
 }
