@@ -14,12 +14,12 @@ namespace CollegeUnity.Core.Dtos.AuthenticationDtos
         protected UserLoginDto(string Token)
         {
             this.Token = Token;
-            Success = true;
+            IsSuccess = true;
         }
         protected UserLoginDto(params string[] errors)
         {
             this.ErrorMessages = errors;
-            Success = false;
+            IsSuccess = false;
         }
        
         [Required(ErrorMessage = "Password is required field")]
@@ -28,7 +28,7 @@ namespace CollegeUnity.Core.Dtos.AuthenticationDtos
         
         public string? Token { get; private set; }
         public string[] ErrorMessages = [];
-        public bool Success { get; private set; }
+        public bool IsSuccess { get; private set; }
 
     }
 }

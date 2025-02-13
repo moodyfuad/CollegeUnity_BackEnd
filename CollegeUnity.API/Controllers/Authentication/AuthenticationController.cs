@@ -25,7 +25,7 @@ namespace CollegeUnity.API.Controllers.Authentication
         public async Task<IActionResult> StudentLogin([FromForm] StudentLoginDto student)
         {
             var result = await _serviceManager.AuthenticationService.Login(student);
-            if (result.Success)
+            if (result.IsSuccess)
             {
                 var response = ApiResponse<StudentLoginDto>.Success(data: (StudentLoginDto)result);
                 return new JsonResult(response);
@@ -44,7 +44,7 @@ namespace CollegeUnity.API.Controllers.Authentication
         public async Task<IActionResult> StaffLogin([FromForm] StaffLoginDto staff)
         {
             var result = await _serviceManager.AuthenticationService.Login(staff);
-            if (result.Success)
+            if (result.IsSuccess)
             {
                 var response = ApiResponse<StaffLoginDto>.Success(data: (StaffLoginDto)result);
                 return new JsonResult(response);

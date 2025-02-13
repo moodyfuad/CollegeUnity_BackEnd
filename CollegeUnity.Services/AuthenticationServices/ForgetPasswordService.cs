@@ -61,7 +61,7 @@ namespace CollegeUnity.Services.AuthenticationServices
                         return userResult != null ? result : Result.Fail("Something Went Wrong!");
                     }
                 }
-                else return Result.Fail($"No Student Found With [{email}] Email Address");
+                else return Result.Fail($"No User Found With [{email}] Email Address");
             }
             catch (Exception ex)
             {

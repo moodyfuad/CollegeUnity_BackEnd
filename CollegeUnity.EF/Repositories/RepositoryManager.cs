@@ -13,14 +13,23 @@ namespace CollegeUnity.EF.Repositories
     {
         private readonly CollegeUnityDbContext _dbContext;
 
+        private IUserRepository _userRepository;
         private IStudentRepository _studentRepository;
         private IStaffRepository _staffRepository;
         private ISubjectRepository _subjectRepository;
         private IPostRepository _postRepository;
         private IPostFilesRepository _postFilesRepository;
+        private ICommentRepository _commentRepository;
+
         public RepositoryManager(CollegeUnityDbContext dbContext)
         {
             _dbContext = dbContext;
+        }
+
+        public IUserRepository UserRepository
+        {
+            get => _userRepository ??= new UserRepository(_dbContext);
+            private set { }
         }
 
         public IStudentRepository StudentRepository
@@ -28,6 +37,7 @@ namespace CollegeUnity.EF.Repositories
             get => _studentRepository ??= new StudentRepository(_dbContext);
             private set { }
         }
+
         public IStaffRepository StaffRepository
         {
             get => _staffRepository ??= new StaffRepository(_dbContext);
@@ -49,6 +59,12 @@ namespace CollegeUnity.EF.Repositories
         public IPostFilesRepository PostFilesRepository
         {
             get => _postFilesRepository ??= new PostFilesRepository(_dbContext);
+            private set { }
+        }
+
+        public ICommentRepository CommentRepository
+        {
+            get => _commentRepository ??= new CommentRepository(_dbContext);
             private set { }
         }
 

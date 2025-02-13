@@ -16,5 +16,6 @@ namespace CollegeUnity.Contract.Services_Contract
         IPostServices PostServices{ get; }
         IStaffServices StaffServices{ get; }
         IPostFilesServices PostFilesServices { get; }
+        ICommentService CommentService { get; }
     }
 }

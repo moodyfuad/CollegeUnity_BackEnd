@@ -9,11 +9,13 @@ namespace CollegeUnity.Contract.EF_Contract
 {
     public interface IRepositoryManager
     {
+        IUserRepository UserRepository { get; }
         IStudentRepository StudentRepository { get; }
         IStaffRepository StaffRepository { get; }
         ISubjectRepository SubjectRepository { get; }
         IPostRepository PostRepository { get; }
         IPostFilesRepository PostFilesRepository { get; }
+        ICommentRepository CommentRepository { get; }
         Task SaveChangesAsync();
     }
 }
