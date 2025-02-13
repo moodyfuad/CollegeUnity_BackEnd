@@ -80,6 +80,11 @@ namespace CollegeUnity.EF
                 .HasForeignKey(file => file.PostId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+                modelBuilder.Entity<Post>()
+        .HasOne(p => p.Subject)
+        .WithMany(s => s.Posts)
+        .HasForeignKey(p => p.SubjectId)
+        .IsRequired(false); // Make the foreign key not required
 
 
 

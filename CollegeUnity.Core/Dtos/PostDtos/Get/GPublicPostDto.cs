@@ -10,5 +10,6 @@ namespace CollegeUnity.Core.Dtos.PostDtos.Get
     public class GPublicPostDto : GPostDto
     {
         public Priority Priority { get; set; }
+        public bool IsPublic { get; set; }
     }
 }

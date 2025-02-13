@@ -26,7 +26,6 @@ namespace CollegeUnity.Core.MappingExtensions.PostExtensions.Get
                 Content = post.Content,
                 CreatedAt = post.CreatedAt,
                 EditedAt = post.EditedAt,
-                IsPublic = post.IsPublic,
                 Staff = new GPostDto.StaffInfo
                 {
                     Id = post.StaffId,
@@ -39,6 +38,17 @@ namespace CollegeUnity.Core.MappingExtensions.PostExtensions.Get
             if (dto is GPublicPostDto publicPostDto)
             {
                 publicPostDto.Priority = post.Priority;
+                publicPostDto.IsPublic = post.IsPublic;
+            }
+
+            if (dto is GBatchPostDto batchPostDto)
+            {
+                batchPostDto.IsPublic = post.IsPublic;
+            }
+
+            if (dto is GStudentBatchPost studentBatchPostDto)
+            {
+                studentBatchPostDto.SubjectName = post.Subject.Name;
             }
 
             return dto;

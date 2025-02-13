@@ -16,7 +16,6 @@ namespace CollegeUnity.Core.Dtos.PostDtos.Get
         public string Content { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? EditedAt { get; set; }
-        public bool IsPublic { get; set; }
         public StaffInfo Staff { get; set; }
         public IEnumerable<string>? PostFiles { get; set; }
 

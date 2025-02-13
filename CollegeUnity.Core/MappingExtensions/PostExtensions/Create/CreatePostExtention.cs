@@ -34,7 +34,21 @@ namespace CollegeUnity.Core.MappingExtensions.PostExtensions.Create
                 ForAcceptanceType = dto.ForAcceptanceType,
                 ForLevel = dto.ForLevel,
                 ForMajor = dto.ForMajor,
+                IsPublic = true,
+                StaffId = dto.StaffId,
+            };
+        }
+
+        // CSubjectPostDto to Post
+        public static Post ToPost<T>(this CSubjectPostDto dto) where T : Post
+        {
+            return new Post
+            {
+                Content = dto.Content,
+                CreatedAt = DateTime.Now,
+                Priority = dto.Priority,
                 IsPublic = false,
+                SubjectId = dto.SubjectId,
                 StaffId = dto.StaffId,
             };
         }

@@ -16,11 +16,13 @@ namespace CollegeUnity.API.Controllers.Post
     {
         private readonly IPostServices _postServices;
         private readonly IStaffServices _staffServices;
+        private readonly ISubjectServices _subjectServices;
 
         public PostController(IServiceManager serviceManager)
         {
             _postServices = serviceManager.PostServices;
             _staffServices = serviceManager.StaffServices;
+            _subjectServices = serviceManager.SubjectServices;
         }
 
         [HttpPost("Public/Create")]
@@ -49,6 +51,19 @@ namespace CollegeUnity.API.Controllers.Post
             return new JsonResult(ApiResponse<bool?>.BadRequest("Something wrong, try again."));
         }
 
+        [HttpPost("Subject/Create")]
+        public async Task<IActionResult> CreateSubjectPost([FromForm] CSubjectPostDto dto)
+        {
+            bool isSubjectStudiedByTeacher = await _subjectServices.SubjectStudyCheck(dto.SubjectId, dto.StaffId);
+            if (isSubjectStudiedByTeacher)
+            {
+                await _postServices.CreateSubjectPostAsync(dto);
+                return new JsonResult(ApiResponse<bool?>.Created(null));
+            }
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest("Something wrong, try again."));
+        }
+
         [HttpGet("Public")]
         public async Task<IActionResult> GetPublicPost([FromQuery] PublicPostParameters postParameters)
         {
@@ -57,18 +72,32 @@ namespace CollegeUnity.API.Controllers.Post
             {
                 return new JsonResult(ApiResponse<IEnumerable<GPublicPostDto>>.Success(data: posts));
             }
+
             return new JsonResult(ApiResponse<IEnumerable<GPublicPostDto>?>.NotFound("No Posts yet."));
         }
 
-        [HttpGet("Batch")]
-        public async Task<IActionResult> GetBatchPost([FromQuery] BatchPostParameters batchPostParameters)
+        [HttpGet("PublicAndBatch")]
+        public async Task<IActionResult> GetBatchPost([FromQuery] PublicAndBatchPostParameters batchPostParameters)
         {
-            var posts = await _postServices.GetBatchPostAsync(batchPostParameters);
+            var posts = await _postServices.GetPublicAndBatchPostAsync(batchPostParameters);
             if (posts.Count() > 0)
             {
                 return new JsonResult(ApiResponse<IEnumerable<GBatchPostDto>>.Success(data: posts));
             }
+
             return new JsonResult(ApiResponse<IEnumerable<GBatchPostDto>?>.NotFound("No Posts yet."));
+        }
+
+        [HttpGet("Batch")]
+        public async Task<IActionResult> GetStudentBatchPost([FromQuery] StudentSubjectPostParameters postParameters)
+        {
+            var posts = await _postServices.GetSubjectPostsForStudent(postParameters);
+            if (posts.Count() > 0)
+            {
+                return new JsonResult(ApiResponse<IEnumerable<GStudentBatchPost>>.Success(data: posts));
+            }
+
+            return new JsonResult(ApiResponse<IEnumerable<GStudentBatchPost>?>.NotFound("No Posts yet."));
         }
     }
 }

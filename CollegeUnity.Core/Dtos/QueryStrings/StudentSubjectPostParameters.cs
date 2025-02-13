@@ -1,4 +1,5 @@
-﻿using CollegeUnity.Core.Enums;
+﻿using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Core.Dtos.QueryStrings
 {
-    public class PublicAndBatchPostParameters : QueryStringParameters
+    public class StudentSubjectPostParameters : QueryStringParameters
     {
         [Required]
         public Major ForMajor { get; set; }

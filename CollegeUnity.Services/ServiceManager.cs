@@ -42,7 +42,7 @@ namespace CollegeUnity.Services
         //public IStudentServices StudentServices => new StudentService(_repositoryManager, _emailServices);
         public IStudentServices StudentServices => new StudentService(_repositoryManager);
 
-        public IPostServices PostServices => new PostService(_repositoryManager, PostFilesServices);
+        public IPostServices PostServices => new PostService(_repositoryManager, PostFilesServices, SubjectServices);
         public IStaffServices StaffServices => new StaffService(_repositoryManager);
 
         public IPostFilesServices PostFilesServices => new PostFilesService(_repositoryManager);
