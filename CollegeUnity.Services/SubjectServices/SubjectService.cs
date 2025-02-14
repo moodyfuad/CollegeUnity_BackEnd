@@ -47,7 +47,7 @@ namespace CollegeUnity.Services.SubjectServices
             return await _repositoryManager.SubjectRepository.IsExistById(Id);
         }
 
-        public async Task<bool> CreateSubjectAsync(CreateSubjectDto dto)
+        public async Task<bool> CreateSubjectAsync(CSubjectDto dto)
         {
             Subject subject = await _checkSubjectExistsAsync(new CheckSubject(name: dto.Name, major: dto.Major, level: dto.Level, acceptanceType: dto.AcceptanceType));
             
@@ -94,18 +94,34 @@ namespace CollegeUnity.Services.SubjectServices
             return await _repositoryManager.SubjectRepository.GetDistinctSubjects(level, major, acceptanceType);
         }
 
-        public async Task<IEnumerable<SubjectDto>> GetAllAsync(SubjectParameters subjectParameters)
+        public async Task<IEnumerable<GSubjectDto>?> GetSubjectsByName(GetSubjectByNameParameters parameters)
+        {
+            IEnumerable<Subject> subjects = await _repositoryManager.SubjectRepository.GetRangeByConditionsAsync(
+                s => s.Name.Contains(parameters.SubjectName),
+                parameters,
+                includes:
+                [
+                    i => i.Teacher,
+                    i => i.AssignedBy
+                ]
+            );
+
+            IEnumerable<GSubjectDto> subjectDtos = subjects.MapTo<GSubjectDto>();
+            return subjectDtos;
+        }
+
+        public async Task<IEnumerable<GSubjectDto>> GetAllAsync(SubjectParameters subjectParameters)
         {
             IEnumerable<Subject> subjects = await _repositoryManager.SubjectRepository.GetRangeAsync(
                 subjectParameters,
-                includes: new Expression<Func<Subject, object>>[]
-                {
+                includes:
+                [
                     i => i.Teacher,
                     i => i.AssignedBy
-                }
+                ]
             );
 
-            IEnumerable<SubjectDto> subjectDtos = subjects.MapTo<SubjectDto>();
+            IEnumerable<GSubjectDto> subjectDtos = subjects.MapTo<GSubjectDto>();
             return subjectDtos;
         }
 
@@ -142,7 +158,7 @@ namespace CollegeUnity.Services.SubjectServices
         #endregion
 
         #region Private Methods for Create Subject
-        private async Task<Subject> _createSubjectAsync(CreateSubjectDto dto)
+        private async Task<Subject> _createSubjectAsync(CSubjectDto dto)
         {
             Subject subject = dto.MapTo<Subject>();
             //To assign the teacher and creater of the subject

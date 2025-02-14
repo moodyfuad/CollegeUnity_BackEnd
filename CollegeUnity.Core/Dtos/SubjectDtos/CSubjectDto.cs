@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Core.Dtos.SubjectDtos
 {
-    public class CreateSubjectDto
+    public class CSubjectDto
     {
         [Required(ErrorMessage = "Name is requied")]
         public required string Name { get; set; }

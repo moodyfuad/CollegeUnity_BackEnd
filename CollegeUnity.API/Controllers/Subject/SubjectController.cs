@@ -19,7 +19,7 @@ namespace CollegeUnity.API.Controllers.Subject
         }
 
         [HttpPost("Create")]
-        public async Task<IActionResult> CreateNewSubject([FromForm] CreateSubjectDto dto)
+        public async Task<IActionResult> CreateNewSubject([FromForm] CSubjectDto dto)
         {
             var response = await _serviceManager.SubjectServices.CreateSubjectAsync(dto);
 
@@ -40,9 +40,21 @@ namespace CollegeUnity.API.Controllers.Subject
 
             if (response != null)
             {
-                return new JsonResult(ApiResponse<IEnumerable<SubjectDto>>.Success(data: response));
+                return new JsonResult(ApiResponse<IEnumerable<GSubjectDto>>.Success(data: response));
             }
-            return new JsonResult(ApiResponse<SubjectDto>.NotFound("No Subjects yet."));
+            return new JsonResult(ApiResponse<GSubjectDto>.NotFound("No Subjects yet."));
+        }
+
+        [HttpGet("ByName")]
+        public async Task<IActionResult> GetSubjectsByName([FromQuery] GetSubjectByNameParameters parameters)
+        {
+            var response = await _serviceManager.SubjectServices.GetSubjectsByName(parameters);
+
+            if (response != null)
+            {
+                return new JsonResult(ApiResponse<IEnumerable<GSubjectDto>>.Success(data: response));
+            }
+            return new JsonResult(ApiResponse<GSubjectDto>.NotFound("No Subjects with this Name yet."));
         }
 
         [HttpDelete("Delete/{Id}")]
@@ -65,7 +77,7 @@ namespace CollegeUnity.API.Controllers.Subject
         }
 
         [HttpPut("Update")]
-        public async Task<IActionResult> UpdateSubject([FromForm] SubjectDto dto)
+        public async Task<IActionResult> UpdateSubject([FromForm] USubjectDto dto)
         {
             if (await _serviceManager.SubjectServices.IsExistAsync(dto.Id))
             {

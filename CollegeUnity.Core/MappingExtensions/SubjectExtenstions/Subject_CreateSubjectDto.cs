@@ -1,5 +1,6 @@
 ﻿using CollegeUnity.Core.Dtos.SubjectDtos;
 using CollegeUnity.Core.Entities;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace CollegeUnity.Core.MappingExtensions.SubjectExtenstions
 {
     public static partial class SubjectExtention
     {
-        public static Subject MapTo<T>(this CreateSubjectDto dto) where T : Subject
+        public static Subject MapTo<T>(this CSubjectDto dto) where T : Subject
         {
             return new()
             {
@@ -24,11 +25,11 @@ namespace CollegeUnity.Core.MappingExtensions.SubjectExtenstions
             };
         }
 
-        public static IEnumerable<SubjectDto> MapTo<T>(this IEnumerable<Subject> subjects) where T : SubjectDto, new()
+        public static IEnumerable<T> MapTo<T>(this IEnumerable<Subject> subjects) where T : SubjectDto, new()
         {
             foreach (var subject in subjects)
             {
-                yield return new T
+                var dto = new T
                 {
                     Id = subject.Id,
                     Name = subject.Name,
@@ -36,10 +37,16 @@ namespace CollegeUnity.Core.MappingExtensions.SubjectExtenstions
                     Major = subject.Major,
                     AcceptanceType = subject.AcceptanceType,
                     AssignedById = subject.HeadOfScientificDepartmentId == null? null : subject.HeadOfScientificDepartmentId!.Value,
-                    AssignedByName = subject.AssignedBy == null? null : subject.AssignedBy.FirstName + " " + subject.AssignedBy.MiddleName + " " + subject.AssignedBy.LastName,
                     TeacherId = subject.TeacherId == null? null : subject.TeacherId!.Value,
-                    TeacherName = subject.Teacher == null? null : subject.Teacher.FirstName + " " + subject.Teacher.MiddleName + " " + subject.Teacher.LastName,
                 };
+
+                if (dto is GSubjectDto sDto)
+                {
+                    sDto.AssignedByName = subject.AssignedBy == null ? null : subject.AssignedBy.FirstName + " " + subject.AssignedBy.MiddleName + " " + subject.AssignedBy.LastName;
+                    sDto.TeacherName = subject.Teacher == null ? null : subject.Teacher.FirstName + " " + subject.Teacher.MiddleName + " " + subject.Teacher.LastName;
+                }
+
+                yield return dto;
             }
         }
 

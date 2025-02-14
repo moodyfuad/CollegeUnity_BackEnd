@@ -19,9 +19,7 @@ namespace CollegeUnity.Core.Dtos.SubjectDtos
         public AcceptanceType AcceptanceType { get; set; }
 
         public int? TeacherId { get; set; }
-        public string? TeacherName { get; set; }
 
-        public int? AssignedById {  get; set; }
-        public string? AssignedByName { get; set; }
+        public int? AssignedById {  get; set; }        
     }
 }
