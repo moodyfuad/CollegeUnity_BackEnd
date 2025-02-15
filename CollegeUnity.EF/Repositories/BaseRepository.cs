@@ -19,6 +19,7 @@ namespace CollegeUnity.EF.Repositories
         {
             _dbContext = context;
         }
+
         public async Task<PagedList<T>> GetRangeAsync(
             QueryStringParameters queryStringParameters,
             params Expression<Func<T, object>>[]? includes)
@@ -31,7 +32,12 @@ namespace CollegeUnity.EF.Repositories
                     entity = entity.Include(include);
                 }
             }
-            return await PagedList<T>.ToPagedListAsync(entity,queryStringParameters.PageNumber,queryStringParameters.PageSize);
+
+            return await PagedList<T>.ToPagedListAsync(
+                entity,
+                queryStringParameters.PageNumber,
+                queryStringParameters.PageSize,
+                queryStringParameters.DesOrder);
         }
 
         public async Task<PagedList<T>> GetRangeByConditionsAsync(
@@ -47,14 +53,19 @@ namespace CollegeUnity.EF.Repositories
                     entity = entity.Include(include);
                 }
             }
+
             if (condition != null)
             {
                 entity = entity.Where(condition);
             }
 
-            return await PagedList<T>.ToPagedListAsync(entity,queryStringParameters.PageNumber,queryStringParameters.PageSize);
+            return await PagedList<T>.ToPagedListAsync(
+                entity,
+                queryStringParameters.PageNumber,
+                queryStringParameters.PageSize,
+                queryStringParameters.DesOrder);
         }
-        
+
         public async Task<PagedList<T>> GetRangeByConditionsAsync(
             Expression<Func<T, bool>>[]? condition,
             QueryStringParameters queryStringParameters,
@@ -68,16 +79,20 @@ namespace CollegeUnity.EF.Repositories
                     entity = entity.Include(include);
                 }
             }
+
             if (condition != null)
             {
                 foreach (var expression in condition)
                 {
                     entity = entity.Where(expression);
                 }
-                
             }
 
-            return await PagedList<T>.ToPagedListAsync(entity.AsSingleQuery(),queryStringParameters.PageNumber,queryStringParameters.PageSize);
+            return await PagedList<T>.ToPagedListAsync(
+                entity.AsSingleQuery(),
+                queryStringParameters.PageNumber,
+                queryStringParameters.PageSize,
+                queryStringParameters.DesOrder);
         }
 
         public async Task<T> GetByConditionsAsync(Expression<Func<T, bool>> condition, params Expression<Func<T, object>>[] includes)
@@ -117,18 +132,15 @@ namespace CollegeUnity.EF.Repositories
             return _dbContext.Set<T>().Remove(entity).Entity;
         }
 
-       
         public async Task<T> Update(int Id, T updatedEntity)
         {
-            
             return _dbContext.Set<T>().Update(await GetByIdAsync(Id)).Entity;
         }
+
         public async Task<T> Update(T updatedEntity)
         {
-            
             return _dbContext.Set<T>().Update(updatedEntity).Entity;
         }
-
 
         public async Task<IQueryable<T>> GetAsQueryable()
         {

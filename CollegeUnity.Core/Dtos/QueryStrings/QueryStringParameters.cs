@@ -19,5 +19,7 @@ namespace CollegeUnity.Core.Dtos.QueryStrings
             get { return _pageSize; }
             set { _pageSize = (value > maxPageSize) ? maxPageSize : value; }
         }
+
+        public bool DesOrder { get; set; } = false;
     }
 }

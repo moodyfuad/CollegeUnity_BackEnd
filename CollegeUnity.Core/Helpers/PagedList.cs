@@ -28,8 +28,12 @@ namespace CollegeUnity.Core.Helpers
             AddRange(items);
         }
 
-        public static async Task<PagedList<T>> ToPagedListAsync(IQueryable<T> source, int pageNumber = 1, int pageSize = 20)
+        public static async Task<PagedList<T>> ToPagedListAsync(IQueryable<T> source, int pageNumber = 1, int pageSize = 20, bool desOrder = false)
         {
+            if (desOrder)
+            {
+                source = source.OrderDescending();
+            }
             var count = source.Count();
             var items = await source
                 .Skip((pageNumber - 1) * pageSize)
