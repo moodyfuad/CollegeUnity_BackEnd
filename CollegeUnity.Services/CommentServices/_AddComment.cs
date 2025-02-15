@@ -33,7 +33,7 @@ namespace CollegeUnity.Services.CommentServices
             }
             else
             {
-                var comment = dto.To<PostComment>(post, user);
+                var comment = dto.To<PostComment>();
                 comment = await _repositoryManager.CommentRepository.CreateAsync(comment);
                 await _repositoryManager.SaveChangesAsync();
 

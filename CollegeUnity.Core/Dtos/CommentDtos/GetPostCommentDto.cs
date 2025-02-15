@@ -58,7 +58,7 @@ namespace CollegeUnity.Core.Dtos.CommentDtos
             }
 
 
-            return new PagedList<GetPostCommentDto>(mappedComments,comments.Count, comments.CurrentPage,comments.PageSize);
+            return new PagedList<GetPostCommentDto>(mappedComments,comments.TotalCount, comments.CurrentPage,comments.PageSize);
         }
     }
 }
