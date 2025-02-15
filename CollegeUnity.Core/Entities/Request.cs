@@ -18,7 +18,7 @@ namespace CollegeUnity.Core.Entities
         [Required]
         public required string Content { get; set; }
         
-        public DateTime Date { get; set; } = DateTime.Now;
+        public DateTime Date { get; set; } = DateTime.UtcNow.ToLocalTime();
 
         [Required]
         public RequestStatus RequestStatus { get; set; } = RequestStatus.Sent;
