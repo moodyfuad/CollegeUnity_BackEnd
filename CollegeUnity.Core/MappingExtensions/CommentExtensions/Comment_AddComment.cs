@@ -19,7 +19,7 @@ namespace CollegeUnity.Core.MappingExtensions.CommentExtensions
                 PostId = dto.PostId,
                 User = user,
                 UserId = dto.UserId,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow.ToLocalTime()
             };
         }
     }

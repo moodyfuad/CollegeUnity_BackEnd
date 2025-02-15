@@ -17,6 +17,6 @@ namespace CollegeUnity.Contract.Services_Contract.ServiceAbstraction
 
         Task<EditCommentDto> EditComment(EditCommentDto editCommentDto);
 
-        Task<bool> DeleteComment(int commentId);
+        Task<DeleteCommentResultDto> DeleteComment(int commentId);
     }
 }

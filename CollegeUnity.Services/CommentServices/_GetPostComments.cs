@@ -16,7 +16,8 @@ namespace CollegeUnity.Services.CommentServices
         public async Task<PagedList<GetPostCommentDto>> _GetPostComments(GetPostCommentsParameters param)
         {
             PagedList<PostComment> comments = await _repositoryManager.CommentRepository.GetRangeByConditionsAsync(
-                c => c.PostId.Equals(param.PostId), param,
+                condition: c => c.PostId.Equals(param.PostId) && c.Status != CommentStatus.Deleted,
+                queryStringParameters: param,
                 includes: c => c.User);
 
             var result = await GetPostCommentDto.From<PagedList<PostComment>>(comments);

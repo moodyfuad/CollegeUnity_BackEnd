@@ -25,7 +25,7 @@ namespace CollegeUnity.Services.CommentServices
 
             PostComment comment = await _repositoryManager.CommentRepository.GetByIdAsync(dto.id);
             comment.Content = dto.newComment;
-            comment.EditedAt = DateTime.UtcNow;
+            comment.EditedAt = DateTime.UtcNow.ToLocalTime();
             comment = await _repositoryManager.CommentRepository.Update(comment);
 
             await _repositoryManager.SaveChangesAsync();

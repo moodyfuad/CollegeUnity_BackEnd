@@ -16,6 +16,9 @@ namespace CollegeUnity.Core.Entities
         [Required]
         public required string Content { get; set; }
 
+        [Required]
+        public CommentStatus Status { get; set; } = CommentStatus.Published;
+
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? EditedAt { get; set; }
         

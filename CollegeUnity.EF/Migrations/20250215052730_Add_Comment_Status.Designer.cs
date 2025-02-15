@@ -4,6 +4,7 @@ using CollegeUnity.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CollegeUnity.EF.Migrations
 {
     [DbContext(typeof(CollegeUnityDbContext))]
-    partial class CollegeUnityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250215052730_Add_Comment_Status")]
+    partial class Add_Comment_Status
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

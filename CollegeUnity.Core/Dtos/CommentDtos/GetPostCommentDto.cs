@@ -18,7 +18,15 @@ namespace CollegeUnity.Core.Dtos.CommentDtos
         public string UserName { get; set; }
 
 
-        public DateTime DisplayedDateTime => EditedAt ?? CreatedAt;
+        public string DisplayedDateTime
+        {
+            get
+            {
+                string datetimeFormat = "dd/MM/yyyy h:mm tt";
+                DateTime dateTime = EditedAt ?? CreatedAt;
+                return dateTime.ToString(datetimeFormat);
+            }
+        }
 
         private DateTime CreatedAt { get; set; }
         
@@ -30,6 +38,7 @@ namespace CollegeUnity.Core.Dtos.CommentDtos
 
         public GetPostCommentDto(int id, int userId, string userName, DateTime createdAt, DateTime? editedAt, string content)
         {
+           
             Id = id;
             UserId = userId;
             UserName = userName;

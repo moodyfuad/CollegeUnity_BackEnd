@@ -1,14 +1,14 @@
-﻿using CollegeUnity.Contract.EF_Contract;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CollegeUnity.Contract.EF_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
 using CollegeUnity.Core.Dtos.CommentDtos;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CollegeUnity.Services.CommentServices
 {
@@ -39,9 +39,18 @@ namespace CollegeUnity.Services.CommentServices
             }
         }
 
-        public Task<bool> DeleteComment(int commentId)
+        public async Task<DeleteCommentResultDto> DeleteComment(int commentId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var result = await _DeleteComment(commentId);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                string errorMessage = ex.Message;
+                return DeleteCommentResultDto.Failed(errorMessage);
+            }
         }
 
         public async Task<EditCommentDto> EditComment(EditCommentDto dto)

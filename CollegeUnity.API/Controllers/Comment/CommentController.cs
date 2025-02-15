@@ -7,6 +7,7 @@ using CollegeUnity.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 using System.Net.WebSockets;
 using System.Text.Json.Serialization;
 
@@ -41,7 +42,7 @@ namespace CollegeUnity.API.Controllers.Comment
         }
 
         [HttpGet("post/comments")]
-        public async Task<IActionResult> GetPostComments([FromQuery] GetPostCommentsParameters parameters)
+        public async Task<IActionResult> GetPublishedPostComments([FromQuery] GetPostCommentsParameters parameters)
         {
             if (!ModelState.IsValid)
 
@@ -57,7 +58,8 @@ namespace CollegeUnity.API.Controllers.Comment
                 HasNext = result.HasNext,
             };
             HttpContext.Response.Headers.Append("X-Pagination", JsonConvert.SerializeObject(meta));
-            var response = ApiResponse<PagedList<GetPostCommentDto>>.Success(result);
+            string meg = $"[{result.Count}] records fetched";
+            var response = ApiResponse<PagedList<GetPostCommentDto>>.Success(result, meg);
                 return new JsonResult(response);
         }
 
@@ -78,5 +80,24 @@ namespace CollegeUnity.API.Controllers.Comment
             }
         }
 
+        [HttpDelete("post/comment/delete")]
+        public async Task<IActionResult> DeleteComment([FromQuery, Required] int id)
+        {
+            var result = await _serviceManager.CommentService.DeleteComment(id);
+
+            if (result.IsSuccess)
+            {
+                var response = ApiResponse<EditCommentDto>.Success(null, result.Message);
+                return new JsonResult(response);
+            }
+            else
+            {
+                var response = ApiResponse<EditCommentDto>.BadRequest(
+                    "Can not Delete the Comment",
+                    [result.Message]);
+
+                return new JsonResult(response);
+            }
+        }
     }
 }
