@@ -9,6 +9,7 @@ using CollegeUnity.Services.PostServices;
 using CollegeUnity.Services.StaffServices;
 using CollegeUnity.Services.StudentServices;
 using CollegeUnity.Services.SubjectServices;
+using CollegeUnity.Services.VoteServices;
 using EmailService;
 using EmailService.EmailService;
 using Microsoft.Extensions.Configuration;
@@ -43,10 +44,20 @@ namespace CollegeUnity.Services
         public IStudentServices StudentServices => new StudentService(_repositoryManager);
 
         public IPostServices PostServices => new PostService(_repositoryManager, PostFilesServices, SubjectServices);
+
         public IStaffServices StaffServices => new StaffService(_repositoryManager);
 
         public IPostFilesServices PostFilesServices => new PostFilesService(_repositoryManager);
-        
+
         public ICommentService CommentService => new CommentService(_repositoryManager);
+
+        public IVoteService VoteService => new VoteService(_repositoryManager);
+
+        public async Task<T?> IsExist<T>(int id)
+            where T : class
+        {
+            T? result = await _repositoryManager.FindById<T>(id);
+            return result;
+        }
     }
 }

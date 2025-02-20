@@ -1,6 +1,7 @@
 ﻿using CollegeUnity.Contract.EF_Contract;
 using CollegeUnity.Contract.EF_Contract.IEntitiesRepository;
 using CollegeUnity.EF.Repositories.EntitiesRepository;
+using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,7 @@ namespace CollegeUnity.EF.Repositories
         private IPostRepository _postRepository;
         private IPostFilesRepository _postFilesRepository;
         private ICommentRepository _commentRepository;
+        private IVotesRepository _votesRepository;
 
         public RepositoryManager(CollegeUnityDbContext dbContext)
         {
@@ -68,9 +70,23 @@ namespace CollegeUnity.EF.Repositories
             private set { }
         }
 
+        public IVotesRepository VotesRepository
+        {
+            get => _votesRepository ??= new VotesRepository(_dbContext);
+            private set { }
+        }
+
         public async Task SaveChangesAsync()
         {
             await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<T?> FindById<T>(int id)
+            where T : class
+        {
+            T? result = await _dbContext.Set<T>().FindAsync(id);
+
+            return result;
         }
     }
 }

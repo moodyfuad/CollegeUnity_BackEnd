@@ -17,5 +17,9 @@ namespace CollegeUnity.Contract.Services_Contract
         IStaffServices StaffServices{ get; }
         IPostFilesServices PostFilesServices { get; }
         ICommentService CommentService { get; }
+        IVoteService VoteService { get; }
+
+        Task<T?> IsExist<T>(int id)
+            where T : class;
     }
 }
