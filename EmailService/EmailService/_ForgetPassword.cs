@@ -16,7 +16,7 @@ namespace EmailService.EmailService
     {
 
         
-        private async Task<Result> _ForgetPassword(string name, string emailAddress, IConfiguration configuration)
+        private async Task<ForgetPasswordResultDto> _ForgetPassword(string name, string emailAddress, IConfiguration configuration)
         {
             try
             {
@@ -36,17 +36,17 @@ namespace EmailService.EmailService
                 if (result) {
                     // add the token to the result
                     string token = "";
-                    return Result.Success("Reset Code Sent, Please Check Your Email", emailAddress, receiver.ResetCode);
+                    return ForgetPasswordResultDto.Success("Reset Code Sent, Please Check Your Email", emailAddress, receiver.ResetCode);
                 }
                 else
                 {
-                    return Result.Fail("Something went Wrong!, Please try again later.");
+                    return ForgetPasswordResultDto.Fail("Something went Wrong!, Please try again later.");
                 }
             }
             catch (Exception ex)
             {
 
-                return Result.Fail($"Email sending failed: {ex.Message}");
+                return ForgetPasswordResultDto.Fail($"Email sending failed: {ex.Message}");
             }
         }
     }

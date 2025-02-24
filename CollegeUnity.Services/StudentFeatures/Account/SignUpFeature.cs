@@ -1,21 +1,26 @@
-﻿using CollegeUnity.Core.Constants;
+﻿using CollegeUnity.Contract.EF_Contract;
+using CollegeUnity.Contract.StudentFeatures.Account;
 using CollegeUnity.Core.Dtos.AuthenticationDtos;
 using CollegeUnity.Core.Entities;
-using CollegeUnity.Core.Enums;
 using CollegeUnity.Core.MappingExtensions.StudentExtensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CollegeUnity.Services.AuthenticationServices
+namespace CollegeUnity.Services.StudentFeatures.Account
 {
-    public partial class AuthenticationService
+    public class SignUpFeature : ISignUpFeatures
     {
+        private readonly IRepositoryManager _repositoryManager;
 
-       public async Task<string> SignUpStudent(StudentSignUpDto studentDto)
+        public SignUpFeature(IRepositoryManager repositoryManager)
+        {
+            _repositoryManager = repositoryManager;
+        }
+
+        public async Task<string> SignUpStudent(StudentSignUpDto studentDto)
         {
             Student student = await _repositoryManager
                         .StudentRepository.
@@ -43,6 +48,7 @@ namespace CollegeUnity.Services.AuthenticationServices
             {
                 return "Something went wrong :" + ex.Message;
             }
+
             return "User Created Successfully, please login!";
         }
     }

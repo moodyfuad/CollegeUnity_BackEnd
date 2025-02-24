@@ -28,12 +28,12 @@ namespace CollegeUnity.API.Controllers.Student
         }
 
 
-        [HttpPost("SignUp")]
-        public async Task<IActionResult> Signup([FromForm] StudentSignUpDto student)
-        {
-            string resultMsg = await _serviceManager.AuthenticationService.SignUp(student);
-            return Ok(resultMsg);
-        }
+        //[HttpPost("SignUp")]
+        //public async Task<IActionResult> Signup([FromForm] StudentSignUpDto student)
+        //{
+        //    string resultMsg = await _serviceManager.AuthenticationService.SignUp(student);
+        //    return Ok(resultMsg);
+        //}
 
         [HttpPost("Search")]
         public async Task<IActionResult> StudentSearch([FromQuery] StudentSearchParameters searchParameters)
@@ -70,52 +70,6 @@ namespace CollegeUnity.API.Controllers.Student
                 return Ok(ApiResponse<string>.InternalServerError(errors: [ex.Message]));
 
             }
-
-
-        }
-
-        [HttpPost("{email}/PasswordResetCode")]
-        public async Task<IActionResult> RequestPasswordResetCode(string email)
-        {
-            var result = await this._serviceManager.AuthenticationService.SendResetPasswordRequest(email, Roles.Student);
-            var response =
-            result.IsSuccess ?
-                 ApiResponse<Result>.Success(result)
-            :
-                 ApiResponse<Result>.NotFound(message: result.Message);
-
-            this.HttpContext.Response.StatusCode = response.StatusCode;
-            return new JsonResult(response);
-        }
-
-        [HttpPost("{email}/PasswordResetCode/check{ResetCode}")]
-        [Authorize(Roles = $"{nameof(AuthenticationRoles.ForgotPassword)}")]
-        public async Task<IActionResult> CheckPasswordResetCode(string email, string resetCode)
-        {
-            var result = await this._serviceManager.StudentServices.CheckResetPasswordCode(email, resetCode);
-            var response =
-            result ?
-                 ApiResponse<string>.Success($"Redirect to [{this.HttpContext.Request.PathBase}/PasswordReset/ResetCode/newPassword/Reset")
-            :
-                 ApiResponse<string>.BadRequest("Invalid Code");
-
-            this.HttpContext.Response.StatusCode = response.StatusCode;
-            return new JsonResult(response);
-        }
-
-        [Authorize(Roles = $"{nameof(AuthenticationRoles.ForgotPassword)}")]
-        [HttpPost("{email}/PasswordReset/ResetCode/{resetCode}/newPassword")]
-        public async Task<IActionResult> ResetPassword(string email, string resetCode, [FromForm] string newPassword)
-        {
-            var result = await this._serviceManager.StudentServices.ResetPassword(email, resetCode, newPassword);
-            var response =
-            result ?
-                 ApiResponse<string>.Success(null,"Password Reset Successfully")
-            :
-                 ApiResponse<string>.InternalServerError(errors: ["failed resetting the password"]);
-
-            HttpContext.Response.StatusCode = response.StatusCode;
-            return new JsonResult( response);
         }
     }
 }

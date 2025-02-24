@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Core.Dtos.AuthenticationServicesDtos
 {
-    public enum AuthenticationRoles
+    public enum ForgetPasswordRoles
     {
-        ForgotPassword
+        CodeSent,
+        ResetAllowed
     }
 }

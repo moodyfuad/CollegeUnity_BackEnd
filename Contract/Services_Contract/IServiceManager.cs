@@ -9,7 +9,7 @@ namespace CollegeUnity.Contract.Services_Contract
 {
     public interface IServiceManager
     {
-        IAuthenticationService AuthenticationService { get; }
+        //IAuthenticationService AuthenticationService { get; }
         IAdminServices AdminServices{ get; }
         ISubjectServices SubjectServices{ get; }
         IStudentServices StudentServices{ get; }

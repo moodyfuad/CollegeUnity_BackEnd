@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CollegeUnity.Core.Dtos.AuthenticationDtos;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,6 @@ namespace CollegeUnity.Contract.StudentFeatures.Account
 {
     public interface ISignUpFeatures
     {
-        // For Students
-            // student details => (isSuccess, message)
+        Task<string> SignUpStudent(StudentSignUpDto studentDto);
     }
 }

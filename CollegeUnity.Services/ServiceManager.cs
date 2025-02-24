@@ -2,7 +2,6 @@
 using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
 using CollegeUnity.Services.AdminServices;
-using CollegeUnity.Services.AuthenticationServices;
 using CollegeUnity.Services.CommentServices;
 using CollegeUnity.Services.PostFilesServices;
 using CollegeUnity.Services.PostServices;
@@ -34,7 +33,7 @@ namespace CollegeUnity.Services
             _emailServices= emailServices;
         }
 
-        public IAuthenticationService AuthenticationService => new AuthenticationService(_repositoryManager, _configuration,_emailServices);
+        //public IAuthenticationService AuthenticationService => new AuthenticationService(_repositoryManager, _configuration,_emailServices);
 
         public IAdminServices AdminServices => new AdminService(_repositoryManager);
 

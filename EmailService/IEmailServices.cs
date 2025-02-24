@@ -9,6 +9,6 @@ namespace EmailService
 {
     public interface IEmailServices
     {
-        Task<Result> ForgetPassword(string name,string emailAddress);
+        Task<ForgetPasswordResultDto> ForgetPassword(string name,string emailAddress);
     }
 }

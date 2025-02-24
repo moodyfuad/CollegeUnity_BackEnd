@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace EmailService.Models
 {
-    public class Result
+    public class ForgetPasswordResultDto
     {
-        private Result(string message, bool isSuccess, string? email = null,string? resetCode = null)
+        private ForgetPasswordResultDto(string message, bool isSuccess, string? email = null,string? resetCode = null)
         {
             this.Message = message;
             this.IsSuccess = isSuccess;
@@ -28,14 +28,14 @@ namespace EmailService.Models
         private string? ResetCode { get; set; }
         #endregion
 
-       public static Result Success(string message, string email, string resetCode)
+       public static ForgetPasswordResultDto Success(string message, string email, string resetCode)
         {
-            return new Result(message, true, email, resetCode);
+            return new ForgetPasswordResultDto(message, true, email, resetCode);
         }
 
-        public static Result Fail(string message)
+        public static ForgetPasswordResultDto Fail(string message)
         {
-            return new Result(message, false);
+            return new ForgetPasswordResultDto(message, false);
         }
         
         public void SetToken(string token)

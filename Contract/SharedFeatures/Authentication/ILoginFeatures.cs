@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CollegeUnity.Core.Dtos.AuthenticationDtos;
+using CollegeUnity.Core.Dtos.SharedFeatures.Authentication.LoginFeatures;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +10,8 @@ namespace CollegeUnity.Contract.SharedFeatures.Authentication
 {
     public interface ILoginFeatures
     {
-        // Validate Credentials
-            // params (email, password) => (isSuccess, Token, message)
-            // params (studentRegID, password) => (isSuccess, Token, message)
+        Task<LoginResultDto> Login(
+             UserLoginDto userLoginDto,
+             DateTime? expireAt = null);
     }
 }

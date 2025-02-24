@@ -14,6 +14,10 @@ using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.EF_Contract;
 using EmailService;
 using EmailService.EmailService;
+using CollegeUnity.Contract.SharedFeatures.Authentication;
+using CollegeUnity.Services.SharedFeatures.Authentication;
+using CollegeUnity.Contract.StudentFeatures.Account;
+using CollegeUnity.Services.StudentFeatures.Account;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +38,14 @@ builder.Services.AddDbContext<CollegeUnityDbContext>(options =>
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 builder.Services.AddScoped<IServiceManager, ServiceManager>();
 builder.Services.AddScoped<IEmailServices, EmailServices>();
+
+// shared features
+builder.Services.AddScoped<ILoginFeatures, LoginFeatures>();
+builder.Services.AddScoped<IForgetPasswordFeatures, ForgetPasswordFeatures>();
+
+// student features
+builder.Services.AddScoped<ISignUpFeatures, SignUpFeature>();
+
 
 //jwt authentication
 builder.Services.AddCustomJwtAuthentication(builder.Configuration);

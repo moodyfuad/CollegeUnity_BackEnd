@@ -18,7 +18,7 @@ namespace EmailService.EmailService
             _configuration = configuration;
         }
 
-        public async Task<Result> ForgetPassword(string name, string emailAddress)
+        public async Task<ForgetPasswordResultDto> ForgetPassword(string name, string emailAddress)
         {
             return await _ForgetPassword(name,emailAddress,_configuration);
         }

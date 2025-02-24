@@ -1,19 +1,86 @@
 ﻿using CollegeUnity.Core.Constants.AuthenticationConstants;
 using CollegeUnity.Core.Dtos.AuthenticationDtos;
+using CollegeUnity.Core.Dtos.AuthenticationServicesDtos;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Enums;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CollegeUnity.Services.AuthenticationServices
+namespace CollegeUnity.Services.SharedFeatures.Authentication
 {
-    public partial class AuthenticationService
+    public static class JwtHelpers
     {
+        public static string CreateToken(
+            in User user,
+            in IConfiguration config,
+            in DateTime? expireAt = null)
+        {
+            JwtSecurityToken token = new(
+            issuer: config[$"Jwt:{JwtKeys.Issuer}"],
+            audience: config[$"Jwt:{JwtKeys.Audience}"],
+            signingCredentials: CreateSigningCredentials(in config),
+
+            claims: CreateUserClaims(user),
+
+            expires: expireAt ?? DateTime.Now.AddMonths(3));
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public static string CreateForgetPasswordToken(
+            in string email,
+            in ForgetPasswordRoles forgetPasswordRoles,
+            in IConfiguration _config,
+            in DateTime? expireAt = null)
+        {
+            JwtSecurityToken token = new(
+            issuer: _config[$"Jwt:{JwtKeys.Issuer}"],
+            audience: _config[$"Jwt:{JwtKeys.Audience}"],
+            signingCredentials: CreateSigningCredentials(in _config),
+
+            claims: new List<Claim>()
+            {
+                new Claim(CustomClaimTypes.Role, forgetPasswordRoles.ToString()),
+                new Claim(CustomClaimTypes.Email, email),
+            },
+
+            expires: expireAt ?? DateTime.Now.AddMinutes(5));
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public static UserClaimsDto GetUserClaims(in HttpContext context)
+        {
+            List<Claim> claims = context.User.Claims.ToList();
+
+            var userRoles = claims.
+                Where(c => c.Type == CustomClaimTypes.Role)
+               .Select(c => Enum.Parse<Roles>(c.Value))
+               .ToList();
+
+            if (userRoles.Contains(Roles.Student))
+            {
+                return StudentClaimsDto.FromClaims(claims);
+            }
+            else
+            {
+                return StaffClaimsDto.MapFromClaims(claims);
+            }
+        }
+
+        private static SigningCredentials CreateSigningCredentials(in IConfiguration _config)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config[$"Jwt:{JwtKeys.Key}"]!));
+            return new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        }
 
         private static List<Claim>? CreateUserClaims(in User user)
         {
@@ -74,24 +141,6 @@ namespace CollegeUnity.Services.AuthenticationServices
             return claims;
         }
 
-        private static List<Claim> GetUserRoleClaims(User user)
-        {
-            switch (user)
-            {
-                case Student:
-                    return [new Claim(CustomClaimTypes.Role, Roles.Student.ToString())];
-                case Staff staff:
-                    List<Claim> roleClaims =  [];
-                    foreach (var role in staff.Roles)
-                    {
-                        roleClaims.Add(new Claim(CustomClaimTypes.Role, role.ToString()));
-                    }
-
-                    return roleClaims;
-                default: return [];
-            }
-        }
-
         private static string GetUserRoleName(User user)
         {
             switch (user)
@@ -104,30 +153,28 @@ namespace CollegeUnity.Services.AuthenticationServices
                     {
                         roles += role.AsString() + ",";
                     }
-                    
+
                     return roles;
                 default: return "No Role";
             }
         }
 
-        private async Task<Student?> ValidateStudentCredentials(StudentLoginDto studentDto)
+        private static List<Claim> GetUserRoleClaims(User user)
         {
-            Student? student =
-                await _repositoryManager.StudentRepository
-                .GetByConditionsAsync(
-                    std => std.CardId == studentDto.CardId && std.Password == studentDto.Password);
+            switch (user)
+            {
+                case Student:
+                    return [new Claim(CustomClaimTypes.Role, Roles.Student.ToString())];
+                case Staff staff:
+                    List<Claim> roleClaims = [];
+                    foreach (var role in staff.Roles)
+                    {
+                        roleClaims.Add(new Claim(CustomClaimTypes.Role, role.ToString()));
+                    }
 
-            return student;
-        }
-
-        private async Task<Staff?> ValidateStaffCredentials(StaffLoginDto staffDto)
-        {
-            Staff? staff =
-                await _repositoryManager.StaffRepository
-                .GetByConditionsAsync(
-                    staff => staff.Email == staffDto.Email && staff.Password == staffDto.Password);
-
-            return staff;
+                    return roleClaims;
+                default: return [];
+            }
         }
     }
 }

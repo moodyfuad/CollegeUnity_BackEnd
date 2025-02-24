@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CollegeUnity.Core.Dtos.SharedFeatures.Authentication.ForgetPasswordFeatures;
+using CollegeUnity.Core.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,17 +10,16 @@ namespace CollegeUnity.Contract.SharedFeatures.Authentication
 {
     public interface IForgetPasswordFeatures
     {
-        // ValidateCredentials
-            // params (email) => bool
 
-        // SendVerificationCodeViaEmail
-            // params (email) => (isSuccess, Code, message, Token)
-             // store the code in user's VerificationCode
+        // => token {email, ForgetPasswordStatus.CodeSent , expires=5m}
+        Task<ForgetPasswordFeatureResultDto> SendResetPasswordCode(string email);
 
-        // ValidateVerificationCode
-            // params (email, Code) => (bool, Token)
+        // => token {email ,ForgetPasswordStatus.Reset , expires=5m}
+        Task<ForgetPasswordFeatureResultDto> ValidateVerificationCode(string email, string code);
 
-        // ResetPassword
-            // params (email, newPassword)
+        Task<ForgetPasswordFeatureResultDto> ResetPassword(string email, string newPassword);
+        // params (email, newPass) => (bool, Token)
+
+        
     }
 }

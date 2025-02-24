@@ -1,10 +1,21 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CollegeUnity.Core.Enums;
-using CollegeUnity.Services.AuthenticationServices;
 using CollegeUnity.Core.Dtos.AuthenticationDtos;
 using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Core.Dtos.ResponseDto;
+using CollegeUnity.Contract.SharedFeatures.Authentication;
+using CollegeUnity.Services.SharedFeatures.Authentication;
+using CollegeUnity.Core.Dtos.SharedFeatures.Authentication.LoginFeatures;
+using CollegeUnity.Core.Dtos.AuthenticationServicesDtos;
+using System.Text.Json.Serialization;
+using System.Text.Json;
+using CollegeUnity.Core.Constants.AuthenticationConstants;
+using EmailService.Models;
+using CollegeUnity.Core.Dtos.SharedFeatures.Authentication.ForgetPasswordFeatures;
+using CollegeUnity.Core.Entities;
+using CollegeUnity.Contract.StudentFeatures.Account;
+using CollegeUnity.Services.StudentFeatures.Account;
 
 namespace CollegeUnity.API.Controllers.Authentication
 {
@@ -13,68 +24,122 @@ namespace CollegeUnity.API.Controllers.Authentication
     public class AuthenticationController : ControllerBase
     {
         private readonly IConfiguration _config;
-        private readonly IServiceManager _serviceManager;
+        private readonly ILoginFeatures _loginFeature;
+        private readonly IForgetPasswordFeatures _forgetPasswordFeatures;
+        private readonly ISignUpFeatures _signUpFeatures;
 
-        public AuthenticationController(IConfiguration configuration, IServiceManager serviceManager)
+        public AuthenticationController(
+            IConfiguration configuration,
+            ILoginFeatures loginFeature,
+            IForgetPasswordFeatures forgetPasswordFeatures,
+            ISignUpFeatures signUpFeatures)
         {
             _config = configuration;
-            _serviceManager = serviceManager;
+            _loginFeature = loginFeature;
+            _forgetPasswordFeatures = forgetPasswordFeatures;
+            _signUpFeatures = signUpFeatures;
         }
 
         [HttpPost("student/login")]
         public async Task<IActionResult> StudentLogin([FromForm] StudentLoginDto student)
         {
-            var result = await _serviceManager.AuthenticationService.Login(student);
+            var result = await _loginFeature.Login(student);
             if (result.IsSuccess)
             {
-                var response = ApiResponse<StudentLoginDto>.Success(data: (StudentLoginDto)result);
+                var response = ApiResponse<LoginResultDto>.Success(data: result);
                 return new JsonResult(response);
             }
             else
             {
-                string errors = "";
+                string errors = string.Empty;
                 foreach (var msg in result.ErrorMessages) errors += msg;
-                var response = ApiResponse<StudentLoginDto>.NotFound(errors);
+
+                var response = ApiResponse<LoginResultDto>.NotFound(errors);
                 return new JsonResult(response);
             }
-
         }
 
-        [HttpPost("staff/login1")]
+        [HttpPost("student/SignUp")]
+        public async Task<IActionResult> StudentSignUp([FromForm] StudentSignUpDto student)
+        {
+            var result = await _signUpFeatures.SignUpStudent(student);
+
+            return new JsonResult(result);
+        }
+
+        [HttpPost("staff/login")]
         public async Task<IActionResult> StaffLogin([FromForm] StaffLoginDto staff)
         {
-            var result = await _serviceManager.AuthenticationService.Login(staff);
+            var result = await _loginFeature.Login(staff);
             if (result.IsSuccess)
             {
-                var response = ApiResponse<StaffLoginDto>.Success(data: (StaffLoginDto)result);
+                var response = ApiResponse<LoginResultDto>.Success(data: result);
                 return new JsonResult(response);
             }
             else
             {
-                string errors = "";
+                string errors = string.Empty;
                 foreach (var msg in result.ErrorMessages) errors += msg;
-                var response = ApiResponse<StaffLoginDto>.NotFound(errors);
+
+                var response = ApiResponse<LoginResultDto>.NotFound(errors);
                 return new JsonResult(response);
             }
-
         }
 
+        [HttpPost("ResetPassword/Code/Send{email}")]
+        public async Task<IActionResult> SendResetVerificationCode(string email)
+        {
+            var result = await _forgetPasswordFeatures.SendResetPasswordCode(email);
 
+            var response = result.IsSuccess ?
+                  ApiResponse<ForgetPasswordFeatureResultDto>.Success(result, result.Message) :
+                  ApiResponse<ForgetPasswordFeatureResultDto>.BadRequest(result.Message);
 
+            return new JsonResult(response);
+        }
 
+        [HttpPost("ResetPassword/Code/Validate{code}")]
+        [Authorize(Roles = nameof(ForgetPasswordRoles.CodeSent))]
+        public async Task<IActionResult> ValidateVerificationCode(string code)
+        {
+            string email = this.HttpContext.User.FindFirst(CustomClaimTypes.Email)?.Value ?? string.Empty;
+
+            var result = await this._forgetPasswordFeatures.ValidateVerificationCode(email, code);
+
+            var response = result.IsSuccess ?
+                  ApiResponse<ForgetPasswordFeatureResultDto>.Success(result, result.Message) :
+                  ApiResponse<ForgetPasswordFeatureResultDto>.BadRequest(result.Message);
+
+            return new JsonResult(response);
+        }
+
+        [Authorize(Roles = nameof(ForgetPasswordRoles.ResetAllowed))]
+        [HttpPost("ResetPassword/{newPassword}")]
+        public async Task<IActionResult> ResetPassword(string newPassword)
+        {
+            string email = this.HttpContext.User.FindFirst(CustomClaimTypes.Email)?.Value ?? string.Empty;
+
+            var result = await this._forgetPasswordFeatures.ResetPassword(email, newPassword);
+
+            var response = result.IsSuccess ?
+                  ApiResponse<ForgetPasswordFeatureResultDto>.Success(result, result.Message) :
+                  ApiResponse<ForgetPasswordFeatureResultDto>.BadRequest(result.Message);
+
+            return new JsonResult(response);
+        }
 
         [HttpGet("Test/Student/IsAuthenticated")]
         [Authorize(Roles = nameof(Roles.Student))]
         public IActionResult Test()
         {
-            return Ok(AuthenticationService.GetUserClaims(HttpContext));
+            return Ok(JwtHelpers.GetUserClaims(HttpContext));
         }
 
         [HttpGet("Test/Staff/IsAuthenticated")]
         [Authorize(Roles = $"{nameof(Roles.Admin)},{nameof(Roles.Teacher)}")]
         public IActionResult TeststaffAuth()
         {
-            return Ok(AuthenticationService.GetUserClaims(HttpContext));
+            return Ok(JwtHelpers.GetUserClaims(HttpContext));
         }
 
     }
