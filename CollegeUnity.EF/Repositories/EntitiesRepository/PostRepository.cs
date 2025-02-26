@@ -15,5 +15,13 @@ namespace CollegeUnity.EF.Repositories.EntitiesRepository
         public PostRepository(CollegeUnityDbContext context) : base(context)
         {
         }
+
+        public async Task<bool> isMyPost(int staffId, int postId)
+        {
+            var post = await _dbContext.Posts
+                .FirstOrDefaultAsync(p => p.Id == postId && p.StaffId == staffId);
+
+            return post != null;
+        }
     }
 }

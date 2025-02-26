@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Core.Dtos.QueryStrings
 {
-    public class StudentSubjectPostParameters : QueryStringParameters
+    public class SubjectPostParameters : QueryStringParameters
     {
         [Required]
         public Major ForMajor { get; set; }

@@ -95,7 +95,7 @@ namespace CollegeUnity.Services.PostServices
             return posts.ToGPostMappers<GBatchPostDto>();
         }
 
-        public async Task<IEnumerable<GStudentBatchPost>> GetSubjectPostsForStudent(StudentSubjectPostParameters parameters)
+        public async Task<IEnumerable<GStudentBatchPost>> GetSubjectPostsForStudent(SubjectPostParameters parameters)
         {
             List<int> subjects = await _subjectsServices.GetStudentSubject(parameters.ForLevel, parameters.ForMajor, parameters.ForAcceptanceType);
             IEnumerable<Post> posts = await _repositoryManager.PostRepository.GetRangeByConditionsAsync(

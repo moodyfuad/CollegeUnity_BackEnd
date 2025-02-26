@@ -9,13 +9,20 @@ namespace CollegeUnity.Contract.Services_Contract.ServiceAbstraction
 {
     public interface IPostServices
     {
+        //Done
         public Task CreatePublicPostAsync(CPublicPostDto dto);
+        //Done
         public Task<IEnumerable<GPublicPostDto>> GetPublicPostAsync(PublicPostParameters postParameters);
+        //Done
         public Task<IEnumerable<GBatchPostDto>> GetPublicAndBatchPostAsync(PublicAndBatchPostParameters batchPostParameters);
+        //Done
         public Task CreateBatchPostAsync(CBatchPostDto dto);
+        //Done
         public Task CreateSubjectPostAsync(CSubjectPostDto dto);
-        public Task<IEnumerable<GStudentBatchPost>> GetSubjectPostsForStudent(StudentSubjectPostParameters parameters);
+        //Done
+        public Task<IEnumerable<GStudentBatchPost>> GetSubjectPostsForStudent(SubjectPostParameters parameters);
         public Task<bool> UpdateAsync();
+        //Done
         public Task<bool> DeleteAsync();
     }
 }
