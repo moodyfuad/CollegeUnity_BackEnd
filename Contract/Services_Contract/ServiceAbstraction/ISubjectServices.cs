@@ -13,13 +13,19 @@ namespace CollegeUnity.Contract.Services_Contract.ServiceAbstraction
 {
     public interface ISubjectServices
     {
+        //Done
         Task<bool> CreateSubjectAsync(CSubjectDto dto);
+        //Done
         Task<bool> DeleteSubjectAsync(int Id);
+        //Done
         Task<IEnumerable<GSubjectDto>?> GetAllAsync(SubjectParameters subjectParameters);
+        //Done
         Task<bool> UpdateSubjectAsync(SubjectDto dto);
+        //Done
         Task<bool> IsExistAsync(int Id);
         Task<bool> SubjectStudyCheck(int subjectId, int teacherId);
         Task<List<int>> GetStudentSubject(Level level, Major major, AcceptanceType acceptanceType);
+        //Done
         Task<IEnumerable<GSubjectDto>?> GetSubjectsByName(GetSubjectByNameParameters parameters);
 
     }

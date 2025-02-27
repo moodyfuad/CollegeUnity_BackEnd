@@ -1,0 +1,44 @@
+﻿using CollegeUnity.Contract.EF_Contract;
+using CollegeUnity.Contract.StaffFeatures.Posts.PostFiles;
+using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Helpers;
+using CollegeUnity.Core.MappingExtensions.PostFilesExtensions;
+using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CollegeUnity.Contract.SharedFeatures.Posts.PostFiles
+{
+    public class PostFilesFeatures : IPostFilesFeatures
+    {
+        private readonly IRepositoryManager _repositoryManager;
+        public PostFilesFeatures(IRepositoryManager repositoryManager)
+        {
+            _repositoryManager = repositoryManager;
+        }
+
+        //Check on it
+        public async Task CreatePostFiles(IEnumerable<IFormFile> files, int postId)
+        {
+            List<PostFile> posts = await MappingFormToFile(files, postId);
+            await _repositoryManager.PostFilesRepository.AddRangeAsync(posts);
+            await _repositoryManager.SaveChangesAsync();
+        }
+
+        //Check on it
+        private async Task<List<PostFile>> MappingFormToFile(IEnumerable<IFormFile> files, int postId)
+        {
+            List<PostFile> postFiles = new List<PostFile>();
+            foreach (var file in files)
+            {
+                PostFile postFile = file.ToPostFile<PostFile>(postId);
+                postFiles.Add(postFile);
+                await FileExtentionhelper.SaveFileAsync(postFile.Path, file);
+            }
+            return postFiles;
+        }
+    }
+}

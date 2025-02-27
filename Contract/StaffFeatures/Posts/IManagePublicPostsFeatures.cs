@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CollegeUnity.Core.Dtos.PostDtos.Create;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,5 +10,6 @@ namespace CollegeUnity.Contract.StaffFeatures.Posts
     public interface IManagePublicPostsFeatures
     {
         // C,U,D
+        public Task CreatePublicPostAsync(CPublicPostDto dto);
     }
 }
