@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Services.StudentFeatures.Subject
 {
-    public class StudentSubject : IStudentSubjectFeatures
+    public class StudentSubjectFeatures : IStudentSubjectFeatures
     {
         private readonly IRepositoryManager _repositoryManager;
-        public StudentSubject(IRepositoryManager repositoryManager)
+        public StudentSubjectFeatures(IRepositoryManager repositoryManager)
         {
             _repositoryManager = repositoryManager;
         }

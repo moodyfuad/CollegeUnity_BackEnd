@@ -16,7 +16,7 @@ namespace CollegeUnity.Contract.StaffFeatures.Subject
         Task<IEnumerable<GSubjectDto>?> GetAllAsync(SubjectParameters subjectParameters);
         Task<bool> UpdateSubjectAsync(SubjectDto dto);
         //Task<bool> IsExistAsync(int Id);
-        //Task<bool> SubjectStudyCheck(int subjectId, int teacherId);
+        Task<bool> SubjectStudyCheck(int subjectId, int teacherId);
         Task<IEnumerable<GSubjectDto>?> GetSubjectsByName(GetSubjectByNameParameters parameters);
     }
 }

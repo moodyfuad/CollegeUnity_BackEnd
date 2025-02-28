@@ -16,5 +16,10 @@ namespace CollegeUnity.EF.Repositories.EntitiesRepository
         {
             _context = context;
         }
+
+        public async Task AddRangeAsync(IEnumerable<PostVote> votes)
+        {
+            await _context.PostVotes.AddRangeAsync(votes);
+        }
     }
 }

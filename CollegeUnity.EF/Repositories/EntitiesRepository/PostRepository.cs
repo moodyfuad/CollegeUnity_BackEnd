@@ -11,14 +11,22 @@ namespace CollegeUnity.EF.Repositories.EntitiesRepository
 {
     public class PostRepository : BaseRepository<Post>, IPostRepository
     {
-        private readonly CollegeUnityDbContext _dbContext;
+        private readonly CollegeUnityDbContext _context;
         public PostRepository(CollegeUnityDbContext context) : base(context)
         {
+            _context = context;
+        }
+
+        public async Task<bool> isExist(int postId)
+        {
+            var post = await _context.Posts.FirstOrDefaultAsync(p => p.Id == postId);
+
+            return post != null;
         }
 
         public async Task<bool> isMyPost(int staffId, int postId)
         {
-            var post = await _dbContext.Posts
+            var post = await _context.Posts
                 .FirstOrDefaultAsync(p => p.Id == postId && p.StaffId == staffId);
 
             return post != null;

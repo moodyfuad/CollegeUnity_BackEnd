@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Contract.StaffFeatures.Posts
 {
-    public interface IDeletePost
+    public interface IBasePost
     {
         public Task<bool> DeleteAsync(int staffId, int postId);
     }
