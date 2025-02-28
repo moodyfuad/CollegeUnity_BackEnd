@@ -166,7 +166,7 @@ namespace CollegeUnity.API.Controllers.Post
         //}
         #endregion
 
-        #region Refactoring the code Getting Features
+        #region After Refactoring the code Getting Features
         [HttpGet("Public")]
         public async Task<IActionResult> GetPublicPost([FromQuery] PublicPostParameters postParameters)
         {

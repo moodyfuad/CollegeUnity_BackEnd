@@ -27,7 +27,8 @@ namespace CollegeUnity.Services.SharedFeatures.Posts
                 postParameters,
                 [
                     i => i.PostFiles,
-                    i => i.Staff
+                    i => i.Staff,
+                    i => i.Votes
                 ]
             );
 

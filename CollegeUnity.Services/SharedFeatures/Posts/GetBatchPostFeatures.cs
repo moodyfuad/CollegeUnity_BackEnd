@@ -29,7 +29,8 @@ namespace CollegeUnity.Services.SharedFeatures.Posts
                 batchPostParameters,
                 [
                     i => i.PostFiles,
-                    i => i.Staff
+                    i => i.Staff,
+                    i => i.Votes
                 ]);
             return posts.ToGPostMappers<GBatchPostDto>();
         }
