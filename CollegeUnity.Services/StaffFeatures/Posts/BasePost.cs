@@ -40,12 +40,16 @@ namespace CollegeUnity.Services.StaffFeatures.Posts
 
         public async Task<bool> DeleteAsync(int staffId, int postId)
         {
-            bool isExist = await _repositoryManager.PostRepository.isMyPost(staffId, postId);
+            //Check if the post belongs to the staff
+            Post post = await _repositoryManager.PostRepository.GetByConditionsAsync(
+                i => i.Id == postId && i.StaffId == staffId,
+                p => p.PostFiles
+            );
 
-            if (isExist)
+            if (post != null)
             {
-                Post post = await _repositoryManager.PostRepository.GetByIdAsync(postId);
                 await _repositoryManager.PostRepository.Delete(post);
+                await _repositoryManager.SaveChangesAsync();
                 return true;
             }
             return false;
@@ -53,17 +57,21 @@ namespace CollegeUnity.Services.StaffFeatures.Posts
 
         public async Task<bool> UpdatePostAsync(int postId, int staffId, UUpdatePostDto dto)
         {
-            bool isExist = await _repositoryManager.PostRepository.isMyPost(staffId, postId);
+            //Check if the post belongs to the staff
+            Post post = await _repositoryManager.PostRepository.GetByConditionsAsync(
+                i => i.Id == postId && i.StaffId == staffId,
+                p => p.PostFiles
+            );
 
-            if (isExist)
+            if (post != null)
             {
-                Post post = await _repositoryManager.PostRepository.GetByConditionsAsync(null, p => p.PostFiles);
                 post = post.GetPostUpdated(dto);
-                var picturesToRemove = post.PostFiles.Where(p => !dto.ExistingPictureIds.Contains(p.Id)).ToList();
+                var picturesToKeep = post.PostFiles.Where(p => dto.ExistingPictureIds.Contains(p.Id)).ToList();
 
-                foreach (var picture in picturesToRemove)
+                foreach (var picture in picturesToKeep)
                 {
                     post.PostFiles.Remove(picture);
+                    await _repositoryManager.PostFilesRepository.Delete(picture);
                 }
 
                 await createPostFiles(dto.NewPictures, postId);
