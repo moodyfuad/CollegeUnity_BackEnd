@@ -1,16 +1,22 @@
-﻿using CollegeUnity.Contract.Services_Contract;
+﻿using CollegeUnity.API.Middlerware_Extentions;
+using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
 using CollegeUnity.Contract.SharedFeatures.Posts;
 using CollegeUnity.Contract.StaffFeatures.Posts;
 using CollegeUnity.Contract.StaffFeatures.Subject;
+using CollegeUnity.Core.Constants.AuthenticationConstants;
 using CollegeUnity.Core.Dtos.PostDtos.Create;
 using CollegeUnity.Core.Dtos.PostDtos.Get;
+using CollegeUnity.Core.Dtos.PostDtos.Update;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.MappingExtensions.PostExtensions.Get;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CollegeUnity.API.Controllers.Post
 {
@@ -30,6 +36,8 @@ namespace CollegeUnity.API.Controllers.Post
 
         private readonly IManageSubjectFeatures _manageSubjectFeatures;
 
+        private readonly IBasePost _basePost;
+
 
         public PostController(IServiceManager serviceManager)
         {
@@ -44,6 +52,8 @@ namespace CollegeUnity.API.Controllers.Post
             _manageSubjectPostsFeatures = serviceManager.manageSubjectPostsFeatures;
 
             _manageSubjectFeatures = serviceManager.manageSubjectFeatures;
+
+            _basePost = serviceManager.basePost;
         }
 
         #region Before Refactoring the create features
@@ -203,5 +213,23 @@ namespace CollegeUnity.API.Controllers.Post
             return new JsonResult(ApiResponse<IEnumerable<GStudentBatchPost>?>.NotFound("No Posts yet."));
         }
         #endregion
+
+        [Authorize(Policy = PolicyNames.DeanOnly)]
+        [HttpPut("Post/Update/{postId}")]
+        public async Task<IActionResult> UpdateMyPost(int postId, [FromForm]UUpdatePostDto dto)
+        {
+            var staffId = User.GetUserId();
+
+            if (dto.ExistingPictureIds.Count < 4 && (dto.NewPictures.Count - dto.ExistingPictureIds.Count) == 0)
+            {
+                if (await _basePost.UpdatePostAsync(postId, staffId, dto))
+                {
+                    return new JsonResult(ApiResponse<bool?>.Success(null));
+                }
+                return new JsonResult(ApiResponse<bool?>.Unauthorized("Post is not yours."));
+            }
+
+            return new JsonResult(ApiResponse<bool?>.NotFound("The uploaded pictures not true, try again."));
+        }
     }
 }

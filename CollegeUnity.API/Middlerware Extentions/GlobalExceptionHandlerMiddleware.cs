@@ -1,4 +1,6 @@
-﻿using CollegeUnity.Core.Entities.Errors;
+﻿using CollegeUnity.Core.Dtos.ResponseDto;
+using CollegeUnity.Core.Entities.Errors;
+using System.Text.Json;
 
 namespace CollegeUnity.API.Middlerware_Extentions
 {
@@ -25,13 +27,22 @@ namespace CollegeUnity.API.Middlerware_Extentions
 
         private static async Task HandleExceptionAsync(HttpContext httpContext, Exception exception)
         {
-            httpContext.Response.ContentType = "application/json";
-            httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            await httpContext.Response.WriteAsJsonAsync(new ErrorDetails
+            ApiResponse<object> response;
+
+            switch (exception)
             {
-                Message = "Something went wrong!",
-                StatusCode = httpContext.Response.StatusCode,
-            });
+                case UnauthorizedAccessException:
+                    response = ApiResponse<object>.Unauthorized(exception.Message);
+                    httpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    break;
+                default:
+                    response = ApiResponse<object>.InternalServerError(exception.Message);
+                    httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                    break;
+            }
+
+            httpContext.Response.ContentType = "application/json";
+            httpContext.Response.WriteAsync(JsonSerializer.Serialize(response));
         }
     }
 

@@ -2,7 +2,10 @@
 using CollegeUnity.Contract.StaffFeatures.Posts;
 using CollegeUnity.Contract.StaffFeatures.Posts.PostFiles;
 using CollegeUnity.Contract.StaffFeatures.Posts.PostsVotes;
+using CollegeUnity.Core.Dtos.PostDtos.Update;
 using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Helpers;
+using CollegeUnity.Core.MappingExtensions.PostExtensions.Update;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -46,6 +49,30 @@ namespace CollegeUnity.Services.StaffFeatures.Posts
                 return true;
             }
             return false;
+        }
+
+        public async Task<bool> UpdatePostAsync(int postId, int staffId, UUpdatePostDto dto)
+        {
+            bool isExist = await _repositoryManager.PostRepository.isMyPost(staffId, postId);
+
+            if (isExist)
+            {
+                Post post = await _repositoryManager.PostRepository.GetByConditionsAsync(null, p => p.PostFiles);
+                post = post.GetPostUpdated(dto);
+                var picturesToRemove = post.PostFiles.Where(p => !dto.ExistingPictureIds.Contains(p.Id)).ToList();
+
+                foreach (var picture in picturesToRemove)
+                {
+                    post.PostFiles.Remove(picture);
+                }
+
+                await createPostFiles(dto.NewPictures, postId);
+                await _repositoryManager.PostRepository.Update(post);
+                await _repositoryManager.SaveChangesAsync();
+                return true;
+            }
+            return false;
+
         }
     }
 }

@@ -38,6 +38,6 @@ namespace CollegeUnity.Contract.StaffFeatures.Posts
             {
                 await createPostVotes(dto.Votes, post.Id);
             }
-        }
+        }        
     }
 }
