@@ -86,6 +86,18 @@ namespace CollegeUnity.Services.StaffFeatures.Subjects
             return subjectDtos;
         }
 
+        public async Task<bool> SubjectStudyCheck(int subjectId, int teacherId)
+        {
+            Subject subject = await _repositoryManager.SubjectRepository.GetByConditionsAsync(
+                condition: s => s.TeacherId == teacherId && s.Id == subjectId
+            );
+
+            if (subject != null)
+                return true;
+            else
+                return false;
+        }
+
         public async Task<IEnumerable<GSubjectDto>> GetAllAsync(SubjectParameters subjectParameters)
         {
             IEnumerable<Subject> subjects = await _repositoryManager.SubjectRepository.GetRangeAsync(

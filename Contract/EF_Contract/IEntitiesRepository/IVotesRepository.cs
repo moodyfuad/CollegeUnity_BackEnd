@@ -9,5 +9,6 @@ namespace CollegeUnity.Contract.EF_Contract.IEntitiesRepository
 {
     public interface IVotesRepository : IBaseRepository<PostVote>
     {
+        Task AddRangeAsync(IEnumerable<PostVote> votes);
     }
 }

@@ -32,7 +32,8 @@ namespace CollegeUnity.Core.MappingExtensions.PostExtensions.Get
                     Name = $"{post.Staff.FirstName} {post.Staff.MiddleName} {post.Staff.LastName}",
                     EducationDegree = post.Staff.EducationDegree
                 },
-                PostFiles = post.PostFiles?.Select(p => p.Path).ToList()
+                PostFiles = post.PostFiles?.Select(p => p.Path).ToList(),
+                Votes = post.Votes?.Select(p => p.Name).ToList()
             };
 
             if (dto is GPublicPostDto publicPostDto)

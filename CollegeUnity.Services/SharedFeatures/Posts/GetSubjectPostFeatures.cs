@@ -32,7 +32,8 @@ namespace CollegeUnity.Services.SharedFeatures.Posts
                 [
                     i => i.PostFiles,
                     i => i.Staff,
-                    i => i.Subject
+                    i => i.Subject,
+                    i => i.Votes
                 ]);
             return posts.ToGPostMappers<GStudentBatchPost>();
         }

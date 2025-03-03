@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Contract.StaffFeatures.Posts
 {
-    public interface IManagePublicPostsFeatures
+    public interface IManagePublicPostsFeatures : IBasePost
     {
         // C,U,D
         public Task CreatePublicPostAsync(CPublicPostDto dto);

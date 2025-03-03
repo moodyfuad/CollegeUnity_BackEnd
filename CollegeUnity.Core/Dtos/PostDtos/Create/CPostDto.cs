@@ -20,5 +20,6 @@ namespace CollegeUnity.Core.Dtos.PostDtos.Create
         [Required]
         public required int StaffId { get; set; }
         public List<IFormFile>? PictureFiles { get; set; }
+        public List<string>? Votes { get; set; }
     }
 }

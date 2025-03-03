@@ -32,7 +32,7 @@ builder.Services.AddControllers(options =>
 builder.Services.AddDbContext<CollegeUnityDbContext>(options =>
 {
     //options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Local"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("FaisalLocal"));
 });
 
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Contract.StaffFeatures.Posts
 {
-    public interface IManageBatchPostsFeatures
+    public interface IManageBatchPostsFeatures : IBasePost
     {
         // Add, Delete, Edit
         public Task CreateBatchPostAsync(CBatchPostDto dto);

@@ -43,10 +43,16 @@ namespace CollegeUnity.Core.Dtos.ResponseDto
             return new ApiResponse<T?>(404, false, message);
         }
 
-        public static ApiResponse<T?> InternalServerError(string message = "An unexpected error occurred.", List<string> errors = null)
+        public static ApiResponse<T> Unauthorized(string message = "Unauthorized access.")
         {
-            return new ApiResponse<T?>(500, false, message, default, errors);
+            return new ApiResponse<T>(401, false, message);
+        }
+
+        public static ApiResponse<T> InternalServerError(string message = "An unexpected error occurred.", List<string> errors = null)
+        {
+            return new ApiResponse<T>(500, false, message, default, errors);
         }
     }
-
 }
+
+

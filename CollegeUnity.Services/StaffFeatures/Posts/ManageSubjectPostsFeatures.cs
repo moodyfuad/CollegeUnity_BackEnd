@@ -1,5 +1,6 @@
 ﻿using CollegeUnity.Contract.EF_Contract;
 using CollegeUnity.Contract.StaffFeatures.Posts.PostFiles;
+using CollegeUnity.Contract.StaffFeatures.Posts.PostsVotes;
 using CollegeUnity.Core.Dtos.PostDtos.Create;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.MappingExtensions.PostExtensions.Create;
@@ -12,9 +13,12 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Contract.StaffFeatures.Posts
 {
-    public class ManageSubjectPostsFeatures : ManagePost, IManageSubjectPostsFeatures
+    public class ManageSubjectPostsFeatures : BasePost, IManageSubjectPostsFeatures
     {
-        public ManageSubjectPostsFeatures(IRepositoryManager repositoryManager, IPostFilesFeatures postFilesFeatures) : base(postFilesFeatures, repositoryManager)
+        public ManageSubjectPostsFeatures(
+            IRepositoryManager repositoryManager, 
+            IPostFilesFeatures postFilesFeatures,
+            IPostVoteFeatures postVoteFeatures) : base(repositoryManager, postFilesFeatures, postVoteFeatures)
         {
         }
         public async Task CreateSubjectPostAsync(CSubjectPostDto dto)
@@ -26,6 +30,11 @@ namespace CollegeUnity.Contract.StaffFeatures.Posts
             if (dto.PictureFiles != null)
             {
                 await createPostFiles(dto.PictureFiles, post.Id);
+            }
+
+            if (dto.Votes != null)
+            {
+                await createPostVotes(dto.Votes, post.Id);
             }
         }
     }

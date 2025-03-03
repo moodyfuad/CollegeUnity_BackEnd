@@ -125,37 +125,57 @@ namespace CollegeUnity.Services.SharedFeatures.Authentication
         {
             var claims = new List<Claim>()
             {
-            new Claim(CustomClaimTypes.Id, user.Id.ToString()),
-            new Claim(CustomClaimTypes.FirstName, user.FirstName),
-            new Claim(CustomClaimTypes.MiddleName, user.MiddleName),
-            new Claim(CustomClaimTypes.LastName, user.LastName),
-            new Claim(CustomClaimTypes.FullName, $"{user.FirstName} {user.MiddleName} {user.LastName}"),
-            new Claim(CustomClaimTypes.Gender, user.Gender.ToString()),
-            new Claim(CustomClaimTypes.Email, user.Email),
-            new Claim(CustomClaimTypes.BirthDate, user.BirthDate.ToString()),
-            new Claim(CustomClaimTypes.AccountStatus, user.AccountStatus.ToString()),
-            new Claim(CustomClaimTypes.PhoneNumber, user.Phone.ToString()),
-            new Claim(CustomClaimTypes.RoleName, GetUserRoleName(user)),
-        };
+                new Claim(CustomClaimTypes.Id, user.Id.ToString()),
+                new Claim(CustomClaimTypes.FirstName, user.FirstName),
+                new Claim(CustomClaimTypes.MiddleName, user.MiddleName),
+                new Claim(CustomClaimTypes.LastName, user.LastName),
+                new Claim(CustomClaimTypes.FullName, $"{user.FirstName} {user.MiddleName} {user.LastName}"),
+                new Claim(CustomClaimTypes.Gender, user.Gender.ToString()),
+                new Claim(CustomClaimTypes.Email, user.Email),
+                new Claim(CustomClaimTypes.BirthDate, user.BirthDate.ToString()),
+                new Claim(CustomClaimTypes.AccountStatus, user.AccountStatus.ToString()),
+                new Claim(CustomClaimTypes.PhoneNumber, user.Phone.ToString()),
+            };
+            var roles = GetUserRoleNames(user);
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(CustomClaimTypes.RoleName, role));
+            }
             claims.AddRange(GetUserRoleClaims(user));
             return claims;
         }
 
-        private static string GetUserRoleName(User user)
+        #region Privous code that change the role name because of the comma (,)
+        //private static string GetUserRoleName(User user)
+        //{
+        //    switch (user)
+        //    {
+        //        case Student student:
+        //            return Roles.Student.AsString();
+        //        case Staff staff:
+        //            var roles = string.Empty;
+        //            foreach (var role in staff.Roles)
+        //            {
+        //                roles += role.AsString() + ",";
+        //            }
+
+        //            return roles;
+        //        default: return "No Role";
+        //    }
+        //}
+        #endregion
+        private static List<string> GetUserRoleNames(User user)
         {
             switch (user)
             {
                 case Student student:
-                    return Roles.Student.AsString();
-                case Staff staff:
-                    var roles = string.Empty;
-                    foreach (var role in staff.Roles)
-                    {
-                        roles += role.AsString() + ",";
-                    }
+                    return new List<string> { Roles.Student.AsString() };
 
-                    return roles;
-                default: return "No Role";
+                case Staff staff:
+                    return staff.Roles.Select(role => role.AsString()).ToList();
+
+                default:
+                    return new List<string> { "No Role" };
             }
         }
 

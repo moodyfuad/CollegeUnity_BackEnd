@@ -18,6 +18,7 @@ namespace CollegeUnity.Core.Dtos.PostDtos.Get
         public DateTime? EditedAt { get; set; }
         public StaffInfo Staff { get; set; }
         public IEnumerable<string>? PostFiles { get; set; }
+        public IEnumerable<string>? Votes { get; set; }
 
         public class StaffInfo
         {
