@@ -38,16 +38,16 @@ builder.Services.AddDbContext<CollegeUnityDbContext>(options =>
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 builder.Services.AddScoped<IServiceManager, ServiceManager>();
 builder.Services.AddScoped<IEmailServices, EmailServices>();
+//builder.Services.AddScoped<IServiceManager, ServiceManager>();
 
-// shared features
-builder.Services.AddScoped<ILoginFeatures, LoginFeatures>();
-builder.Services.AddScoped<IForgetPasswordFeatures, ForgetPasswordFeatures>();
+//filters registration
+//builder.Services.AddScoped<ValidateExistActionFilter>();
 
-// student features
-builder.Services.AddScoped<ISignUpFeatures, SignUpFeature>();
+// Features DI
+builder.Services.AddFeaturesID();
 
 
-//jwt authentication
+// jwt authentication
 builder.Services.AddCustomJwtAuthentication(builder.Configuration);
 
 builder.Services.AddEndpointsApiExplorer();

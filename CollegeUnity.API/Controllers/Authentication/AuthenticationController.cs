@@ -2,20 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using CollegeUnity.Core.Enums;
 using CollegeUnity.Core.Dtos.AuthenticationDtos;
-using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Contract.SharedFeatures.Authentication;
 using CollegeUnity.Services.SharedFeatures.Authentication;
 using CollegeUnity.Core.Dtos.SharedFeatures.Authentication.LoginFeatures;
 using CollegeUnity.Core.Dtos.AuthenticationServicesDtos;
-using System.Text.Json.Serialization;
-using System.Text.Json;
 using CollegeUnity.Core.Constants.AuthenticationConstants;
-using EmailService.Models;
 using CollegeUnity.Core.Dtos.SharedFeatures.Authentication.ForgetPasswordFeatures;
-using CollegeUnity.Core.Entities;
 using CollegeUnity.Contract.StudentFeatures.Account;
-using CollegeUnity.Services.StudentFeatures.Account;
 
 namespace CollegeUnity.API.Controllers.Authentication
 {

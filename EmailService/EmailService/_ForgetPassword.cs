@@ -14,13 +14,10 @@ namespace EmailService.EmailService
 {
     public partial class EmailServices
     {
-
-        
         private async Task<ForgetPasswordResultDto> _ForgetPassword(string name, string emailAddress, IConfiguration configuration)
         {
             try
             {
-                
                 var receiver = new ForgetPasswordDto(emailAddress, name);
 
                 string subject = receiver.Subject;

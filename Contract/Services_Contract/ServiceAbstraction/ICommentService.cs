@@ -11,12 +11,12 @@ namespace CollegeUnity.Contract.Services_Contract.ServiceAbstraction
 {
     public interface ICommentService
     {
-        Task<AddCommentResultDto> AddComment(AddCommentDto addCommentDto);
+        //Task<AddCommentResultDto> AddComment(AddCommentDto addCommentDto);
 
-        Task<PagedList<GetPostCommentDto>> GetPostComments(GetPostCommentsParameters param);
+        //Task<PagedList<GetPostCommentDto>> GetPostComments(GetPostCommentsParameters param);
 
-        Task<EditCommentDto> EditComment(EditCommentDto editCommentDto);
+        //Task<EditCommentDto> EditComment(EditCommentDto editCommentDto);
 
-        Task<DeleteCommentResultDto> DeleteComment(int commentId);
+        //Task<DeleteCommentResultDto> DeleteComment(int commentId);
     }
 }

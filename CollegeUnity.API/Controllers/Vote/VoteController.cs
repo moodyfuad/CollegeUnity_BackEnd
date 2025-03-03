@@ -1,27 +1,34 @@
-﻿using CollegeUnity.Contract.Services_Contract;
+﻿using CollegeUnity.API.Filters;
+using CollegeUnity.Contract.Services_Contract;
+using CollegeUnity.Contract.SharedFeatures.Posts.Votes;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Dtos.VoteDtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Runtime.CompilerServices;
 
 namespace CollegeUnity.API.Controllers.Vote
 {
-    [Route("api/")]
+    [Route("api/Post/")]
     [ApiController]
     public class VoteController : ControllerBase
     {
-        private readonly IServiceManager _services;
+        private readonly IVoteFeatures voteFeatures;
+        //private readonly IServiceManager _serviceManager;
 
-        public VoteController(IServiceManager services)
+        public VoteController(IVoteFeatures voteFeatures)
         {
-            _services = services;
+            this.voteFeatures = voteFeatures;
+            //_serviceManager = serviceManager;
         }
 
-        [HttpPost("posts/votes/user")]
-        public async Task<IActionResult> AddVoteToPost([FromQuery] VoteInPostDto dto)
+        [HttpPost("Vote")]
+        //[ServiceFilter(typeof(ValidateExistActionFilter))]
+        [ValidateEntityExist("postid")]
+        public async Task<IActionResult> AddVoteToPost(int postId, [FromQuery] VoteInPostDto dto)
         {
-            var result = await _services.VoteService.VoteInPost(dto);
+            var result = await voteFeatures.VoteInPost(dto);
 
             if (result.IsSuccess)
             {
@@ -35,10 +42,12 @@ namespace CollegeUnity.API.Controllers.Vote
             }
         }
 
-        [HttpGet("posts/votes")]
-        public async Task<IActionResult> GetVotes([FromQuery] GetPostVotesParameters parameters)
+        [HttpGet("{postId}/Votes")]
+        //[ServiceFilter(typeof(ValidateExistActionFilter))]
+        [ValidateEntityExist("postid")]
+        public async Task<IActionResult> GetVotes(int postId, [FromQuery] GetPostVotesParameters parameters)
         {
-            var result = await _services.VoteService.GetPostVotes(parameters);
+            var result = await voteFeatures.GetPostVotes(parameters);
 
             return new JsonResult(result);
         }

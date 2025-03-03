@@ -23,7 +23,7 @@ namespace CollegeUnity.Contract.Services_Contract
         IPostServices PostServices { get; }
         IStaffServices StaffServices { get; }
         IPostFilesServices PostFilesServices { get; }
-        ICommentService CommentService { get; }
+        //ICommentService CommentService { get; }
         IVoteService VoteService { get; }
 
         #region Get Posts Features

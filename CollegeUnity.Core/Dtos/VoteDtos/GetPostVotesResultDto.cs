@@ -57,7 +57,7 @@ namespace CollegeUnity.Core.Dtos.VoteDtos
             public int Id { get; }
             public string Value { get; }
 
-            public int Percentage { get; }
+            public float Percentage { get; }
 
             public List<SelectedBy> selectedBy { get; }
 
@@ -66,7 +66,7 @@ namespace CollegeUnity.Core.Dtos.VoteDtos
                 Id = id;
                 Value = value;
                 this.selectedBy = selectedBy;
-                Percentage = (int)Math.Ceiling(((double)selectedBy.Count / totalVotes) * 100);
+                Percentage = (float)Math.Round(((double)selectedBy.Count / totalVotes) * 100,1);
             }
 
 
