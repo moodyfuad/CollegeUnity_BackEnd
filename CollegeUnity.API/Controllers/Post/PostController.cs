@@ -89,7 +89,7 @@ namespace CollegeUnity.API.Controllers.Post
         }
 
         [HttpGet("Batch")]
-        public async Task<IActionResult> GetStudentBatchPost([FromQuery] StudentSubjectPostParameters postParameters)
+        public async Task<IActionResult> GetStudentBatchPost([FromQuery] SubjectPostParameters postParameters)
         {
             var posts = await _postServices.GetSubjectPostsForStudent(postParameters);
             if (posts.Count() > 0)

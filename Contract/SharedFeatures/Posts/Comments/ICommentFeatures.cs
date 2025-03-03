@@ -1,4 +1,7 @@
-﻿ using System;
+﻿using CollegeUnity.Core.Dtos.CommentDtos;
+using CollegeUnity.Core.Dtos.QueryStrings;
+using CollegeUnity.Core.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +11,12 @@ namespace CollegeUnity.Contract.SharedFeatures.Posts.Comments
 {
      public interface ICommentFeatures
     {
-        // get, add, edit, delete
+        Task<AddCommentResultDto> AddComment(AddCommentDto addCommentDto);
+
+        Task<PagedList<GetPostCommentDto>> GetPostComments(GetPostCommentsParameters param);
+
+        Task<EditCommentDto> EditComment(EditCommentDto editCommentDto);
+
+        Task<DeleteCommentResultDto> DeleteComment(int commentId);
     }
 }

@@ -48,7 +48,7 @@ namespace CollegeUnity.Services
 
         public IPostFilesServices PostFilesServices => new PostFilesService(_repositoryManager);
 
-        public ICommentService CommentService => new CommentService(_repositoryManager);
+        //public ICommentService CommentService => new CommentService(_repositoryManager);
 
         public IVoteService VoteService => new VoteService(_repositoryManager);
 

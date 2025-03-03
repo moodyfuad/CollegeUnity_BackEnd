@@ -1,4 +1,6 @@
-﻿using CollegeUnity.Contract.Services_Contract;
+﻿using CollegeUnity.API.Filters;
+using CollegeUnity.Contract.Services_Contract;
+using CollegeUnity.Contract.SharedFeatures.Posts.Comments;
 using CollegeUnity.Core.Dtos.CommentDtos;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
@@ -13,21 +15,15 @@ using System.Text.Json.Serialization;
 
 namespace CollegeUnity.API.Controllers.Comment
 {
-    [Route("api/")]
+    [Route("api/post/{postId}/")]
     [ApiController]
-    public class CommentController : ControllerBase
+    public class CommentController(ICommentFeatures _commentFeatures) : ControllerBase
     {
-        private readonly IServiceManager _serviceManager;
-
-        public CommentController(IServiceManager serviceManager)
-        {
-            _serviceManager = serviceManager;
-        }
-
-        [HttpPost("post/comment/Create")]
+        [HttpPost("comment")]
+        [ValidateEntityExist("postid")]
         public async Task<IActionResult> PublishComment([FromBody] AddCommentDto dto)
         {
-            var result = await _serviceManager.CommentService.AddComment(dto);
+            var result = await _commentFeatures.AddComment(dto);
 
             if (result.IsSuccess)
             {
@@ -41,14 +37,16 @@ namespace CollegeUnity.API.Controllers.Comment
             }
         }
 
-        [HttpGet("post/comments")]
-        public async Task<IActionResult> GetPublishedPostComments([FromQuery] GetPostCommentsParameters parameters)
+        [HttpGet("comments")]
+        [ValidateEntityExist("postid")]
+
+        public async Task<IActionResult> GetPublishedPostComments(int postId,[FromQuery] GetPostCommentsParameters parameters)
         {
             if (!ModelState.IsValid)
 
                 return BadRequest("post id is required");
 
-            PagedList<GetPostCommentDto> result = await _serviceManager.CommentService.GetPostComments(parameters);
+            PagedList<GetPostCommentDto> result = await _commentFeatures.GetPostComments(parameters);
             var meta = new
             {
                 PageNumber = result.CurrentPage,
@@ -63,10 +61,10 @@ namespace CollegeUnity.API.Controllers.Comment
                 return new JsonResult(response);
         }
 
-        [HttpPut("post/comment/update")]
+        [HttpPut("comment/update")]
         public async Task<IActionResult> UpdateComment([FromBody] EditCommentDto dto)
         {
-            var result = await _serviceManager.CommentService.EditComment(dto);
+            var result = await _commentFeatures.EditComment(dto);
 
             if (result.IsSuccess.HasValue && result.IsSuccess.Value)
             {
@@ -80,10 +78,10 @@ namespace CollegeUnity.API.Controllers.Comment
             }
         }
 
-        [HttpDelete("post/comment/delete")]
+        [HttpDelete("comment")]
         public async Task<IActionResult> DeleteComment([FromQuery, Required] int id)
         {
-            var result = await _serviceManager.CommentService.DeleteComment(id);
+            var result = await _commentFeatures.DeleteComment(id);
 
             if (result.IsSuccess)
             {

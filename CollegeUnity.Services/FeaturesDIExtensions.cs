@@ -1,0 +1,35 @@
+﻿using CollegeUnity.Contract.SharedFeatures.Authentication;
+using CollegeUnity.Contract.SharedFeatures.Posts.Comments;
+using CollegeUnity.Contract.SharedFeatures.Posts.Votes;
+using CollegeUnity.Contract.StudentFeatures.Account;
+using CollegeUnity.Services.SharedFeatures.Authentication;
+using CollegeUnity.Services.SharedFeatures.Posts.Comments;
+using CollegeUnity.Services.SharedFeatures.Posts.Votes;
+using CollegeUnity.Services.StudentFeatures.Account;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CollegeUnity.Services
+{
+    public static class FeaturesDIExtensions
+    {
+        public static IServiceCollection AddFeaturesID(this IServiceCollection services)
+        {
+            // Shared Features
+            services.AddScoped<ILoginFeatures, LoginFeatures>();
+            services.AddScoped<IForgetPasswordFeatures, ForgetPasswordFeatures>();
+            services.AddScoped<ICommentFeatures, CommentFeatures>();
+            services.AddScoped<IVoteFeatures, VoteFeatures>();
+
+            // Student Features
+            services.AddScoped<ISignUpFeatures, SignUpFeature>();
+
+            // Staff Features
+            return services;
+        }
+    }
+}

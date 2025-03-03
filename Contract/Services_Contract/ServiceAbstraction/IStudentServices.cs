@@ -15,9 +15,9 @@ namespace CollegeUnity.Contract.Services_Contract.ServiceAbstraction
     public interface IStudentServices
     {
         Task<PagedList<Student>> GetStudentsAsync(StudentSearchParameters searchParameters);
+
         //Task<ForgetPasswordResultDto> SendResetPasswordRequest(string email);
-        Task<bool> CheckResetPasswordCode(string email, string code);
-        Task<bool> ResetPassword(string email, string code, string newPassword);
-            
+        //Task<bool> CheckResetPasswordCode(string email, string code);
+        //Task<bool> ResetPassword(string email, string code, string newPassword);
     }
 }

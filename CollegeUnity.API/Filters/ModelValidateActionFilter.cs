@@ -19,7 +19,6 @@ namespace CollegeUnity.API.Filters
             {
                 context.HttpContext.Response.StatusCode = StatusCodes.Status414UriTooLong;
             }
-            
         }
 
     }
