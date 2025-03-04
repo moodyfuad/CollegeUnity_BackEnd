@@ -1,6 +1,10 @@
-﻿using CollegeUnity.Contract.Services_Contract;
+﻿using CollegeUnity.API.Middlerware_Extentions;
+using CollegeUnity.Contract.Services_Contract;
+using CollegeUnity.Contract.StudentFeatures.Subjects;
 using CollegeUnity.Core.Dtos.AuthenticationDtos;
 using CollegeUnity.Core.Dtos.AuthenticationServicesDtos;
+using CollegeUnity.Core.Dtos.InterestedSubjectDtos;
+using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Dtos.StudentServiceDtos;
 using CollegeUnity.Core.Entities;
@@ -21,10 +25,12 @@ namespace CollegeUnity.API.Controllers.Student
     public class StudentController : ControllerBase
     {
         private readonly IServiceManager _serviceManager;
+        private readonly IStudentSubjectFeatures _studentSubjectFeatures;
 
-        public StudentController(IServiceManager serviceManager)
+        public StudentController(IServiceManager serviceManager, IStudentSubjectFeatures studentSubjectFeatures)
         {
             _serviceManager = serviceManager;
+            _studentSubjectFeatures = studentSubjectFeatures;
         }
 
 
@@ -34,6 +40,20 @@ namespace CollegeUnity.API.Controllers.Student
         //    string resultMsg = await _serviceManager.AuthenticationService.SignUp(student);
         //    return Ok(resultMsg);
         //}
+
+        [HttpGet("InterestedSubjects")]
+        public async Task<IActionResult> GetStudentIntresetedSubject(GetInterestedSubjectParameters parameters)
+        {
+            var studentId = User.GetUserId();
+            var interestesSubjects = await _studentSubjectFeatures.GetStudentIntrestedSubject(parameters, studentId);
+
+            if (interestesSubjects != null)
+            {
+                return new JsonResult(ApiResponse<IEnumerable<GInterestedSubjectDto>>.Success(interestesSubjects));
+            }
+            return new JsonResult(ApiResponse<IEnumerable<GInterestedSubjectDto>>.NotFound("No Resource yet."));
+        }
+
 
         [HttpPost("Search")]
         public async Task<IActionResult> StudentSearch([FromQuery] StudentSearchParameters searchParameters)

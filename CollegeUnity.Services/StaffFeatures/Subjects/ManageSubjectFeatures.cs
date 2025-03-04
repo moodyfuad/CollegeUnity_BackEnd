@@ -22,6 +22,11 @@ namespace CollegeUnity.Services.StaffFeatures.Subjects
             _repositoryManager = repositoryManager;
         }
 
+        private async Task<bool> isExistByIdAsync(int Id)
+        {
+            return await _repositoryManager.SubjectRepository.IsExistById(Id);
+        }
+
         private class CheckSubject
         {
             public string Name { get; internal set; }
@@ -52,9 +57,13 @@ namespace CollegeUnity.Services.StaffFeatures.Subjects
 
         public async Task<bool> DeleteSubjectAsync(int Id)
         {
-            await _repositoryManager.SubjectRepository.Delete(Id);
-            await _repositoryManager.SaveChangesAsync();
-            return true;
+            if (await isExistByIdAsync(Id))
+            {
+                await _repositoryManager.SubjectRepository.Delete(Id);
+                await _repositoryManager.SaveChangesAsync();
+                return true;
+            }
+            return false;
         }
 
         public async Task<bool> UpdateSubjectAsync(SubjectDto dto)

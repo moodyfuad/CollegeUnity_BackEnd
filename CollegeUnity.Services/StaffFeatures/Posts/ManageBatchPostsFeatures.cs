@@ -23,9 +23,9 @@ namespace CollegeUnity.Contract.StaffFeatures.Posts
         }
 
         // Add, Delete, Edit
-        public async Task CreateBatchPostAsync(CBatchPostDto dto)
+        public async Task CreateBatchPostAsync(CBatchPostDto dto, int staffId)
         {
-            Post post = dto.ToPost<Post>();
+            Post post = dto.ToPost<Post>(staffId);
             post = await _repositoryManager.PostRepository.CreateAsync(post);
             await _repositoryManager.SaveChangesAsync();
 

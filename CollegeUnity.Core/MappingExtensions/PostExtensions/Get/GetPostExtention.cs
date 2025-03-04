@@ -52,6 +52,11 @@ namespace CollegeUnity.Core.MappingExtensions.PostExtensions.Get
                 studentBatchPostDto.SubjectName = post.Subject.Name;
             }
 
+            if (dto is GSubjectPostDto subjectPostDto)
+            {
+                subjectPostDto.SubjectName = post.Subject.Name;
+            }
+
             return dto;
         }
         public static IEnumerable<T> ToGPostMappers<T>(this IEnumerable<Post> posts) where T : GPostDto, new()

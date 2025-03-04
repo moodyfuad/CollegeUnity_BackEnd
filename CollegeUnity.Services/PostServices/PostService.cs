@@ -29,9 +29,9 @@ namespace CollegeUnity.Services.PostServices
         }
 
         #region Create Posts
-        public async Task CreatePublicPostAsync(CPublicPostDto dto)
+        public async Task CreatePublicPostAsync(int staffId, CPublicPostDto dto)
         {
-            Post post = dto.ToPost<Post>();
+            Post post = dto.ToPost<Post>(staffId);
             post = await _repositoryManager.PostRepository.CreateAsync(post);
             await _repositoryManager.SaveChangesAsync();
 
@@ -41,9 +41,9 @@ namespace CollegeUnity.Services.PostServices
             }
         }
 
-        public async Task CreateBatchPostAsync(CBatchPostDto dto)
+        public async Task CreateBatchPostAsync(int staffId, CBatchPostDto dto)
         {
-            Post post = dto.ToPost<Post>();
+            Post post = dto.ToPost<Post>(staffId);
             post = await _repositoryManager.PostRepository.CreateAsync(post);
             await _repositoryManager.SaveChangesAsync();
 
@@ -53,9 +53,9 @@ namespace CollegeUnity.Services.PostServices
             }
         }
 
-        public async Task CreateSubjectPostAsync(CSubjectPostDto dto)
+        public async Task CreateSubjectPostAsync(int staffId, CSubjectPostDto dto)
         {
-            Post post = dto.ToPost<Post>();
+            Post post = dto.ToPost<Post>(staffId);
             post = await _repositoryManager.PostRepository.CreateAsync(post);
             await _repositoryManager.SaveChangesAsync();
 

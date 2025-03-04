@@ -1,4 +1,5 @@
 ﻿using CollegeUnity.Core.Dtos.PostDtos.Create;
+using CollegeUnity.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,6 @@ namespace CollegeUnity.Contract.StaffFeatures.Posts
     public interface IManagePublicPostsFeatures : IBasePost
     {
         // C,U,D
-        public Task CreatePublicPostAsync(CPublicPostDto dto);
+        public Task CreatePublicPostAsync(CPublicPostDto dto, int staffId);
     }
 }

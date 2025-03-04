@@ -102,10 +102,11 @@ namespace CollegeUnity.API.Controllers.Post
         [HttpPost("Public/Create")]
         public async Task<IActionResult> CreatePublicPost([FromForm] CPublicPostDto dto)
         {
-            var isExist = await _serviceManager.IsExist<CollegeUnity.Core.Entities.Staff>(dto.StaffId);
+            var staffId = User.GetUserId();
+            var isExist = await _serviceManager.IsExist<CollegeUnity.Core.Entities.Staff>(staffId);
             if (isExist != null)
             {
-                await _managePublicPostsFeatures.CreatePublicPostAsync(dto);
+                await _managePublicPostsFeatures.CreatePublicPostAsync(dto, staffId);
                 return new JsonResult(ApiResponse<bool?>.Created(null));
             }
 
@@ -115,10 +116,11 @@ namespace CollegeUnity.API.Controllers.Post
         [HttpPost("Batch/Create")]
         public async Task<IActionResult> CreateBatchPost([FromForm] CBatchPostDto dto)
         {
-            var isExist = await _serviceManager.IsExist<CollegeUnity.Core.Entities.Staff>(dto.StaffId);
+            var staffId = User.GetUserId();
+            var isExist = await _serviceManager.IsExist<CollegeUnity.Core.Entities.Staff>(staffId);
             if (isExist != null)
             {
-                await _manageBatchPostsFeatures.CreateBatchPostAsync(dto);
+                await _manageBatchPostsFeatures.CreateBatchPostAsync(dto, staffId);
                 return new JsonResult(ApiResponse<bool?>.Created(null));
             }
 
@@ -128,10 +130,11 @@ namespace CollegeUnity.API.Controllers.Post
         [HttpPost("Subject/Create")]
         public async Task<IActionResult> CreateSubjectPost([FromForm] CSubjectPostDto dto)
         {
-            bool isSubjectStudiedByTeacher = await _manageSubjectFeatures.SubjectStudyCheck(dto.SubjectId, dto.StaffId);
+            var staffId = User.GetUserId();
+            bool isSubjectStudiedByTeacher = await _manageSubjectFeatures.SubjectStudyCheck(dto.SubjectId, staffId);
             if (isSubjectStudiedByTeacher)
             {
-                await _manageSubjectPostsFeatures.CreateSubjectPostAsync(dto);
+                await _manageSubjectPostsFeatures.CreateSubjectPostAsync(dto, staffId);
                 return new JsonResult(ApiResponse<bool?>.Created(null));
             }
 

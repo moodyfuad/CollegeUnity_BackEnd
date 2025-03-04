@@ -10,6 +10,6 @@ namespace CollegeUnity.Contract.StaffFeatures.Posts
     public interface IManageSubjectPostsFeatures : IBasePost
     {
         // C, U, D
-        public Task CreateSubjectPostAsync(CSubjectPostDto dto);
+        public Task CreateSubjectPostAsync(CSubjectPostDto dto, int staffId);
     }
 }
