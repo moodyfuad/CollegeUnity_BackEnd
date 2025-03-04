@@ -24,9 +24,9 @@ namespace CollegeUnity.Contract.StaffFeatures.Posts
         {
         }
 
-        public async Task CreatePublicPostAsync(CPublicPostDto dto)
+        public async Task CreatePublicPostAsync(CPublicPostDto dto, int staffId)
         {
-            Post post = dto.ToPost<Post>();
+            Post post = dto.ToPost<Post>(staffId);
             post = await _repositoryManager.PostRepository.CreateAsync(post);
             await _repositoryManager.SaveChangesAsync();
 

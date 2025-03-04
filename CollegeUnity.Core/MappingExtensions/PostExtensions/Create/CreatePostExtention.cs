@@ -11,7 +11,7 @@ namespace CollegeUnity.Core.MappingExtensions.PostExtensions.Create
     public static class CreatePostExtention
     {
         // CPublicPostDto to Post
-        public static Post ToPost<T>(this CPublicPostDto dto) where T : Post
+        public static Post ToPost<T>(this CPublicPostDto dto, int staffId) where T : Post
         {
             return new Post
             {
@@ -19,12 +19,12 @@ namespace CollegeUnity.Core.MappingExtensions.PostExtensions.Create
                 CreatedAt = DateTime.Now,
                 Priority = dto.Priority,
                 IsPublic = true,
-                StaffId = dto.StaffId,
+                StaffId = staffId,
             };
         }
 
         // CBatchPostDto to Post
-        public static Post ToPost<T>(this CBatchPostDto dto) where T : Post
+        public static Post ToPost<T>(this CBatchPostDto dto, int staffId) where T : Post
         {
             return new Post
             {
@@ -35,12 +35,12 @@ namespace CollegeUnity.Core.MappingExtensions.PostExtensions.Create
                 ForLevel = dto.ForLevel,
                 ForMajor = dto.ForMajor,
                 IsPublic = true,
-                StaffId = dto.StaffId,
+                StaffId = staffId,
             };
         }
 
         // CSubjectPostDto to Post
-        public static Post ToPost<T>(this CSubjectPostDto dto) where T : Post
+        public static Post ToPost<T>(this CSubjectPostDto dto, int staffId) where T : Post
         {
             return new Post
             {
@@ -49,7 +49,7 @@ namespace CollegeUnity.Core.MappingExtensions.PostExtensions.Create
                 Priority = dto.Priority,
                 IsPublic = false,
                 SubjectId = dto.SubjectId,
-                StaffId = dto.StaffId,
+                StaffId = staffId,
             };
         }
     }

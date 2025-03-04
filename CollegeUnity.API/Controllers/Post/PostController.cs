@@ -20,6 +20,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CollegeUnity.API.Controllers.Post
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class PostController : ControllerBase
@@ -101,10 +102,11 @@ namespace CollegeUnity.API.Controllers.Post
         [HttpPost("Public/Create")]
         public async Task<IActionResult> CreatePublicPost([FromForm] CPublicPostDto dto)
         {
-            var isExist = await _serviceManager.IsExist<CollegeUnity.Core.Entities.Staff>(dto.StaffId);
+            var staffId = User.GetUserId();
+            var isExist = await _serviceManager.IsExist<CollegeUnity.Core.Entities.Staff>(staffId);
             if (isExist != null)
             {
-                await _managePublicPostsFeatures.CreatePublicPostAsync(dto);
+                await _managePublicPostsFeatures.CreatePublicPostAsync(dto, staffId);
                 return new JsonResult(ApiResponse<bool?>.Created(null));
             }
 
@@ -114,10 +116,11 @@ namespace CollegeUnity.API.Controllers.Post
         [HttpPost("Batch/Create")]
         public async Task<IActionResult> CreateBatchPost([FromForm] CBatchPostDto dto)
         {
-            var isExist = await _serviceManager.IsExist<CollegeUnity.Core.Entities.Staff>(dto.StaffId);
+            var staffId = User.GetUserId();
+            var isExist = await _serviceManager.IsExist<CollegeUnity.Core.Entities.Staff>(staffId);
             if (isExist != null)
             {
-                await _manageBatchPostsFeatures.CreateBatchPostAsync(dto);
+                await _manageBatchPostsFeatures.CreateBatchPostAsync(dto, staffId);
                 return new JsonResult(ApiResponse<bool?>.Created(null));
             }
 
@@ -127,10 +130,11 @@ namespace CollegeUnity.API.Controllers.Post
         [HttpPost("Subject/Create")]
         public async Task<IActionResult> CreateSubjectPost([FromForm] CSubjectPostDto dto)
         {
-            bool isSubjectStudiedByTeacher = await _manageSubjectFeatures.SubjectStudyCheck(dto.SubjectId, dto.StaffId);
+            var staffId = User.GetUserId();
+            bool isSubjectStudiedByTeacher = await _manageSubjectFeatures.SubjectStudyCheck(dto.SubjectId, staffId);
             if (isSubjectStudiedByTeacher)
             {
-                await _manageSubjectPostsFeatures.CreateSubjectPostAsync(dto);
+                await _manageSubjectPostsFeatures.CreateSubjectPostAsync(dto, staffId);
                 return new JsonResult(ApiResponse<bool?>.Created(null));
             }
 
@@ -201,6 +205,7 @@ namespace CollegeUnity.API.Controllers.Post
             return new JsonResult(ApiResponse<IEnumerable<GBatchPostDto>?>.NotFound("No Posts yet."));
         }
 
+
         [HttpGet("Batch")]
         public async Task<IActionResult> GetStudentBatchPost([FromQuery] SubjectPostParameters postParameters)
         {
@@ -214,13 +219,15 @@ namespace CollegeUnity.API.Controllers.Post
         }
         #endregion
 
-        [Authorize(Policy = PolicyNames.DeanOnly)]
         [HttpPut("Post/Update/{postId}")]
         public async Task<IActionResult> UpdateMyPost(int postId, [FromForm]UUpdatePostDto dto)
         {
             var staffId = User.GetUserId();
 
-            if (dto.ExistingPictureIds.Count < 4 && (dto.NewPictures.Count - dto.ExistingPictureIds.Count) == 0)
+            int newPicCount = dto.NewPictures?.Count ?? 0;
+            int oldPicCount = dto.ExistingPictureIds?.Count ?? 0;
+
+            if (oldPicCount < 4 && newPicCount < 4 && (newPicCount - oldPicCount) == 0)
             {
                 if (await _basePost.UpdatePostAsync(postId, staffId, dto))
                 {
@@ -230,6 +237,18 @@ namespace CollegeUnity.API.Controllers.Post
             }
 
             return new JsonResult(ApiResponse<bool?>.NotFound("The uploaded pictures not true, try again."));
+        }
+
+        [HttpDelete("Post/Delete/{postId}")]
+        public async Task<IActionResult> DeleteMyPost(int postId)
+        {
+            var staffId = User.GetUserId();
+            
+            if (await _basePost.DeleteAsync(postId, staffId))
+            {
+                return new JsonResult(ApiResponse<bool?>.Success(null));
+            }
+            return new JsonResult(ApiResponse<bool?>.Unauthorized("Post is not yours."));
         }
     }
 }

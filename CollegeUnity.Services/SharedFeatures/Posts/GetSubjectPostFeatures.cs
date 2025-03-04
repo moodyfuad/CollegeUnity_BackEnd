@@ -1,7 +1,7 @@
 ﻿using CollegeUnity.Contract.EF_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
 using CollegeUnity.Contract.SharedFeatures.Posts;
-using CollegeUnity.Contract.StudentFeatures.Subject;
+using CollegeUnity.Contract.StudentFeatures.Subjects;
 using CollegeUnity.Core.Dtos.PostDtos.Get;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Entities;

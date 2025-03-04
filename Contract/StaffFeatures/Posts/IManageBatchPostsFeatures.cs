@@ -10,6 +10,6 @@ namespace CollegeUnity.Contract.StaffFeatures.Posts
     public interface IManageBatchPostsFeatures : IBasePost
     {
         // Add, Delete, Edit
-        public Task CreateBatchPostAsync(CBatchPostDto dto);
+        public Task CreateBatchPostAsync(CBatchPostDto dto, int staffId);
     }
 }

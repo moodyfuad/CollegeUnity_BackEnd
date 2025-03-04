@@ -21,9 +21,9 @@ namespace CollegeUnity.Contract.StaffFeatures.Posts
             IPostVoteFeatures postVoteFeatures) : base(repositoryManager, postFilesFeatures, postVoteFeatures)
         {
         }
-        public async Task CreateSubjectPostAsync(CSubjectPostDto dto)
+        public async Task CreateSubjectPostAsync(CSubjectPostDto dto, int staffId)
         {
-            Post post = dto.ToPost<Post>();
+            Post post = dto.ToPost<Post>(staffId);
             post = await _repositoryManager.PostRepository.CreateAsync(post);
             await _repositoryManager.SaveChangesAsync();
 

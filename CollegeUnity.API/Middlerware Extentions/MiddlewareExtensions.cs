@@ -32,57 +32,6 @@ namespace CollegeUnity.API
                 DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme,
             };
 
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy(PolicyNames.AdminOnly, policy =>
-                {
-                    policy.RequireAuthenticatedUser();
-                    policy.RequireClaim(CustomClaimTypes.RoleName, "Admin");
-                });
-
-                options.AddPolicy(PolicyNames.DeanOnly, policy =>
-                {
-                    policy.RequireAuthenticatedUser();
-                    policy.RequireClaim(CustomClaimTypes.RoleName, "Dean");
-                });
-
-                options.AddPolicy(PolicyNames.TeacherOnly, policy =>
-                {
-                    policy.RequireAuthenticatedUser();
-                    policy.RequireClaim(CustomClaimTypes.RoleName, "Teacher");
-                });
-
-                options.AddPolicy(PolicyNames.StudentAffairsViceDeanShipOnly, policy =>
-                {
-                    policy.RequireAuthenticatedUser();
-                    policy.RequireClaim(CustomClaimTypes.RoleName, "StudentAffairsViceDeanShip");
-                });
-
-                options.AddPolicy(PolicyNames.RegistrationAdmissionEmployeeOnly, policy =>
-                {
-                    policy.RequireAuthenticatedUser();
-                    policy.RequireClaim(CustomClaimTypes.RoleName, "RegistrationAdmissionEmployee");
-                });
-
-                options.AddPolicy(PolicyNames.HeadOfITDepartmentOnly, policy =>
-                {
-                    policy.RequireAuthenticatedUser();
-                    policy.RequireClaim(CustomClaimTypes.RoleName, "HeadOfITDepartment");
-                });
-
-                options.AddPolicy(PolicyNames.HeadOfCSDepartmentOnly, policy =>
-                {
-                    policy.RequireAuthenticatedUser();
-                    policy.RequireClaim(CustomClaimTypes.RoleName, "HeadOfCSDepartment");
-                });
-
-                options.AddPolicy(PolicyNames.StudentOnly, policy =>
-                {
-                    policy.RequireAuthenticatedUser();
-                    policy.RequireClaim(CustomClaimTypes.RoleName, "Student");
-                });
-            });
-
             return services.AddAuthentication(options => options = authenticationOptions)
                 .AddJwtBearer(option => option.TokenValidationParameters = tokenValidationParameters);
         }

@@ -4,7 +4,7 @@ using CollegeUnity.Contract.SharedFeatures.Posts;
 using CollegeUnity.Contract.StaffFeatures.Posts;
 using CollegeUnity.Contract.StaffFeatures.Posts.PostFiles;
 using CollegeUnity.Contract.StaffFeatures.Subject;
-using CollegeUnity.Contract.StudentFeatures.Subject;
+using CollegeUnity.Contract.StudentFeatures.Subjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;

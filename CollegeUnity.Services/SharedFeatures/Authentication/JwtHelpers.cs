@@ -131,52 +131,31 @@ namespace CollegeUnity.Services.SharedFeatures.Authentication
                 //new Claim(CustomClaimTypes.LastName, user.LastName),
                 new Claim(CustomClaimTypes.FullName, $"{user.FirstName} {user.MiddleName} {user.LastName}"),
                 new Claim(CustomClaimTypes.Gender, user.Gender.ToString()),
-                //new Claim(CustomClaimTypes.Email, user.Email),
-                //new Claim(CustomClaimTypes.BirthDate, user.BirthDate.ToString()),
-                //new Claim(CustomClaimTypes.AccountStatus, user.AccountStatus.ToString()),
-                //new Claim(CustomClaimTypes.PhoneNumber, user.Phone.ToString()),
+                new Claim(CustomClaimTypes.Email, user.Email),
+                new Claim(CustomClaimTypes.BirthDate, user.BirthDate.ToString()),
+                new Claim(CustomClaimTypes.AccountStatus, user.AccountStatus.ToString()),
+                new Claim(CustomClaimTypes.PhoneNumber, user.Phone.ToString()),
+                new Claim(CustomClaimTypes.Role, GetUserRoleName(user)),
             };
-
-            var roles = GetUserRoleNames(user);
-            foreach (var role in roles)
-            {
-                claims.Add(new Claim(CustomClaimTypes.RoleName, role));
-            }
             claims.AddRange(GetUserRoleClaims(user));
             return claims;
         }
 
-        #region Privous code that change the role name because of the comma (,)
-        //private static string GetUserRoleName(User user)
-        //{
-        //    switch (user)
-        //    {
-        //        case Student student:
-        //            return Roles.Student.AsString();
-        //        case Staff staff:
-        //            var roles = string.Empty;
-        //            foreach (var role in staff.Roles)
-        //            {
-        //                roles += role.AsString() + ",";
-        //            }
-
-        //            return roles;
-        //        default: return "No Role";
-        //    }
-        //}
-        #endregion
-        private static List<string> GetUserRoleNames(User user)
+        private static string GetUserRoleName(User user)
         {
             switch (user)
             {
                 case Student student:
-                    return new List<string> { Roles.Student.AsString() };
-
+                    return Roles.Student.AsString();
                 case Staff staff:
-                    return staff.Roles.Select(role => role.AsString()).ToList();
+                    var roles = string.Empty;
+                    foreach (var role in staff.Roles)
+                    {
+                        roles += role.AsString() + ",";
+                    }
 
-                default:
-                    return new List<string> { "No Role" };
+                    return roles;
+                default: return "No Role";
             }
         }
 
