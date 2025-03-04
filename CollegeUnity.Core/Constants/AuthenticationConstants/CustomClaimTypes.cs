@@ -10,7 +10,7 @@ namespace CollegeUnity.Core.Constants.AuthenticationConstants
     public class CustomClaimTypes
     {
         public const string Id = "Id";
-        public const string CardId = "CardId";
+        public const string RegistrationID = "RegistrationID";
         public const string AccountStatus = "AccountStatus";
         public const string Major = "Major";
         public const string Level = "Level";

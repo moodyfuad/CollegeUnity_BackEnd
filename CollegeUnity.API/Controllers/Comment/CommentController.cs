@@ -61,8 +61,8 @@ namespace CollegeUnity.API.Controllers.Comment
                 return new JsonResult(response);
         }
 
-        [HttpPut("comment/update")]
-        public async Task<IActionResult> UpdateComment([FromBody] EditCommentDto dto)
+        [HttpPut("comment/{commentId}")]
+        public async Task<IActionResult> UpdateComment(int commentId, [FromBody] EditCommentDto dto)
         {
             var result = await _commentFeatures.EditComment(dto);
 
@@ -78,10 +78,12 @@ namespace CollegeUnity.API.Controllers.Comment
             }
         }
 
-        [HttpDelete("comment")]
-        public async Task<IActionResult> DeleteComment([FromQuery, Required] int id)
+        [HttpDelete("comment/{commentId}")]
+        [ValidateEntityExist("commentid")]
+        [ValidateEntityExist("postid")]
+        public async Task<IActionResult> DeleteComment(int commentId)
         {
-            var result = await _commentFeatures.DeleteComment(id);
+            var result = await _commentFeatures.DeleteComment(commentId);
 
             if (result.IsSuccess)
             {

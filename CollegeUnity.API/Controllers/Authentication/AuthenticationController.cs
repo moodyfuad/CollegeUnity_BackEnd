@@ -40,15 +40,12 @@ namespace CollegeUnity.API.Controllers.Authentication
             var result = await _loginFeature.Login(student);
             if (result.IsSuccess)
             {
-                var response = ApiResponse<LoginResultDto>.Success(data: result);
+                var response = ApiResponse<string>.Success(data: result.Token);
                 return new JsonResult(response);
             }
             else
             {
-                string errors = string.Empty;
-                foreach (var msg in result.ErrorMessages) errors += msg;
-
-                var response = ApiResponse<LoginResultDto>.NotFound(errors);
+                var response = ApiResponse<string>.BadRequest(errors: result.ErrorMessages?.ToList() ?? []);
                 return new JsonResult(response);
             }
         }
