@@ -40,7 +40,8 @@ namespace CollegeUnity.API.Controllers.Authentication
             var result = await _loginFeature.Login(student);
             if (result.IsSuccess)
             {
-                var response = ApiResponse<string>.Success(data: result.Token);
+                var response = ApiResponse<Dictionary<string, string>>.Success(
+                    data: new() { ["token"] = result.Token! });
                 return new JsonResult(response);
             }
             else
@@ -69,10 +70,7 @@ namespace CollegeUnity.API.Controllers.Authentication
             }
             else
             {
-                string errors = string.Empty;
-                foreach (var msg in result.ErrorMessages) errors += msg;
-
-                var response = ApiResponse<LoginResultDto>.NotFound(errors);
+                var response = ApiResponse<string>.BadRequest(errors: result.ErrorMessages?.ToList() ?? []);
                 return new JsonResult(response);
             }
         }

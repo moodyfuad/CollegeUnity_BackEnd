@@ -15,49 +15,43 @@ namespace CollegeUnity.Core.Dtos.AuthenticationDtos
     {
         public required string CardId { get; set; }
 
-        public required Major Major { get; set; }
-        public required string MajorString { get; set; }
+        //public required Major Major { get; set; }
+        //public required string MajorString { get; set; }
 
-        public required Level Level { get; set; }
-        public required string LevelString { get; set; }
+        //public required Level Level { get; set; }
+        //public required string LevelString { get; set; }
        
-        public required AcceptanceType AcceptanceType { get; set; }
-        public required string AcceptanceTypeString { get; set; }
+        //public required AcceptanceType AcceptanceType { get; set; }
+        //public required string AcceptanceTypeString { get; set; }
 
 
         public static StudentClaimsDto FromClaims(IEnumerable<Claim> claims)
         {
             return new()
             {
+                PicturePath = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.PicturePath)?.Value ?? string.Empty,
+
                 Id = int.Parse(claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Id)!.Value),
-                FirstName = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.FirstName)!.Value,
-                MiddleName = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.MiddleName)!.Value,
-                LastName = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.LastName)!.Value,
-                Phone = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.PhoneNumber)!.Value,
-                Email = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Email)!.Value,
-                BirthDate = DateOnly.Parse(claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.BirthDate)!.Value),
+
+                CardId = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.RegistrationID)!.Value,
+                
                 Gender = (Gender)Enum.Parse(typeof(Gender), claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Gender)!.Value),
 
                 Role = claims.Where(c => c.Type == CustomClaimTypes.Role)
                .Select(c => Enum.Parse<Roles>(c.Value))
                .ToList(),
 
-                RoleString = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Role)!.Value,
-
-                AccountStatus = (AccountStatus)Enum.Parse(typeof(AccountStatus), claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.AccountStatus)!.Value),
-                AccountStatusString = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.AccountStatus)!.Value,
 
                 //student
-                CardId = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.CardId)!.Value,
 
-                AcceptanceType = (AcceptanceType)Enum.Parse(typeof(AcceptanceType), claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.AcceptanceType)!.Value),
-                AcceptanceTypeString =claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.AcceptanceType)!.Value,
+                //AcceptanceType = (AcceptanceType)Enum.Parse(typeof(AcceptanceType), claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.AcceptanceType)!.Value),
+                //AcceptanceTypeString =claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.AcceptanceType)!.Value,
 
-                Major = (Major)Enum.Parse(typeof(Major), claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Major)!.Value),
-                MajorString =claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Major)!.Value,
+                //Major = (Major)Enum.Parse(typeof(Major), claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Major)!.Value),
+                //MajorString =claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Major)!.Value,
 
-                Level = (Level)Enum.Parse(typeof(Level), claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Level)!.Value),
-                LevelString =claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Level)!.Value
+                //Level = (Level)Enum.Parse(typeof(Level), claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Level)!.Value),
+                //LevelString =claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Level)!.Value
 
             };
         }

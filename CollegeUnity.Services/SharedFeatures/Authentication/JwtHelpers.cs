@@ -126,16 +126,18 @@ namespace CollegeUnity.Services.SharedFeatures.Authentication
             var claims = new List<Claim>()
             {
                 new Claim(CustomClaimTypes.Id, user.Id.ToString()),
+                new Claim(CustomClaimTypes.PicturePath, user.ProfilePicturePath ?? string.Empty),
+                new Claim(CustomClaimTypes.FullName, $"{user.FirstName} {user.MiddleName} {user.LastName}"),
+                new Claim(CustomClaimTypes.Gender, user.Gender.ToString()),
+                //new Claim(CustomClaimTypes.Role, GetUserRoleName(user)),
+
                 //new Claim(CustomClaimTypes.FirstName, user.FirstName),
                 //new Claim(CustomClaimTypes.MiddleName, user.MiddleName),
                 //new Claim(CustomClaimTypes.LastName, user.LastName),
-                new Claim(CustomClaimTypes.FullName, $"{user.FirstName} {user.MiddleName} {user.LastName}"),
-                new Claim(CustomClaimTypes.Gender, user.Gender.ToString()),
-                new Claim(CustomClaimTypes.Email, user.Email),
-                new Claim(CustomClaimTypes.BirthDate, user.BirthDate.ToString()),
-                new Claim(CustomClaimTypes.AccountStatus, user.AccountStatus.ToString()),
-                new Claim(CustomClaimTypes.PhoneNumber, user.Phone.ToString()),
-                new Claim(CustomClaimTypes.Role, GetUserRoleName(user)),
+                //new Claim(CustomClaimTypes.Email, user.Email),
+                //new Claim(CustomClaimTypes.BirthDate, user.BirthDate.ToString()),
+                //new Claim(CustomClaimTypes.AccountStatus, user.AccountStatus.ToString()),
+                //new Claim(CustomClaimTypes.PhoneNumber, user.Phone.ToString()),
             };
             claims.AddRange(GetUserRoleClaims(user));
             return claims;

@@ -18,25 +18,20 @@ namespace CollegeUnity.Core.Dtos.AuthenticationDtos
         {
             return new()
             {
+
+                PicturePath = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.PicturePath)?.Value ?? string.Empty,
+
                 Id = int.Parse(claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Id)!.Value),
-                FirstName = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.FirstName)!.Value,
-                MiddleName = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.MiddleName)!.Value,
-                LastName = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.LastName)!.Value,
-                Phone = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.PhoneNumber)!.Value,
-                Email = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Email)!.Value,
-                BirthDate = DateOnly.Parse(claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.BirthDate)!.Value),
-                Gender = (Gender)Enum.Parse(typeof(Gender), claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Gender)!.Value),
+                Gender = (Gender)Enum.Parse(typeof(Gender), claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Gender).Value),
+
+                FullName = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.FullName)?.Value ?? "",
+
+                EducationDegree = (EducationDegree)Enum.Parse(typeof(EducationDegree), claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.EducationDegree)!.Value),
 
                 Role = claims.Where(c => c.Type == CustomClaimTypes.Role)
                .Select(c => Enum.Parse<Roles>(c.Value))
                .ToList(),
 
-                RoleString = claims.FirstOrDefault(c => c.Type == CustomClaimTypes.RoleName)!.Value,
-
-                AccountStatus = (AccountStatus)Enum.Parse(typeof(AccountStatus), claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.AccountStatus)!.Value),
-                AccountStatusString =claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.AccountStatus)!.Value,
-                
-                EducationDegree = (EducationDegree)Enum.Parse(typeof(EducationDegree), claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.EducationDegree)!.Value)
             };
         }
     }

@@ -11,6 +11,7 @@ namespace CollegeUnity.Core.Constants.AuthenticationConstants
     {
         public const string Id = "Id";
         public const string RegistrationID = "RegistrationID";
+        public const string PicturePath = "PicturePath";
         public const string AccountStatus = "AccountStatus";
         public const string Major = "Major";
         public const string Level = "Level";

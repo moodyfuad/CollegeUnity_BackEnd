@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace CollegeUnity.Core.Dtos.SharedFeatures.Authentication.LoginFeatures
@@ -11,6 +12,7 @@ namespace CollegeUnity.Core.Dtos.SharedFeatures.Authentication.LoginFeatures
     {
         public string? Token { get; private set; }
         public string[]? ErrorMessages = [];
+        [JsonIgnore]
         public bool IsSuccess { get; private set; }
 
 

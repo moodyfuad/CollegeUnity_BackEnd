@@ -26,6 +26,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add<ModelValidateActionFilter>();
+    options.Filters.Add<EditResponseActionFilter>();
 });
 
 builder.Services.AddDbContext<CollegeUnityDbContext>(options =>
