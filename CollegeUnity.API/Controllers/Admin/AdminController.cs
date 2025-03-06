@@ -1,6 +1,8 @@
 ﻿using CollegeUnity.API.Controllers.Student;
+using CollegeUnity.Contract.AdminFeatures.Staffs;
 using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
+using CollegeUnity.Core.Dtos.AdminServiceDtos;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Dtos.StudentServiceDtos;
@@ -20,10 +22,12 @@ namespace CollegeUnity.API.Controllers.Admin
     public class AdminController : ControllerBase
     {
         private readonly IServiceManager _serviceManager;
+        private readonly IManageStaffFeatures _manageStaffFeatures;
 
-        public AdminController(IServiceManager serviceManager)
+        public AdminController(IServiceManager serviceManager, IManageStaffFeatures manageStaffFeatures)
         {
             _serviceManager = serviceManager;
+            _manageStaffFeatures = manageStaffFeatures;
         }
 
         [HttpGet("Staff")]
@@ -42,6 +46,19 @@ namespace CollegeUnity.API.Controllers.Admin
             HttpContext.Response.StatusCode = response.StatusCode;*/
 
             return Ok("Not implemented"); 
+        }
+
+        [HttpPost("Staff/Create")]
+        public async Task<IActionResult> CreateStaffAccount([FromForm] CreateStaffDto dto)
+        {
+            var isSuccess = await _manageStaffFeatures.CreateStaffAccount(dto);
+
+            if (isSuccess)
+            {
+                return new JsonResult(ApiResponse<bool?>.Created(null));
+            }
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest());
         }
     }
 }

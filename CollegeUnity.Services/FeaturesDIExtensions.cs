@@ -1,7 +1,9 @@
-﻿using CollegeUnity.Contract.SharedFeatures.Authentication;
+﻿using CollegeUnity.Contract.AdminFeatures.Staffs;
+using CollegeUnity.Contract.SharedFeatures.Authentication;
 using CollegeUnity.Contract.SharedFeatures.Posts.Comments;
 using CollegeUnity.Contract.SharedFeatures.Posts.Votes;
 using CollegeUnity.Contract.StudentFeatures.Account;
+using CollegeUnity.Services.AdminFeatures.Staffs;
 using CollegeUnity.Services.SharedFeatures.Authentication;
 using CollegeUnity.Services.SharedFeatures.Posts.Comments;
 using CollegeUnity.Services.SharedFeatures.Posts.Votes;
@@ -24,6 +26,7 @@ namespace CollegeUnity.Services
             services.AddScoped<IForgetPasswordFeatures, ForgetPasswordFeatures>();
             services.AddScoped<ICommentFeatures, CommentFeatures>();
             services.AddScoped<IVoteFeatures, VoteFeatures>();
+            services.AddScoped<IManageStaffFeatures, ManageStaffFeatures>();
 
             // Student Features
             services.AddScoped<ISignUpFeatures, SignUpFeature>();

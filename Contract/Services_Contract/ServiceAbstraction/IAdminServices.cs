@@ -13,10 +13,10 @@ namespace CollegeUnity.Contract.Services_Contract.ServiceAbstraction
 {
     public interface IAdminServices
     {
-        Task<ApiResponse<CreateStaffDto>> CreateStaffAccount(CreateStaffDto staffDto);
+        //Task<ApiResponse<CreateStaffDto>> CreateStaffAccount(CreateStaffDto staffDto);
 
         Task<ApiResponse<IEnumerable<Staff>>> SearchStaffBy(Expression<Func<Staff,bool>> expression, StaffParameters staffParameters);
         Task<ApiResponse<IEnumerable<Staff>>> SearchStaffBy(string name, StaffParameters staffParameters);
-        Task<ApiResponse<IEnumerable<CreateStaffDto>>> GetAllStaff(StaffParameters staffParameters);
+        //Task<ApiResponse<IEnumerable<CreateStaffDto>>> GetAllStaff(StaffParameters staffParameters);
     }
 }

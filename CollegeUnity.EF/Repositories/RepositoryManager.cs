@@ -2,6 +2,7 @@
 using CollegeUnity.Contract.EF_Contract.IEntitiesRepository;
 using CollegeUnity.EF.Repositories.EntitiesRepository;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -87,6 +88,11 @@ namespace CollegeUnity.EF.Repositories
             T? result = await _dbContext.Set<T>().FindAsync(id);
 
             return result;
+        }
+
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
+        {
+            return await _dbContext.Database.BeginTransactionAsync();
         }
     }
 }

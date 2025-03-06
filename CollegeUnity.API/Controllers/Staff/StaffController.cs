@@ -21,12 +21,12 @@ namespace CollegeUnity.API.Controllers.Staff
             _adminServices = serviceManager.AdminServices;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] StaffParameters staffParameters)
-        {
-            var response = await _adminServices.GetAllStaff(staffParameters);
-            return new JsonResult(response);
-        }
+        //[HttpGet]
+        //public async Task<IActionResult> Get([FromQuery] StaffParameters staffParameters)
+        //{
+        //    var response = await _adminServices.GetAllStaff(staffParameters);
+        //    return new JsonResult(response);
+        //}
 
         [HttpGet("{FirstName}")]
         public async Task<IActionResult> Get(string FirstName, StaffParameters staffParameters)
@@ -35,11 +35,11 @@ namespace CollegeUnity.API.Controllers.Staff
             return new JsonResult(response);
         }
 
-        [HttpPost("Create")]
-        public async Task<IActionResult> CreateStaffAccount([FromBody] CreateStaffDto account)
-        {
-            var response = await _adminServices.CreateStaffAccount(account);
-            return Ok(response);
-        }
+        //[HttpPost("Create")]
+        //public async Task<IActionResult> CreateStaffAccount([FromBody] CreateStaffDto account)
+        //{
+        //    var response = await _adminServices.CreateStaffAccount(account);
+        //    return Ok(response);
+        //}
     }
 }

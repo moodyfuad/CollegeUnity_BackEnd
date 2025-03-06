@@ -1,5 +1,6 @@
 ﻿using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Enums;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,8 +12,7 @@ namespace CollegeUnity.Core.Dtos.AuthenticationDtos
 {
     public abstract class UserSignUpDto
     {
-        [Url]
-        public string? ProfilePicturePath { get; set; }
+        public IFormFile? ProfilePicturePath { get; set; }
         [Required(ErrorMessage = "First Name is required")]
         public required string FirstName { get; set; }
         [Required(ErrorMessage = "Middle Name is required")]

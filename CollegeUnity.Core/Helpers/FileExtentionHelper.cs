@@ -26,6 +26,19 @@ namespace CollegeUnity.Core.Helpers
             return Path.Combine(postPath, file.FileName);
         }
 
+        public static string GetProfilePicturePath(int accountId, IFormFile file)
+        {
+            string baseDirectory = Path.Combine(BaseDirectory, "accounts", "profile-pictures");
+
+            string accountPath = Path.Combine(baseDirectory, accountId.ToString());
+
+            Directory.CreateDirectory(accountPath);
+
+            string fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+
+            return Path.Combine(accountPath, fileName);
+        }
+
         public static async Task SaveFileAsync(string filePath, IFormFile file)
         {
             using (var stream = new FileStream(filePath, FileMode.Create))

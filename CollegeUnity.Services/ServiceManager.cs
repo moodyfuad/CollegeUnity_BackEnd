@@ -1,4 +1,5 @@
-﻿using CollegeUnity.Contract.EF_Contract;
+﻿using CollegeUnity.Contract.AdminFeatures.Staffs;
+using CollegeUnity.Contract.EF_Contract;
 using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
 using CollegeUnity.Contract.SharedFeatures.Posts;
@@ -8,6 +9,7 @@ using CollegeUnity.Contract.StaffFeatures.Posts.PostFiles;
 using CollegeUnity.Contract.StaffFeatures.Posts.PostsVotes;
 using CollegeUnity.Contract.StaffFeatures.Subject;
 using CollegeUnity.Contract.StudentFeatures.Subjects;
+using CollegeUnity.Services.AdminFeatures.Staffs;
 using CollegeUnity.Services.AdminServices;
 using CollegeUnity.Services.CommentServices;
 using CollegeUnity.Services.PostFilesServices;
@@ -76,6 +78,10 @@ namespace CollegeUnity.Services
 
         #region Manage Subject Features
         public IManageSubjectFeatures manageSubjectFeatures => new ManageSubjectFeatures(_repositoryManager);
+        #endregion
+
+        #region Manage Staff Features
+        public IManageStaffFeatures manageStaffFeatures => new ManageStaffFeatures(_repositoryManager);
         #endregion
 
         public IAdminServices AdminServices => new AdminService(_repositoryManager);

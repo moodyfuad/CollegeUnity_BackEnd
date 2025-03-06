@@ -1,6 +1,7 @@
 ﻿using CollegeUnity.Core.Dtos.AdminServiceDtos;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Enums;
+using CollegeUnity.Core.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +12,10 @@ namespace CollegeUnity.Core.MappingExtensions.StaffExtensions
 {
     public static partial class StaffExtension
     {
-        public static Staff MapTo<T>(this CreateStaffDto dto) where T : Staff
+        public static Staff MapTo<T>(this CreateStaffDto dto, int? staffId) where T : Staff
         {
-            return new()
+            Staff staff = new()
             {
-                ProfilePicturePath = dto.ProfilePicturePath,
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 MiddleName = dto.MiddleName,
@@ -29,25 +29,32 @@ namespace CollegeUnity.Core.MappingExtensions.StaffExtensions
                 AccountStatus = AccountStatus.Active,
                 Gender = dto.Gender,
             };
+
+            if (staffId != null)
+            {
+                staff.ProfilePicturePath = FileExtentionhelper.GetProfilePicturePath((int)staffId, dto.ProfilePicturePath);
+            }
+
+            return staff;
         }
         
-        public static CreateStaffDto MapTo<T>(this Staff staff) where T : CreateStaffDto
-        {
-            return new()
-            {
-                ProfilePicturePath = staff.ProfilePicturePath,
-                FirstName = staff.FirstName,
-                LastName = staff.LastName,
-                MiddleName = staff.MiddleName,
-                Email = staff.Email,
-                Phone = staff.Phone,
-                Password = staff.Password,
-                ConfirmPassword = staff.ConfirmPassword,
-                Roles = staff.Roles,
-                BirthDate = staff.BirthDate,
-                EducationDegree = staff.EducationDegree,
-                Gender = staff.Gender,
-            };
-        }
+        //public static CreateStaffDto MapTo<T>(this Staff staff) where T : CreateStaffDto
+        //{
+        //    return new()
+        //    {
+        //        ProfilePicturePath = staff.ProfilePicturePath,
+        //        FirstName = staff.FirstName,
+        //        LastName = staff.LastName,
+        //        MiddleName = staff.MiddleName,
+        //        Email = staff.Email,
+        //        Phone = staff.Phone,
+        //        Password = staff.Password,
+        //        ConfirmPassword = staff.ConfirmPassword,
+        //        Roles = staff.Roles,
+        //        BirthDate = staff.BirthDate,
+        //        EducationDegree = staff.EducationDegree,
+        //        Gender = staff.Gender,
+        //    };
+        //}
     }
 }

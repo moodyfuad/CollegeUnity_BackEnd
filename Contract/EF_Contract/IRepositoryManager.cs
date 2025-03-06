@@ -1,4 +1,5 @@
 ﻿using CollegeUnity.Contract.EF_Contract.IEntitiesRepository;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,5 +22,6 @@ namespace CollegeUnity.Contract.EF_Contract
 
         Task<T?> FindById<T>(int id)
             where T : class;
+        Task<IDbContextTransaction> BeginTransactionAsync();
     }
 }

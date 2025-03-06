@@ -1,4 +1,5 @@
-﻿using CollegeUnity.Contract.EF_Contract;
+﻿using CollegeUnity.Contract.AdminFeatures.Staffs;
+using CollegeUnity.Contract.EF_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
 using CollegeUnity.Contract.SharedFeatures.Posts;
 using CollegeUnity.Contract.StaffFeatures.Posts;
@@ -49,6 +50,10 @@ namespace CollegeUnity.Contract.Services_Contract
 
         #region Manage Subject Features
         IManageSubjectFeatures manageSubjectFeatures { get; }
+        #endregion
+
+        #region Manage staff Features
+        IManageStaffFeatures manageStaffFeatures { get; }
         #endregion
 
         Task<T?> IsExist<T>(int id)

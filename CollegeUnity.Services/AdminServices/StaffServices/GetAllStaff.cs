@@ -13,23 +13,23 @@ namespace CollegeUnity.Services.AdminServices
 {
     public partial class AdminService
     {
-        public async Task<ApiResponse<IEnumerable<CreateStaffDto>>> _GetAllStaff(StaffParameters staffParameters)
-        {
-            IEnumerable<Staff>? staff = await _repositoryManager.StaffRepository.GetRangeAsync(staffParameters);
-            if (staff == null || !staff.Any())
-            {
-                return  ApiResponse<IEnumerable<CreateStaffDto>>.NotFound(message: "NO staff members");
-            }
-            else
-            {
-                List<CreateStaffDto> staffDto = [];
-                foreach (var member in staff)
-                {
-                    staffDto.Add(member.MapTo<CreateStaffDto>());
-                }
+        //public async Task<ApiResponse<IEnumerable<CreateStaffDto>>> _GetAllStaff(StaffParameters staffParameters)
+        //{
+        //    IEnumerable<Staff>? staff = await _repositoryManager.StaffRepository.GetRangeAsync(staffParameters);
+        //    if (staff == null || !staff.Any())
+        //    {
+        //        return  ApiResponse<IEnumerable<CreateStaffDto>>.NotFound(message: "NO staff members");
+        //    }
+        //    else
+        //    {
+        //        List<CreateStaffDto> staffDto = [];
+        //        foreach (var member in staff)
+        //        {
+        //            staffDto.Add(member.MapTo<CreateStaffDto>());
+        //        }
 
-                return ApiResponse<IEnumerable<CreateStaffDto>>.Success(staffDto);
-            }
-        }
+        //        return ApiResponse<IEnumerable<CreateStaffDto>>.Success(staffDto);
+        //    }
+        //}
     }
 }
