@@ -26,22 +26,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add<ModelValidateActionFilter>();
+    options.Filters.Add<EditResponseActionFilter>();
 });
-// 
 
 builder.Services.AddDbContext<CollegeUnityDbContext>(options =>
 {
     //options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
-    options.UseSqlServer(builder.Configuration.GetConnectionString("FaisalLocal"));
+    //options.UseSqlServer(builder.Configuration.GetConnectionString("FaisalLocal"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Local"));
 });
 
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 builder.Services.AddScoped<IServiceManager, ServiceManager>();
 builder.Services.AddScoped<IEmailServices, EmailServices>();
-//builder.Services.AddScoped<IServiceManager, ServiceManager>();
 
-//filters registration
-//builder.Services.AddScoped<ValidateExistActionFilter>();
 
 // Features DI
 builder.Services.AddFeaturesID();

@@ -13,7 +13,7 @@ namespace CollegeUnity.Core.Dtos.AuthenticationDtos
         
        
         [Required(ErrorMessage = "Password is required field")]
-        [MinLength(4)]
+        [MinLength(4)]        
         public string? Password { get; set; }
        
 
