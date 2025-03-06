@@ -23,5 +23,6 @@ namespace CollegeUnity.Contract.EF_Contract
         Task<T?> FindById<T>(int id)
             where T : class;
         Task<IDbContextTransaction> BeginTransactionAsync();
+        void Detach<T>(T entity) where T : class;
     }
 }

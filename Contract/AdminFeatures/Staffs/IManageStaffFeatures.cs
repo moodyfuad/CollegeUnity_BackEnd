@@ -11,5 +11,6 @@ namespace CollegeUnity.Contract.AdminFeatures.Staffs
     public interface IManageStaffFeatures
     {
         Task<bool> CreateStaffAccount(CreateStaffDto staffDto);
+        Task<bool> UpdateStaffAccount(int staffId, UStaffDto dto);
     }
 }

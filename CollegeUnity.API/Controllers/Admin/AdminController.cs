@@ -38,6 +38,7 @@ namespace CollegeUnity.API.Controllers.Admin
             
             return new JsonResult(response); 
         }
+
         [HttpGet("SearchStudents")]
         public async Task<IActionResult> GetStudent([FromQuery] StudentSearchParameters parameters) 
         {
@@ -58,7 +59,20 @@ namespace CollegeUnity.API.Controllers.Admin
                 return new JsonResult(ApiResponse<bool?>.Created(null));
             }
 
-            return new JsonResult(ApiResponse<bool?>.BadRequest());
+            return new JsonResult(ApiResponse<bool?>.BadRequest("There is staff with the same email or phone, try again."));
+        }
+
+        [HttpPut("Staff/Update/{staffId}")]
+        public async Task<IActionResult> UpdateStaffInfo(int staffId, UStaffDto dto)
+        {
+            var isSuccess = await _manageStaffFeatures.UpdateStaffAccount(staffId, dto);
+
+            if (isSuccess)
+            {
+                return new JsonResult(ApiResponse<bool?>.Success(null));
+            }
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest("There is staff with the same email or phone, try again."));
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using CollegeUnity.Contract.EF_Contract;
 using CollegeUnity.Contract.EF_Contract.IEntitiesRepository;
 using CollegeUnity.EF.Repositories.EntitiesRepository;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
@@ -93,6 +94,15 @@ namespace CollegeUnity.EF.Repositories
         public async Task<IDbContextTransaction> BeginTransactionAsync()
         {
             return await _dbContext.Database.BeginTransactionAsync();
+        }
+
+        public void Detach<T>(T entity) where T : class
+        {
+            var entry = _dbContext.Entry(entity);
+            if (entry != null)
+            {
+                entry.State = EntityState.Detached;
+            }
         }
     }
 }

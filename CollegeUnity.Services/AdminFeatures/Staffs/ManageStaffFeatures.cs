@@ -67,5 +67,35 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
                 throw;
             }
         }
+
+        public async Task<bool> UpdateStaffAccount(int staffId, UStaffDto dto)
+        {
+            var isExist = await _repositoryManager.StaffRepository.GetByConditionsAsync(s => (s.Email == dto.Email || s.Phone == dto.Phone) && s.Id != staffId);
+            if (isExist != null)
+            {
+                return false;
+            }
+
+            var staff = await _repositoryManager.StaffRepository.GetByConditionsAsync(s => s.Id == staffId);
+            if (staff == null)
+            {
+                return false;
+            }
+
+            _repositoryManager.Detach(staff);
+
+            var newStaffInfo = staff.MapTo<Staff>(dto);
+
+            if (dto.ProfilePicturePath != null)
+            {
+                string picturePath = await MappingFormToProfilePicture(dto.ProfilePicturePath, newStaffInfo.Id);
+                newStaffInfo.ProfilePicturePath = picturePath;
+            }
+
+            await _repositoryManager.StaffRepository.Update(newStaffInfo);
+            await _repositoryManager.SaveChangesAsync();
+
+            return true;
+        }
     }
 }
