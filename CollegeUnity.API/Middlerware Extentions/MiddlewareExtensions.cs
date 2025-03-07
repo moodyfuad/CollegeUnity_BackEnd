@@ -14,7 +14,7 @@ namespace CollegeUnity.API
 {
     public static class MiddlewareExtensions
     {
-        public static AuthenticationBuilder AddCustomJwtAuthentication(this IServiceCollection services, IConfiguration _config) 
+        public static AuthenticationBuilder AddCustomJwtAuthentication(this IServiceCollection services, IConfiguration _config)
         {
             TokenValidationParameters tokenValidationParameters = new()
             {

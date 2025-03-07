@@ -29,12 +29,6 @@ namespace CollegeUnity.Services.SharedFeatures.Authentication
              UserLoginDto userLoginDto,
              DateTime? expireAt = null)
         {
-            //var result = _validatePassword(userLoginDto.Password!);
-            //if (!result.IsSuccess)
-            //{
-            //    return result;
-            //}
-
             switch (userLoginDto)
             {
                 // student log in

@@ -12,6 +12,7 @@ namespace CollegeUnity.Core.Dtos.SharedFeatures.Authentication.ForgetPasswordFea
         public bool IsSuccess { get; }
         public string Message { get; }
         public string? Token { get; }
+        public List<string> Errors { get; } = [];
      
         public static ForgetPasswordFeatureResultDto Sent(string token, string message = null)
         {
@@ -25,16 +26,17 @@ namespace CollegeUnity.Core.Dtos.SharedFeatures.Authentication.ForgetPasswordFea
             return new(true, message);
         }
         
-        public static ForgetPasswordFeatureResultDto Failed(string message = null)
+        public static ForgetPasswordFeatureResultDto Failed(string message = null, params string[] errors)
         {
             message ??= "Failed Sending Reset Code";
-            return new(false, message);
+            return new(false, message, null, errors.ToList());
         }
-        private ForgetPasswordFeatureResultDto(bool isSuccess, string message, string token = null)
+        private ForgetPasswordFeatureResultDto(bool isSuccess, string message, string token = null, List<string> errors = default)
         {
             IsSuccess = isSuccess;
             Message = message;
             Token = token;
+            Errors = errors;
         }
     }
 }
