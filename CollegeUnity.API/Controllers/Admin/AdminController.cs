@@ -81,25 +81,19 @@ namespace CollegeUnity.API.Controllers.Admin
             if (!string.IsNullOrEmpty(parameters.FullName) && parameters.Role == null)
             {
                 var resualt = await _manageStaffFeatures.GetStaffByFullName(parameters);
-
-                if (resualt == null)
-                {
-                    return new JsonResult(ApiResponse<bool?>.NotFound("لا يوجد بيانات بنفس الأسم"));
-                }
-
-                return new JsonResult(ApiResponse<IEnumerable<GStaffByRoleDto>?>.Success(resualt));
+                return new JsonResult(ApiResponse<IEnumerable<GStaffByRoleDto>?>.Success(resualt, pageNumber: parameters.PageNumber, pageSize:parameters.PageSize));
             }
 
             else if (string.IsNullOrEmpty(parameters.FullName) && parameters.Role != null)
             {
                 var resualt = await _manageStaffFeatures.GetStaffByRole(parameters);
-                return new JsonResult(ApiResponse<IEnumerable<GStaffDto>?>.Success(resualt));
+                return new JsonResult(ApiResponse<IEnumerable<GStaffDto>?>.Success(resualt, pageNumber: parameters.PageNumber, pageSize: parameters.PageSize));
             }
 
             else
             {
                 var resualt = await _manageStaffFeatures.GetAllStaff(parameters);
-                return new JsonResult(ApiResponse<IEnumerable<GStaffDto>?>.Success(resualt));
+                return new JsonResult(ApiResponse<IEnumerable<GStaffDto>?>.Success(resualt, pageNumber: parameters.PageNumber, pageSize: parameters.PageSize));
             }
         }
     }
