@@ -74,5 +74,33 @@ namespace CollegeUnity.API.Controllers.Admin
 
             return new JsonResult(ApiResponse<bool?>.BadRequest("There is staff with the same email or phone, try again."));
         }
+
+        [HttpGet("Staffs")]
+        public async Task<IActionResult> GetStaffBy([FromQuery] GetStaffParameters parameters)
+        {
+            if (!string.IsNullOrEmpty(parameters.FullName) && parameters.Role == null)
+            {
+                var resualt = await _manageStaffFeatures.GetStaffByFullName(parameters);
+
+                if (resualt == null)
+                {
+                    return new JsonResult(ApiResponse<bool?>.NotFound("لا يوجد بيانات بنفس الأسم"));
+                }
+
+                return new JsonResult(ApiResponse<IEnumerable<GStaffByRoleDto>?>.Success(resualt));
+            }
+
+            else if (string.IsNullOrEmpty(parameters.FullName) && parameters.Role != null)
+            {
+                var resualt = await _manageStaffFeatures.GetStaffByRole(parameters);
+                return new JsonResult(ApiResponse<IEnumerable<GStaffDto>?>.Success(resualt));
+            }
+
+            else
+            {
+                var resualt = await _manageStaffFeatures.GetAllStaff(parameters);
+                return new JsonResult(ApiResponse<IEnumerable<GStaffDto>?>.Success(resualt));
+            }
+        }
     }
 }

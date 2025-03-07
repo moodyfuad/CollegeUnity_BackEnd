@@ -1,6 +1,7 @@
 ﻿using CollegeUnity.Contract.AdminFeatures.Staffs;
 using CollegeUnity.Contract.EF_Contract;
 using CollegeUnity.Core.Dtos.AdminServiceDtos;
+using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Helpers;
@@ -12,6 +13,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace CollegeUnity.Services.AdminFeatures.Staffs
 {
@@ -96,6 +98,38 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
             await _repositoryManager.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<IEnumerable<GStaffByRoleDto>> GetStaffByFullName(GetStaffParameters parameters)
+        {
+            var staffs = await GetStaffsAsync(parameters);
+            var nameParts = parameters.FullName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+            staffs = staffs.Where(s =>
+                (s.FirstName + " " + s.MiddleName + " " + s.LastName).StartsWith(parameters.FullName, StringComparison.OrdinalIgnoreCase) ||
+                (s.FirstName + " " + s.LastName).StartsWith(parameters.FullName, StringComparison.OrdinalIgnoreCase) ||
+                (s.FirstName).StartsWith(parameters.FullName, StringComparison.OrdinalIgnoreCase)
+            );
+
+            return staffs.ToGStaffRoleMappers();
+        }
+
+        public async Task<IEnumerable<GStaffDto>> GetStaffByRole(GetStaffParameters parameters)
+        {
+            var staffs = await GetStaffsAsync(parameters);
+            staffs = staffs.Where(s => s.Roles.Contains((Core.Enums.Roles)parameters.Role));
+            return staffs.ToGStaffMappers();
+        }
+
+        public async Task<IEnumerable<GStaffByRoleDto>> GetAllStaff(GetStaffParameters parameters)
+        {
+            var query = await GetStaffsAsync(parameters);
+            return query.ToGStaffRoleMappers();
+        }
+
+        public async Task<IEnumerable<Staff>> GetStaffsAsync(GetStaffParameters parameters)
+        {
+            return await _repositoryManager.StaffRepository.GetRangeAsync(parameters);
         }
     }
 }

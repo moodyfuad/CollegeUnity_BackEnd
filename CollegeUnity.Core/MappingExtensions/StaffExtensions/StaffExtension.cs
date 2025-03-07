@@ -1,7 +1,9 @@
 ﻿using CollegeUnity.Core.Dtos.AdminServiceDtos;
+using CollegeUnity.Core.Dtos.PostDtos.Get;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Enums;
 using CollegeUnity.Core.Helpers;
+using CollegeUnity.Core.MappingExtensions.PostExtensions.Get;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,5 +36,54 @@ namespace CollegeUnity.Core.MappingExtensions.StaffExtensions
 
             return staff;
         }
+
+        #region For GStaffDto
+        private static GStaffDto MapTo(this Staff staff)
+        {
+            return new()
+            {
+                Id = staff.Id,
+                FirstName = staff.FirstName,
+                MiddleName = staff.MiddleName,
+                LastName = staff.LastName,
+                Phone = staff.Phone,
+                BirthDate = staff.BirthDate,
+                Email = staff.Email,
+                EducationDegree = ConvertToArabicHelper.EducationToArabic(staff.EducationDegree),
+                Gender = ConvertToArabicHelper.GenderToArabic(staff.Gender),
+                profilePicturePath = staff.ProfilePicturePath
+            };
+        }
+
+        public static IEnumerable<GStaffDto> ToGStaffMappers(this IEnumerable<Staff> staff)
+        {
+            return staff.Select(s => s.MapTo());
+        }
+        #endregion
+
+        #region For GStaffByRoleDto
+        private static GStaffByRoleDto MapToRole(this Staff staff)
+        {
+            return new()
+            {
+                Id = staff.Id,
+                FirstName = staff.FirstName,
+                MiddleName = staff.MiddleName,
+                LastName = staff.LastName,
+                Phone = staff.Phone,
+                BirthDate = staff.BirthDate,
+                Email = staff.Email,
+                EducationDegree = ConvertToArabicHelper.EducationToArabic(staff.EducationDegree),
+                Gender = ConvertToArabicHelper.GenderToArabic(staff.Gender),
+                profilePicturePath = staff.ProfilePicturePath,
+                roles = ConvertToArabicHelper.RolesToArabic(staff.Roles)
+            };
+        }
+
+        public static IEnumerable<GStaffByRoleDto> ToGStaffRoleMappers(this IEnumerable<Staff> staff)
+        {
+            return staff.Select(s => s.MapToRole());
+        }
+        #endregion
     }
 }
