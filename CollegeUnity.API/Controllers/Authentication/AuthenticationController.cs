@@ -8,8 +8,9 @@ using CollegeUnity.Services.SharedFeatures.Authentication;
 using CollegeUnity.Core.Dtos.SharedFeatures.Authentication.LoginFeatures;
 using CollegeUnity.Core.Dtos.AuthenticationServicesDtos;
 using CollegeUnity.Core.Constants.AuthenticationConstants;
-using CollegeUnity.Core.Dtos.SharedFeatures.Authentication.ForgetPasswordFeatures;
 using CollegeUnity.Contract.StudentFeatures.Account;
+using CollegeUnity.Core.CustomValidationAttributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace CollegeUnity.API.Controllers.Authentication
 {
@@ -75,19 +76,20 @@ namespace CollegeUnity.API.Controllers.Authentication
             }
         }
 
-        [HttpPost("ResetPassword/Code/Send{email}")]
+        [HttpPost("ResetPassword/Code/{email}")]
         public async Task<IActionResult> SendResetVerificationCode(string email)
         {
             var result = await _forgetPasswordFeatures.SendResetPasswordCode(email);
 
             var response = result.IsSuccess ?
-                  ApiResponse<ForgetPasswordFeatureResultDto>.Success(result, result.Message) :
-                  ApiResponse<ForgetPasswordFeatureResultDto>.BadRequest(result.Message);
+                 ApiResponse<Dictionary<string, string>>.Success(
+                     data: new() { ["token"] = result.Token! }, result.Message) :
+                  ApiResponse<Dictionary<string, string>>.BadRequest(result.Message);
 
             return new JsonResult(response);
         }
 
-        [HttpPost("ResetPassword/Code/Validate{code}")]
+        [HttpPost("ResetPassword/Code/Validate/{code}")]
         [Authorize(Roles = nameof(ForgetPasswordRoles.CodeSent))]
         public async Task<IActionResult> ValidateVerificationCode(string code)
         {
@@ -96,23 +98,29 @@ namespace CollegeUnity.API.Controllers.Authentication
             var result = await this._forgetPasswordFeatures.ValidateVerificationCode(email, code);
 
             var response = result.IsSuccess ?
-                  ApiResponse<ForgetPasswordFeatureResultDto>.Success(result, result.Message) :
-                  ApiResponse<ForgetPasswordFeatureResultDto>.BadRequest(result.Message);
+                 ApiResponse<Dictionary<string, string>>.Success(
+                     data: new() { ["token"] = result.Token! }, result.Message) :
+                  ApiResponse<Dictionary<string, string>>.BadRequest(result.Message);
 
             return new JsonResult(response);
         }
 
         [Authorize(Roles = nameof(ForgetPasswordRoles.ResetAllowed))]
         [HttpPost("ResetPassword/{newPassword}")]
-        public async Task<IActionResult> ResetPassword(string newPassword)
+        public async Task<IActionResult> ResetPassword(
+            [ContainsDigit(1)]
+            [MinLength(8, ErrorMessage = "Password must be 8 characters minimum")]
+            [ContainsLowerCase(1)]
+            [ContainsUpperCase(1)]
+        string newPassword)
         {
             string email = this.HttpContext.User.FindFirst(CustomClaimTypes.Email)?.Value ?? string.Empty;
 
             var result = await this._forgetPasswordFeatures.ResetPassword(email, newPassword);
 
             var response = result.IsSuccess ?
-                  ApiResponse<ForgetPasswordFeatureResultDto>.Success(result, result.Message) :
-                  ApiResponse<ForgetPasswordFeatureResultDto>.BadRequest(result.Message);
+                  ApiResponse<string>.Success(null, result.Message) :
+                  ApiResponse<string>.BadRequest(result.Message, result.Errors);
 
             return new JsonResult(response);
         }

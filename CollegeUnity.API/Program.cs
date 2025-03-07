@@ -18,6 +18,7 @@ using CollegeUnity.Contract.SharedFeatures.Authentication;
 using CollegeUnity.Services.SharedFeatures.Authentication;
 using CollegeUnity.Contract.StudentFeatures.Account;
 using CollegeUnity.Services.StudentFeatures.Account;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,11 +30,13 @@ builder.Services.AddControllers(options =>
     options.Filters.Add<EditResponseActionFilter>();
 });
 
+builder.Services.ConfigureModelValidationResponse();
+
 builder.Services.AddDbContext<CollegeUnityDbContext>(options =>
 {
     //options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
-    options.UseSqlServer(builder.Configuration.GetConnectionString("FaisalLocal"));
-    //options.UseSqlServer(builder.Configuration.GetConnectionString("Local"));
+    //options.UseSqlServer(builder.Configuration.GetConnectionString("FaisalLocal"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Local"));
 });
 
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
