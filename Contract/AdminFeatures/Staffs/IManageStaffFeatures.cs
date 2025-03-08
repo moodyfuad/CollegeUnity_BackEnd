@@ -17,5 +17,6 @@ namespace CollegeUnity.Contract.AdminFeatures.Staffs
         Task<IEnumerable<GStaffByRoleDto>> GetStaffByFullName(GetStaffParameters parameters);
         Task<IEnumerable<GStaffDto>> GetStaffByRole(GetStaffParameters parameters);
         Task<IEnumerable<GStaffByRoleDto>> GetAllStaff(GetStaffParameters parameters);
+        Task<bool> ChangeStaffPassword(int staffId, ChangeStaffPasswordDto dto);
     }
 }

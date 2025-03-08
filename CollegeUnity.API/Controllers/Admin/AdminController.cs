@@ -30,24 +30,24 @@ namespace CollegeUnity.API.Controllers.Admin
             _manageStaffFeatures = manageStaffFeatures;
         }
 
-        [HttpGet("Staff")]
-        public async Task<IActionResult> Get([Required][FromQuery(Name = "Name")] string name, StaffParameters staffParameters) 
-        {
-            var response = await _serviceManager.AdminServices.SearchStaffBy(name,staffParameters);
-            HttpContext.Response.StatusCode = response.StatusCode;
+        //[HttpGet("Staff")]
+        //public async Task<IActionResult> Get([Required][FromQuery(Name = "Name")] string name, StaffParameters staffParameters) 
+        //{
+        //    var response = await _serviceManager.AdminServices.SearchStaffBy(name,staffParameters);
+        //    HttpContext.Response.StatusCode = response.StatusCode;
             
-            return new JsonResult(response); 
-        }
+        //    return new JsonResult(response); 
+        //}
 
-        [HttpGet("SearchStudents")]
-        public async Task<IActionResult> GetStudent([FromQuery] StudentSearchParameters parameters) 
-        {
-            //return await new StudentController(serviceManager: _serviceManager);
-           /* var response = await _serviceManager.StudentServices.GetStudentsAsync(parameters);
-            HttpContext.Response.StatusCode = response.StatusCode;*/
+        //[HttpGet("SearchStudents")]
+        //public async Task<IActionResult> GetStudent([FromQuery] StudentSearchParameters parameters) 
+        //{
+        //    //return await new StudentController(serviceManager: _serviceManager);
+        //   /* var response = await _serviceManager.StudentServices.GetStudentsAsync(parameters);
+        //    HttpContext.Response.StatusCode = response.StatusCode;*/
 
-            return Ok("Not implemented"); 
-        }
+        //    return Ok("Not implemented"); 
+        //}
 
         [HttpPost("Staff/Create")]
         public async Task<IActionResult> CreateStaffAccount([FromForm] CreateStaffDto dto)
@@ -95,6 +95,19 @@ namespace CollegeUnity.API.Controllers.Admin
                 var resualt = await _manageStaffFeatures.GetAllStaff(parameters);
                 return new JsonResult(ApiResponse<IEnumerable<GStaffDto>?>.Success(resualt, pageNumber: parameters.PageNumber, pageSize: parameters.PageSize));
             }
+        }
+
+        [HttpPut("Staff/ChangePassword/{staffId}")]
+        public async Task<IActionResult> UpdateStaffInfo(int staffId, [FromForm]ChangeStaffPasswordDto dto)
+        {
+            var isSuccess = await _manageStaffFeatures.ChangeStaffPassword(staffId, dto);
+
+            if (isSuccess)
+            {
+                return new JsonResult(ApiResponse<bool?>.Success(null, pageNumber: null, pageSize: null));
+            }
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest("There is staff with the same email or phone, try again."));
         }
     }
 }

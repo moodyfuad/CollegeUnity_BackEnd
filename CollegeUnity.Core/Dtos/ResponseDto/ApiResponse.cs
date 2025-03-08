@@ -27,7 +27,7 @@ namespace CollegeUnity.Core.Dtos.ResponseDto
             Errors = errors ?? new List<string>();
         }
 
-        public static ApiResponse<T?> Success(T? data, string message = "Request completed successfully.", int pageNumber = 1, int pageSize = 10)
+        public static ApiResponse<T?> Success(T? data, string message = "Request completed successfully.", int? pageNumber = 1, int? pageSize = 10)
         {
             return new ApiResponse<T?>(200, true, message, pageNumber, pageSize, data);
         }

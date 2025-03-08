@@ -114,6 +114,22 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
             return staffs.ToGStaffRoleMappers();
         }
 
+        public async Task<bool> ChangeStaffPassword(int staffId, ChangeStaffPasswordDto dto)
+        {
+            var staff = await _repositoryManager.StaffRepository.GetByIdAsync(staffId);
+
+            if (staff == null)
+            {
+                return false;
+            }
+
+            staff.Password = dto.password;
+            staff.ConfirmPassword = dto.password;
+            await _repositoryManager.StaffRepository.Update(staff);
+            await _repositoryManager.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<IEnumerable<GStaffDto>> GetStaffByRole(GetStaffParameters parameters)
         {
             var staffs = await GetStaffsAsync(parameters);
