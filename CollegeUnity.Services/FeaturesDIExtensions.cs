@@ -21,7 +21,7 @@ namespace CollegeUnity.Services
 {
     public static class FeaturesDIExtensions
     {
-        public static IServiceCollection AddFeaturesID(this IServiceCollection services)
+        public static IServiceCollection AddFeaturesDI(this IServiceCollection services)
         {
             //Admin Features
             services.AddScoped<IManageCommunityFeatures, ManageCommunityFeatures>();

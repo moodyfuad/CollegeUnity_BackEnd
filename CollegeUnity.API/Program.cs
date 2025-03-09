@@ -45,7 +45,7 @@ builder.Services.AddScoped<IEmailServices, EmailServices>();
 
 
 // Features DI
-builder.Services.AddFeaturesID();
+builder.Services.AddFeaturesDI();
 
 
 // jwt authentication
