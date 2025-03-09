@@ -1,8 +1,10 @@
 ﻿using CollegeUnity.API.Controllers.Student;
+using CollegeUnity.Contract.AdminFeatures.Communites;
 using CollegeUnity.Contract.AdminFeatures.Staffs;
 using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
 using CollegeUnity.Core.Dtos.AdminServiceDtos;
+using CollegeUnity.Core.Dtos.CommunityDtos.Create;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Dtos.StudentServiceDtos;
@@ -23,11 +25,13 @@ namespace CollegeUnity.API.Controllers.Admin
     {
         private readonly IServiceManager _serviceManager;
         private readonly IManageStaffFeatures _manageStaffFeatures;
+        private readonly IManageCommunityFeatures _manageCommunityFeatures;
 
-        public AdminController(IServiceManager serviceManager, IManageStaffFeatures manageStaffFeatures)
+        public AdminController(IServiceManager serviceManager, IManageStaffFeatures manageStaffFeatures, IManageCommunityFeatures manageCommunityFeatures)
         {
             _serviceManager = serviceManager;
             _manageStaffFeatures = manageStaffFeatures;
+            _manageCommunityFeatures = manageCommunityFeatures;
         }
 
         //[HttpGet("Staff")]
@@ -102,12 +106,21 @@ namespace CollegeUnity.API.Controllers.Admin
         {
             var isSuccess = await _manageStaffFeatures.ChangeStaffPassword(staffId, dto);
 
-            if (isSuccess)
+            return new JsonResult(ApiResponse<bool?>.Success(null, pageNumber: null, pageSize: null));
+
+        }
+
+        [HttpPost("Community/Create")]
+        public async Task<IActionResult> CreateStaffAccount([FromForm] CCommunityDto dto)
+        {
+            var isSuccess = await _manageCommunityFeatures.CreateCommunityAsync(dto);
+
+            if (isSuccess.success)
             {
                 return new JsonResult(ApiResponse<bool?>.Success(null, pageNumber: null, pageSize: null));
             }
 
-            return new JsonResult(ApiResponse<bool?>.BadRequest("There is staff with the same email or phone, try again."));
+            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
         }
     }
 }

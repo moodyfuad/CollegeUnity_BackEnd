@@ -35,6 +35,14 @@ namespace CollegeUnity.API.Middlerware_Extentions
                     response = ApiResponse<object>.Unauthorized(exception.Message);
                     httpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
                     break;
+                case ArgumentException:
+                    response = ApiResponse<object>.BadRequest(exception.Message);
+                    httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+                    break;
+                case InvalidOperationException:
+                    response = ApiResponse<object>.BadRequest(exception.Message);
+                    httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+                    break;
                 default:
                     response = ApiResponse<object>.InternalServerError(exception.Message);
                     httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
@@ -42,7 +50,7 @@ namespace CollegeUnity.API.Middlerware_Extentions
             }
 
             httpContext.Response.ContentType = "application/json";
-            httpContext.Response.WriteAsync(JsonSerializer.Serialize(response));
+            await httpContext.Response.WriteAsync(JsonSerializer.Serialize(response));
         }
     }
 
