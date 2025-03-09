@@ -19,7 +19,7 @@ namespace CollegeUnity.Services
 {
     public static class FeaturesDIExtensions
     {
-        public static IServiceCollection AddFeaturesID(this IServiceCollection services)
+        public static IServiceCollection AddFeaturesDI(this IServiceCollection services)
         {
             // Shared Features
             services.AddScoped<ILoginFeatures, LoginFeatures>();
