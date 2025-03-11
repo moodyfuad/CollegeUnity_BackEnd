@@ -122,5 +122,18 @@ namespace CollegeUnity.API.Controllers.Admin
 
             return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
         }
+
+        [HttpPost("Community/SetSuperAdmin")]
+        public async Task<IActionResult> CreateStaffAccount([FromForm] int studentId, int communityId)
+        {
+            var isSuccess = await _manageCommunityFeatures.SetSuperAdminForCommunity(studentId, communityId);
+
+            if (isSuccess.success)
+            {
+                return new JsonResult(ApiResponse<bool?>.Success(null, pageNumber: null, pageSize: null));
+            }
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
+        }
     }
 }

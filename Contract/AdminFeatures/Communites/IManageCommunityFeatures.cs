@@ -11,8 +11,9 @@ namespace CollegeUnity.Contract.AdminFeatures.Communites
     public interface IManageCommunityFeatures
     {
         // Add Community
-        Task<ResualtDto> CreateCommunityAsync(CCommunityDto dto);
+        Task<ResultDto> CreateCommunityAsync(CCommunityDto dto);
         // Community Super Admin
+        Task<ResultDto> SetSuperAdminForCommunity(int studentId, int communityId);
         // Edit Info
         // Get Admins
         // Add Admin

@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Core.Dtos.FailureResualtDtos
 {
-    public class ResualtDto
+    public class ResultDto
     {
         public bool success;
         public string? message;
 
-        public ResualtDto(bool success, string? message)
+        public ResultDto(bool success, string? message)
         {
             this.success = success;
             this.message = message;

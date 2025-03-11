@@ -19,6 +19,7 @@ namespace CollegeUnity.Contract.EF_Contract
         ICommentRepository CommentRepository { get; }
         ICommunityRepository CommunityRepository { get; }
         IVotesRepository VotesRepository { get; }
+        IStudentCommunityRepository StudentCommunityRepository { get; }
         Task SaveChangesAsync();
 
         Task<T?> FindById<T>(int id)
