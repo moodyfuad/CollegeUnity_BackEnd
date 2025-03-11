@@ -40,7 +40,7 @@ namespace CollegeUnity.API.Controllers.Comment
         [HttpGet("comments")]
         [ValidateEntityExist("postid")]
 
-        public async Task<IActionResult> GetPublishedPostComments(int postId,[FromQuery] GetPostCommentsParameters parameters)
+        public async Task<IActionResult> GetPublishedPostComments([FromQuery] GetPostCommentsParameters parameters)
         {
             if (!ModelState.IsValid)
 

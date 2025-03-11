@@ -1,4 +1,5 @@
 ﻿using CollegeUnity.Core.Enums;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -14,8 +15,8 @@ namespace CollegeUnity.Core.Dtos.AuthenticationDtos
         [Required(ErrorMessage = "Student Id number is required")]
         public required string CardId { get; set; }
         [Required(ErrorMessage = "First Name is required")]
-        [Url]
-        public required string CardIdPicturePath { get; set; }
+
+        public required IFormFile CardIdPictureFile { get; set; }
 
         [Required(ErrorMessage = "Major is required")]
         public required Major Major { get; set; }

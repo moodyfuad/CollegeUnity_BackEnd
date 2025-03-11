@@ -1,4 +1,5 @@
 ﻿using CollegeUnity.Core.Dtos.AuthenticationDtos;
+using CollegeUnity.Core.Dtos.ResponseDto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace CollegeUnity.Contract.StudentFeatures.Account
 {
     public interface ISignUpFeatures
     {
-        Task<string> SignUpStudent(StudentSignUpDto studentDto);
+        Task<ApiResponse<string?>> SignUpStudent(StudentSignUpDto studentDto);
     }
 }

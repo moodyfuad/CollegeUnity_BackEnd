@@ -11,9 +11,14 @@ namespace CollegeUnity.Core.Helpers
     {
         private static readonly string BaseDirectory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "uploads");
 
+        public static readonly string ProfilePictureFolder = GetProfilePicturePath();
+
+        public static readonly string CardIdPictureFolder = GetCardIdPictureFolder();
+
         static FileExtentionhelper()
         {
             Directory.CreateDirectory(BaseDirectory);
+
         }
 
         public static string GetPostPicturePath(int postId, IFormFile file)
@@ -51,5 +56,87 @@ namespace CollegeUnity.Core.Helpers
         {
             return Path.GetExtension(filePath).ToLower();
         }
+
+        private static string GetProfilePicturePath()
+        {
+            string profilePicturesPath = Path.Combine(BaseDirectory, "Profile-Pictures");
+
+
+            bool exists = Directory.Exists(profilePicturesPath);
+            if (exists)
+            {
+                return profilePicturesPath;
+            }
+            else
+            {
+                Directory.CreateDirectory(profilePicturesPath);
+                return profilePicturesPath;
+            }
+        }
+        
+        private static string GetCardIdPictureFolder()
+        {
+            string profilePicturesPath = Path.Combine(BaseDirectory, "Students-Card-Id-Pictures");
+
+
+            bool exists = Directory.Exists(profilePicturesPath);
+            if (exists)
+            {
+                return profilePicturesPath;
+            }
+            else
+            {
+                Directory.CreateDirectory(profilePicturesPath);
+                return profilePicturesPath;
+            }
+        }
+
+        public static async Task<string> SaveProfilePictureFile(IFormFile ImageFile)
+        {
+            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(ImageFile.FileName);
+
+            string filePath = Path.Combine(ProfilePictureFolder, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await ImageFile.CopyToAsync(stream);
+            }
+
+            return filePath;
+        }
+        
+        public static async Task<string> SaveCardIdPictureFile(IFormFile ImageFile)
+        {
+            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(ImageFile.FileName);
+
+            string filePath = Path.Combine(CardIdPictureFolder, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await ImageFile.CopyToAsync(stream);
+            }
+
+            return filePath;
+        }
+        public static bool IsValidImage(IFormFile imageFile)
+        {
+            HashSet<string> allowedImageExtensions =
+                new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                {
+                    ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".webp"
+                };
+            if (imageFile == null || imageFile.Length == 0)
+            {
+                return false;
+            }
+
+            if (!allowedImageExtensions.Contains(Path.GetExtension(imageFile.FileName)))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
     }
 }

@@ -1,8 +1,11 @@
 ﻿using CollegeUnity.Contract.EF_Contract;
 using CollegeUnity.Contract.StudentFeatures.Account;
 using CollegeUnity.Core.Dtos.AuthenticationDtos;
+using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Helpers;
 using CollegeUnity.Core.MappingExtensions.StudentExtensions;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,8 +23,14 @@ namespace CollegeUnity.Services.StudentFeatures.Account
             _repositoryManager = repositoryManager;
         }
 
-        public async Task<string> SignUpStudent(StudentSignUpDto studentDto)
+        public async Task<ApiResponse<string?>> SignUpStudent(StudentSignUpDto studentDto)
         {
+            if (studentDto.CardIdPictureFile == null ||
+                studentDto.CardIdPictureFile.Length == 0)
+            {
+                return ApiResponse<string>.BadRequest("Sign up failed", ["Invalid Registration Id Card Picture"]);
+            }
+
             Student student = await _repositoryManager
                         .StudentRepository.
                         GetByConditionsAsync(
@@ -30,14 +39,24 @@ namespace CollegeUnity.Services.StudentFeatures.Account
                         s.Phone == studentDto.Phone);
             if (student != null)
             {
-                return student.CardId == studentDto.CardId ? $"User Already exist with [ {student.CardId} ] ID" :
-                 student.Email.ToLower() == studentDto.Email.ToLower() ? "Email Already in use" :
-                 student.Phone == studentDto.Phone ? "The Phone number Already in use" :
-                 "One or more Invalid field";
-            }
+                return student.CardId == studentDto.CardId ?
+                    ApiResponse<string>.BadRequest("Sign up failed", [$"User Already exist with [ {student.CardId} ] ID"]) :
 
+                 student.Email.ToLower() == studentDto.Email.ToLower() ?
+                 ApiResponse<string>.BadRequest("Sign up failed", ["Email Already in use"]) :
+
+                 student.Phone == studentDto.Phone ?
+                 ApiResponse<string>.BadRequest("Sign up failed", ["The Phone number Already in use"]) :
+
+                 ApiResponse<string>.BadRequest("Sign up failed", ["One or more Invalid field"]);
+            }
             else
-                student = student.MapFrom<StudentSignUpDto>(studentDto);
+            {
+                string? cardIdPicturePath = await GetCardIdPicturePath(studentDto.CardIdPictureFile);
+                string? profilePicturePath = await GetProfilePicturePath(studentDto.ProfilePicturePath);
+
+                student = student!.MapFrom<StudentSignUpDto>(studentDto, cardIdPicturePath, profilePicturePath);
+            }
 
             student = await _repositoryManager.StudentRepository.CreateAsync(student);
             try
@@ -46,10 +65,24 @@ namespace CollegeUnity.Services.StudentFeatures.Account
             }
             catch (Exception ex)
             {
-                return "Something went wrong :" + ex.Message;
+                return ApiResponse<string>.InternalServerError("Sign up failed", [ex.Message]);
             }
 
-            return "User Created Successfully, please login!";
+            return ApiResponse<string>.Success(null, "Sign up Success");
+        }
+
+        private async Task<string?> GetCardIdPicturePath(IFormFile imageFile)
+        {
+            return FileExtentionhelper.IsValidImage(imageFile) ?
+                await FileExtentionhelper.SaveCardIdPictureFile(imageFile) :
+                null;
+        }
+
+        private async Task<string?> GetProfilePicturePath(IFormFile imageFile)
+        {
+            return FileExtentionhelper.IsValidImage(imageFile) ?
+                await FileExtentionhelper.SaveProfilePictureFile(imageFile) :
+                null;
         }
     }
 }

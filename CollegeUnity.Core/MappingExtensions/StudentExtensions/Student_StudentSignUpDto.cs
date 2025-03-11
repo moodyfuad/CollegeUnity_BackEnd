@@ -11,15 +11,20 @@ namespace CollegeUnity.Core.MappingExtensions.StudentExtensions
 {
     public static partial class StudentExtensions
     {
-        public static Student MapFrom<T>(this Student student, StudentSignUpDto dto)
+        public static Student MapFrom<T>(
+            this Student student,
+            StudentSignUpDto dto,
+            string CardIdPicturePath,
+            string? ProfilePicturePath)
             where T : StudentSignUpDto
         {
 
             return new()
             {
                 CardId = dto.CardId,
-                CardIdPicturePath = dto.CardIdPicturePath,
+                CardIdPicturePath = CardIdPicturePath,
 
+                ProfilePicturePath = ProfilePicturePath,
                 FirstName = dto.FirstName,
                 MiddleName = dto.MiddleName,
                 LastName = dto.LastName,

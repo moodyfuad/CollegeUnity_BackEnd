@@ -35,6 +35,8 @@ namespace CollegeUnity.Core.Dtos.AuthenticationDtos
 
                 CardId = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.RegistrationID)!.Value,
                 
+                FullName = claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.FullName)!.Value,
+                
                 Gender = (Gender)Enum.Parse(typeof(Gender), claims.FirstOrDefault(claim => claim.Type == CustomClaimTypes.Gender)!.Value),
 
                 Role = claims.Where(c => c.Type == CustomClaimTypes.Role)
