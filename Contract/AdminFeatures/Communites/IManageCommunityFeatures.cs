@@ -1,4 +1,5 @@
 ﻿using CollegeUnity.Core.Dtos.CommunityDtos.Create;
+using CollegeUnity.Core.Dtos.CommunityDtos.Update;
 using CollegeUnity.Core.Dtos.FailureResualtDtos;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace CollegeUnity.Contract.AdminFeatures.Communites
         // Community Super Admin
         Task<ResultDto> SetSuperAdminForCommunity(int studentId, int communityId);
         // Edit Info
+        Task<ResultDto> EditCommunityInfo(int communityId, UCommunityInfoDto dto);
         // Get Admins
         // Add Admin
         // Remove Admin

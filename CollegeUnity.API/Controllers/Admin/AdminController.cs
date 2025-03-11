@@ -5,6 +5,7 @@ using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
 using CollegeUnity.Core.Dtos.AdminServiceDtos;
 using CollegeUnity.Core.Dtos.CommunityDtos.Create;
+using CollegeUnity.Core.Dtos.CommunityDtos.Update;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Dtos.StudentServiceDtos;
@@ -124,9 +125,22 @@ namespace CollegeUnity.API.Controllers.Admin
         }
 
         [HttpPost("Community/SetSuperAdmin")]
-        public async Task<IActionResult> CreateStaffAccount([FromForm] int studentId, int communityId)
+        public async Task<IActionResult> SetSuperAdmin([FromForm] int studentId, int communityId)
         {
             var isSuccess = await _manageCommunityFeatures.SetSuperAdminForCommunity(studentId, communityId);
+
+            if (isSuccess.success)
+            {
+                return new JsonResult(ApiResponse<bool?>.Success(null, pageNumber: null, pageSize: null));
+            }
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
+        }
+
+        [HttpPost("Community/Update{communityId}")]
+        public async Task<IActionResult> UpdateCommunityInfo(int communityId, [FromForm] UCommunityInfoDto dto)
+        {
+            var isSuccess = await _manageCommunityFeatures.EditCommunityInfo(communityId, dto);
 
             if (isSuccess.success)
             {

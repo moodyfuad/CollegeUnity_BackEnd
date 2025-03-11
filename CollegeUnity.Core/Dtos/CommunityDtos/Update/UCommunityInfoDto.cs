@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CollegeUnity.Core.Dtos.CommunityDtos.Create
+namespace CollegeUnity.Core.Dtos.CommunityDtos.Update
 {
-    public class CCommunityDto : BaseCommunity
+    public class UCommunityInfoDto : BaseCommunity
     {
     }
 }
