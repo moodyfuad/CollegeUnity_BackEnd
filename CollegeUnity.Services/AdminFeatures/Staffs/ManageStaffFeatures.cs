@@ -50,9 +50,9 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
                 await _repositoryManager.StaffRepository.CreateAsync(staff);
                 await _repositoryManager.SaveChangesAsync();
 
-                if (dto.ProfilePicturePath != null)
+                if (dto.ProfilePictureFile != null)
                 {
-                    string picturePath = await MappingFormToProfilePicture(dto.ProfilePicturePath, staff.Id);
+                    string picturePath = await MappingFormToProfilePicture(dto.ProfilePictureFile, staff.Id);
                     staff.ProfilePicturePath = picturePath;
 
                     _repositoryManager.StaffRepository.Update(staff);

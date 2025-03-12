@@ -34,26 +34,33 @@ namespace CollegeUnity.Services.StudentFeatures.Account
             Student student = await _repositoryManager
                         .StudentRepository.
                         GetByConditionsAsync(
-                        s => s.Email.ToLower() == studentDto.Email.ToLower() ||
-                        s.CardId == studentDto.CardId ||
-                        s.Phone == studentDto.Phone);
+                        s => (s.Email.ToLower().Equals(studentDto.Email.ToLower())) ||
+                        s.CardId.Equals(studentDto.CardId) ||
+                        s.Phone.Equals(studentDto.Phone));
             if (student != null)
             {
-                return student.CardId == studentDto.CardId ?
-                    ApiResponse<string>.BadRequest("Sign up failed", [$"User Already exist with [ {student.CardId} ] ID"]) :
+                List<string> errors = [];
+                if (student.CardId == studentDto.CardId)
+                {
+                    errors.Add($"User Already exist with [ {student.CardId} ] Registration ID");
+                }
 
-                 student.Email.ToLower() == studentDto.Email.ToLower() ?
-                 ApiResponse<string>.BadRequest("Sign up failed", ["Email Already in use"]) :
+                if (student.Email.ToLower().Equals(studentDto.Email.ToLower()))
+                {
+                    errors.Add("Email Already in use");
+                }
 
-                 student.Phone == studentDto.Phone ?
-                 ApiResponse<string>.BadRequest("Sign up failed", ["The Phone number Already in use"]) :
+                if (student.Phone.Equals(studentDto.Phone))
+                {
+                    errors.Add("The Phone number Already in use");
+                }
 
-                 ApiResponse<string>.BadRequest("Sign up failed", ["One or more Invalid field"]);
+                return ApiResponse<string>.BadRequest("Sign up failed", errors);
             }
             else
             {
                 string? cardIdPicturePath = await GetCardIdPicturePath(studentDto.CardIdPictureFile);
-                string? profilePicturePath = await GetProfilePicturePath(studentDto.ProfilePicturePath);
+                string? profilePicturePath = await GetProfilePicturePath(studentDto.ProfilePictureFile);
 
                 student = student!.MapFrom<StudentSignUpDto>(studentDto, cardIdPicturePath, profilePicturePath);
             }

@@ -47,15 +47,9 @@ namespace CollegeUnity.API.Controllers.Comment
                 return BadRequest("post id is required");
 
             PagedList<GetPostCommentDto> result = await _commentFeatures.GetPostComments(parameters);
-            var meta = new
-            {
-                PageNumber = result.CurrentPage,
-                TotalPages = result.TotalPages,
-                PageSize = result.PageSize,
-                HasPrevious = result.HasPrevious,
-                HasNext = result.HasNext,
-            };
-            HttpContext.Response.Headers.Append("X-Pagination", JsonConvert.SerializeObject(meta));
+
+            Response.AddPagination(result);
+
             string meg = $"[{result.Count}] records fetched";
             var response = ApiResponse<PagedList<GetPostCommentDto>>.Success(result, meg);
                 return new JsonResult(response);

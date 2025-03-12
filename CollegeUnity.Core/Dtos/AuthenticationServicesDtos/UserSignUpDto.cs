@@ -1,4 +1,5 @@
-﻿using CollegeUnity.Core.Entities;
+﻿using CollegeUnity.Core.CustomValidationAttributes;
+using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Enums;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -12,7 +13,7 @@ namespace CollegeUnity.Core.Dtos.AuthenticationDtos
 {
     public abstract class UserSignUpDto
     {
-        public IFormFile? ProfilePicturePath { get; set; }
+        public IFormFile? ProfilePictureFile { get; set; }
         [Required(ErrorMessage = "First Name is required")]
         public required string FirstName { get; set; }
         [Required(ErrorMessage = "Middle Name is required")]
@@ -25,8 +26,14 @@ namespace CollegeUnity.Core.Dtos.AuthenticationDtos
         [Required(ErrorMessage = "Phone number is required")]
         [Phone(ErrorMessage = "Invalid Phone number")]
         public required string Phone { get; set; }
+
         [Required(ErrorMessage = "Password is required")]
+        [ContainsDigit(minNumberOfDigits:1)]
+        [ContainsLowerCase(minNumberOfLowerCase:1)]
+        [ContainsUpperCase(maxNumberOfUpperCase:1)]
+        [MinLength(8, ErrorMessage = "password must have at least 8 characters")]
         public required string Password { get; set; }
+
         [Required(ErrorMessage = "Please confirm your password")]
         [Compare(nameof(Password),ErrorMessage = "Password does not match")]
         public required string ConfirmPassword { get; set; }

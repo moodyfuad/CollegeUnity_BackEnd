@@ -106,7 +106,9 @@ namespace CollegeUnity.EF.Repositories
                 }
             }
 
-            return await entity.SingleOrDefaultAsync(condition);
+            var result = await entity.FirstOrDefaultAsync(condition);
+
+            return result;
         }
 
         public async Task<T> GetByIdAsync(int id)

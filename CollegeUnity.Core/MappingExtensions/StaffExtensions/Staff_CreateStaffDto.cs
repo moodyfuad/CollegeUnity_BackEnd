@@ -32,7 +32,7 @@ namespace CollegeUnity.Core.MappingExtensions.StaffExtensions
 
             if (staffId != null)
             {
-                staff.ProfilePicturePath = FileExtentionhelper.GetProfilePicturePath((int)staffId, dto.ProfilePicturePath);
+                staff.ProfilePicturePath = FileExtentionhelper.GetProfilePicturePath((int)staffId, dto.ProfilePictureFile);
             }
 
             return staff;
@@ -42,7 +42,7 @@ namespace CollegeUnity.Core.MappingExtensions.StaffExtensions
         //{
         //    return new()
         //    {
-        //        ProfilePicturePath = staff.ProfilePicturePath,
+        //        ProfilePictureFile = staff.ProfilePictureFile,
         //        FirstName = staff.FirstName,
         //        LastName = staff.LastName,
         //        MiddleName = staff.MiddleName,

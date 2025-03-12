@@ -63,16 +63,17 @@ namespace CollegeUnity.API.Controllers.Student
             {
                 var result = await _serviceManager.StudentServices.GetStudentsAsync(searchParameters);
 
-                var meta = new
-                {
-                    PageNumber = result.CurrentPage,
-                    TotalPages = result.TotalPages,
-                    PageSize = result.PageSize,
-                    HasPrevious = result.HasPrevious,
-                    HasNext = result.HasNext,
-                };
+                //var meta = new
+                //{
+                //    PageNumber = result.CurrentPage,
+                //    TotalPages = result.TotalPages,
+                //    PageSize = result.PageSize,
+                //    HasPrevious = result.HasPrevious,
+                //    HasNext = result.HasNext,
+                //};
 
-                Response.Headers.Append("X-Pagination", JsonConvert.SerializeObject(meta));
+                Response.AddPagination(result.CurrentPage, result.TotalPages, result.PageSize, result.HasPrevious, result.HasNext);
+
                 if (!result.Any())
                     return Ok(ApiResponse<List<Core.Entities.Student>>.NotFound());
 
