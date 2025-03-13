@@ -1,4 +1,5 @@
 ﻿using CollegeUnity.Core.Dtos.AdminServiceDtos;
+using CollegeUnity.Core.Dtos.FailureResualtDtos;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Entities;
@@ -18,5 +19,6 @@ namespace CollegeUnity.Contract.AdminFeatures.Staffs
         Task<IEnumerable<GStaffDto>> GetStaffByRole(GetStaffParameters parameters);
         Task<IEnumerable<GStaffByRoleDto>> GetAllStaff(GetStaffParameters parameters);
         Task<bool> ChangeStaffPassword(int staffId, ChangeStaffPasswordDto dto);
+        Task<ResultDto> ChangeStaffAccountStatus(int id, ChangeStaffStatusDto dto);
     }
 }

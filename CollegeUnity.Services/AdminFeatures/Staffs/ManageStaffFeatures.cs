@@ -1,9 +1,11 @@
 ﻿using CollegeUnity.Contract.AdminFeatures.Staffs;
 using CollegeUnity.Contract.EF_Contract;
 using CollegeUnity.Core.Dtos.AdminServiceDtos;
+using CollegeUnity.Core.Dtos.FailureResualtDtos;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Enums;
 using CollegeUnity.Core.Helpers;
 using CollegeUnity.Core.MappingExtensions.StaffExtensions;
 using Microsoft.AspNetCore.Http;
@@ -35,7 +37,7 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
 
         public async Task<bool> CreateStaffAccount(CreateStaffDto dto)
         {
-            var isExist = await _repositoryManager.StaffRepository.GetByConditionsAsync(s => s.Email == dto.Email && s.Phone == dto.Phone);
+            var isExist = await _repositoryManager.StaffRepository.GetByConditionsAsync(s => s.Email == dto.Email || s.Phone == dto.Phone);
             if (isExist != null)
             {
                 return false;
@@ -141,6 +143,23 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
         {
             var query = await GetStaffsAsync(parameters);
             return query.ToGStaffRoleMappers();
+        }
+
+        public async Task<ResultDto> ChangeStaffAccountStatus(int id, ChangeStaffStatusDto dto)
+        {
+            var staff = await _repositoryManager.StaffRepository.GetByIdAsync(id);
+
+            if (staff == null)
+            {
+                return new(false, "No Staff found.");
+            }
+
+            staff.AccountStatus = dto.AccountStatus;
+            staff.AccountStatusReason = dto.AccountStatusReason;
+            await _repositoryManager.StaffRepository.Update(staff);
+            await _repositoryManager.SaveChangesAsync();
+
+            return new(true, null);
         }
 
         public async Task<IEnumerable<Staff>> GetStaffsAsync(GetStaffParameters parameters)
