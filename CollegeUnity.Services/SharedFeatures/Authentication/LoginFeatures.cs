@@ -3,6 +3,7 @@ using CollegeUnity.Contract.SharedFeatures.Authentication;
 using CollegeUnity.Core.Dtos.AuthenticationDtos;
 using CollegeUnity.Core.Dtos.SharedFeatures.Authentication.LoginFeatures;
 using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Enums;
 using EmailService;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -34,16 +35,53 @@ namespace CollegeUnity.Services.SharedFeatures.Authentication
                 // student log in
                 case StudentLoginDto studentDto:
                     Student? student = await _ValidateStudentCredentials(studentDto);
-                    return student == null ?
-                        LoginResultDto.Failed(["Your Id or Password is incorrect"]) :
-                        LoginResultDto.Success(JwtHelpers.CreateToken(student,_config , expireAt));
+                    if (student == null)
+                    {
+                        return LoginResultDto.Failed(["Your Id or Password is incorrect"]);
+                    }
+
+                    return student.AccountStatus switch
+                    {
+                        AccountStatus.Active => LoginResultDto.Success(JwtHelpers.CreateToken(student, _config, expireAt)),
+
+                        AccountStatus.Deactive => LoginResultDto.Failed(["Your Account is Deactivated.",
+                            $"Due to {student.AccountStatusReason}"]),
+
+                        AccountStatus.Denied => LoginResultDto.Failed(
+                            ["Your Account is not Rejected by the registration department.",
+                            $"Rejection Reason: {student.AccountStatusReason}",
+                            "Please Sign up again using your correct information or Visit the registration department for review."]),
+
+                        AccountStatus.Waiting => LoginResultDto.Success(JwtHelpers.CreateToken(student, _config, expireAt)),
+                        //LoginResultDto.Failed(["Your Account is not Activated Yet.",
+                        //    "Waiting for the registration department to accept your sign up request."]),
+
+                        _ => LoginResultDto.Failed("one or more errors please try again later"),
+                    };
 
                 // staff log in
                 case StaffLoginDto staffDto:
                     Staff? staff = await _ValidateStaffCredentials(staffDto);
-                    return staff == null ?
-                        LoginResultDto.Failed(["Your Email or Password is incorrect"]) :
-                        LoginResultDto.Success(JwtHelpers.CreateToken(staff,_config, expireAt));
+                    if (staff == null)
+                    {
+                        return LoginResultDto.Failed(["Your Email or Password is incorrect"]);
+                    }
+
+                    return staff.AccountStatus switch
+                    {
+                        AccountStatus.Active => LoginResultDto.Success(JwtHelpers.CreateToken(staff, _config, expireAt)),
+
+                        AccountStatus.Deactive => LoginResultDto.Failed(["Your Account is Deactivated.",
+                            $"Due to {staff.AccountStatusReason}"]),
+
+                        AccountStatus.Denied => LoginResultDto.Failed(
+                            ["your account is denied which is not correct please contact the application Admin"]),
+
+                        AccountStatus.Waiting => LoginResultDto.Success(JwtHelpers.CreateToken(staff, _config, expireAt)),
+                        //LoginResultDto.Failed(["your account is in waiting state which is not correct please contact the application Admin"]),
+
+                        _ => LoginResultDto.Failed("one or more errors please try again later"),
+                    };
 
                 //default
                 default: return LoginResultDto.Failed(["User Type Error"]);
