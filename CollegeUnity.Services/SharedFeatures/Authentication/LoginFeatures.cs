@@ -108,38 +108,5 @@ namespace CollegeUnity.Services.SharedFeatures.Authentication
 
             return staff;
         }
-
-        private LoginResultDto _validatePassword(string password)
-        {
-            List<string> errors = [];
-            if (password.Length < 8)
-            {
-                errors.Add("password must be 8 characters minimums");
-            }
-
-            // Check if password contains at least one numeric character
-            if (!Regex.IsMatch(password, @"\d"))
-            {
-                errors.Add("password must contains at least one numeric character");
-            }
-
-            // Check if password contains at least one uppercase letter
-            if (!Regex.IsMatch(password, @"[A-Z]"))
-            {
-                errors.Add("password must contains at least one uppercase character");
-            }
-
-            // Check if password contains at least one lowercase letter
-            if (!Regex.IsMatch(password, @"[a-z]"))
-            {
-                errors.Add("password must contains at least one lowercase character");
-            }
-
-            // If all checks pass, return true
-            return
-                errors.Any() ?
-                LoginResultDto.Failed(errors.ToArray()) :
-                LoginResultDto.Success(string.Empty);
-        }
     }
 }
