@@ -10,6 +10,8 @@ using CollegeUnity.Services.SharedFeatures.Authentication;
 using CollegeUnity.Services.SharedFeatures.Posts.Comments;
 using CollegeUnity.Services.SharedFeatures.Posts.Votes;
 using CollegeUnity.Services.StudentFeatures.Account;
+using EmailService.EmailService;
+using EmailService;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -25,13 +27,16 @@ namespace CollegeUnity.Services
         {
             //Admin Features
             services.AddScoped<IManageCommunityFeatures, ManageCommunityFeatures>();
+            services.AddScoped<IManageStaffFeatures, ManageStaffFeatures>();
 
             // Shared Features
             services.AddScoped<ILoginFeatures, LoginFeatures>();
             services.AddScoped<IForgetPasswordFeatures, ForgetPasswordFeatures>();
             services.AddScoped<ICommentFeatures, CommentFeatures>();
             services.AddScoped<IVoteFeatures, VoteFeatures>();
-            services.AddScoped<IManageStaffFeatures, ManageStaffFeatures>();
+            services.AddScoped<IEmailServices, EmailServices>();
+
+
 
             // Student Features
             services.AddScoped<ISignUpFeatures, SignUpFeature>();

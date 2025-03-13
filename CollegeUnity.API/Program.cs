@@ -41,7 +41,6 @@ builder.Services.AddDbContext<CollegeUnityDbContext>(options =>
 
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 builder.Services.AddScoped<IServiceManager, ServiceManager>();
-builder.Services.AddScoped<IEmailServices, EmailServices>();
 
 
 // Features DI
