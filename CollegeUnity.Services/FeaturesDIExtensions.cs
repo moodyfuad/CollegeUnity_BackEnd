@@ -18,6 +18,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CollegeUnity.Contract.StudentFeatures.Request;
+using CollegeUnity.Services.StudentFeatures.Requests;
+using CollegeUnity.Contract.StudentFeatures.Subjects;
+using CollegeUnity.Services.StudentFeatures.Subjects;
 
 namespace CollegeUnity.Services
 {
@@ -40,6 +44,8 @@ namespace CollegeUnity.Services
 
             // Student Features
             services.AddScoped<ISignUpFeatures, SignUpFeature>();
+            services.AddScoped<IRequestsFeature, RequestsFeature>();
+            services.AddScoped<IStudentSubjectFeatures, StudentSubjectFeatures>();
 
             // Staff Features
             return services;
