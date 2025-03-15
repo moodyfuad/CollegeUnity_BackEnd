@@ -15,10 +15,11 @@ namespace CollegeUnity.Contract.AdminFeatures.Communites
         Task<ResultDto> CreateCommunityAsync(CCommunityDto dto);
         // Community Super Admin
         Task<ResultDto> SetSuperAdminForCommunity(int studentId, int communityId);
+        // Add Admin
+        Task<ResultDto> SetAdminForCommunity(int studentId, int communityId);
         // Edit Info
         Task<ResultDto> EditCommunityInfo(int communityId, UCommunityInfoDto dto);
         // Get Admins
-        // Add Admin
         // Remove Admin
         // Change State
     }

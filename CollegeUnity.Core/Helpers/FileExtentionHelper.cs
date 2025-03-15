@@ -9,7 +9,7 @@ namespace CollegeUnity.Core.Helpers
 {
     public static class FileExtentionhelper
     {
-        private static readonly string BaseDirectory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "uploads");
+        private static readonly string BaseDirectory = Path.Combine(AppContext.BaseDirectory, "wwwroot", "CollegeUnity.API", "wwwroot");
 
         public static readonly string ProfilePictureFolder = GetProfilePicturePath();
 
@@ -39,7 +39,7 @@ namespace CollegeUnity.Core.Helpers
 
             Directory.CreateDirectory(accountPath);
 
-            string fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
 
             return Path.Combine(accountPath, fileName);
         }

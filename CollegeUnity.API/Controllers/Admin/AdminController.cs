@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
+using System.Reflection;
 using System.Text.Json;
 
 namespace CollegeUnity.API.Controllers.Admin
@@ -68,7 +69,7 @@ namespace CollegeUnity.API.Controllers.Admin
         }
 
         [HttpPut("Staff/Update/{staffId}")]
-        public async Task<IActionResult> UpdateStaffInfo(int staffId, UStaffDto dto)
+        public async Task<IActionResult> UpdateStaffInfo(int staffId, [FromForm] UStaffDto dto)
         {
             var isSuccess = await _manageStaffFeatures.UpdateStaffAccount(staffId, dto);
 
@@ -137,10 +138,23 @@ namespace CollegeUnity.API.Controllers.Admin
             return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
         }
 
-        [HttpPost("Community/SetSuperAdmin")]
-        public async Task<IActionResult> SetSuperAdmin([FromForm] int studentId, int communityId)
+        [HttpPost("Community/SetSuperAdmin{studentId}")]
+        public async Task<IActionResult> SetSuperAdmin(int studentId, [FromForm] int communityId)
         {
             var isSuccess = await _manageCommunityFeatures.SetSuperAdminForCommunity(studentId, communityId);
+
+            if (isSuccess.success)
+            {
+                return new JsonResult(ApiResponse<bool?>.Success(null, pageNumber: null, pageSize: null));
+            }
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
+        }
+
+        [HttpPost("Community/SetAdmin{studentId}")]
+        public async Task<IActionResult> SetAdmin(int studentId, [FromForm] int communityId)
+        {
+            var isSuccess = await _manageCommunityFeatures.SetAdminForCommunity(studentId, communityId);
 
             if (isSuccess.success)
             {
@@ -161,6 +175,45 @@ namespace CollegeUnity.API.Controllers.Admin
             }
 
             return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
+        }
+
+        [HttpGet("CurrentDirectory")]
+        public IActionResult GetCurrentDirectory()
+        {
+            // Get the current working directory
+            string currentDirectory = Directory.GetCurrentDirectory();
+
+            return Ok(currentDirectory);
+        }
+
+        [HttpGet("BaseDirectory")]
+        public IActionResult GetBaseDirectory()
+        {
+            // Get the base directory of the application
+            string baseDirectory = AppContext.BaseDirectory;
+
+            return Ok(baseDirectory);
+        }
+
+        [HttpGet("EnvironmentRoot")]
+        public IActionResult GetEnvironmentRoot()
+        {
+            // Get the root directory from an environment variable
+            string rootDirectory = Environment.GetEnvironmentVariable("ASPNETCORE_ROOT") ?? Directory.GetCurrentDirectory();
+
+            return Ok(rootDirectory);
+        }
+
+        [HttpGet("AssemblyLocation")]
+        public IActionResult GetAssemblyLocation()
+        {
+            // Get the location of the executing assembly
+            string assemblyLocation = Assembly.GetExecutingAssembly().Location;
+
+            // Get the directory of the assembly
+            string assemblyDirectory = Path.GetDirectoryName(assemblyLocation);
+
+            return Ok(assemblyDirectory);
         }
     }
 }

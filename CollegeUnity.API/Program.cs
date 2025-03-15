@@ -34,9 +34,9 @@ builder.Services.ConfigureModelValidationResponse();
 
 builder.Services.AddDbContext<CollegeUnityDbContext>(options =>
 {
-    //options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
     //options.UseSqlServer(builder.Configuration.GetConnectionString("FaisalLocal"));
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Local"));
+    //options.UseSqlServer(builder.Configuration.GetConnectionString("Local"));
 });
 
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
@@ -53,6 +53,16 @@ builder.Services.AddCustomJwtAuthentication(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerCustomeGen();
 
+builder.Services.AddCors(option =>
+{
+    option.AddPolicy("AllowAllOrigins", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
 
 app.ConfigureCustomeExceptionHandler();
@@ -60,7 +70,11 @@ app.ConfigureCustomeExceptionHandler();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.UseStaticFiles();
+
 app.UseHttpsRedirection();
+
+app.UseCors("AllowAllOrigins");
 
 app.UseAuthentication();
 app.UseAuthorization();
