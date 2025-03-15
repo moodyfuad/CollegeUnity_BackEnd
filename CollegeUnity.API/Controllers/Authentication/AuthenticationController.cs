@@ -11,10 +11,14 @@ using CollegeUnity.Core.Constants.AuthenticationConstants;
 using CollegeUnity.Contract.StudentFeatures.Account;
 using CollegeUnity.Core.CustomValidationAttributes;
 using System.ComponentModel.DataAnnotations;
+using CollegeUnity.API.Filters;
+using CollegeUnity.API.Middlerware_Extentions;
+using CollegeUnity.Core.Dtos.StudentFeatures;
+using CollegeUnity.Contract.StudentFeatures.Request;
 
 namespace CollegeUnity.API.Controllers.Authentication
 {
-    [Route("api")]
+    //[Route("api")]
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
@@ -23,16 +27,20 @@ namespace CollegeUnity.API.Controllers.Authentication
         private readonly IForgetPasswordFeatures _forgetPasswordFeatures;
         private readonly ISignUpFeatures _signUpFeatures;
 
+        private readonly IRequestsFeature _sendRequestFeature;
+
         public AuthenticationController(
             IConfiguration configuration,
             ILoginFeatures loginFeature,
             IForgetPasswordFeatures forgetPasswordFeatures,
-            ISignUpFeatures signUpFeatures)
+            ISignUpFeatures signUpFeatures,
+            IRequestsFeature sendRequestFeatures)
         {
             _config = configuration;
             _loginFeature = loginFeature;
             _forgetPasswordFeatures = forgetPasswordFeatures;
             _signUpFeatures = signUpFeatures;
+            _sendRequestFeature = sendRequestFeatures;
         }
 
         [HttpPost("student/login")]
@@ -137,6 +145,17 @@ namespace CollegeUnity.API.Controllers.Authentication
         public IActionResult TeststaffAuth()
         {
             return Ok(JwtHelpers.GetUserClaims(HttpContext));
+        }
+
+        [HttpPost("Request/{staffId}")]
+        [ValidateEntityExist("staffId")]
+        public async Task<IActionResult> SendRequest(int staffId, SendRequestDto dto)
+        {
+            int studentid = User.GetUserId();
+
+            var response = new JsonResult(await _sendRequestFeature.Send(studentid, staffId, dto));
+
+            return response;
         }
 
     }

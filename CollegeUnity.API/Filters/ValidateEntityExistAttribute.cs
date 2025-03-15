@@ -115,6 +115,8 @@ namespace CollegeUnity.API.Filters
                     name.Contains("user") ? typeof(User) :
                     name.Contains("vote") ? typeof(PostVote) :
                     name.Contains("comment") ? typeof(PostComment) :
+                    name.Contains("staffId") ? typeof(Staff) :
+                    name.Contains("studentId") ? typeof(Student) :
                     typeof(User);
             }
         }
