@@ -104,7 +104,7 @@ namespace CollegeUnity.API.Controllers.Admin
         }
 
         [HttpPut("Staff/ChangePassword/{staffId}")]
-        public async Task<IActionResult> UpdateStaffInfo(int staffId, [FromForm]ChangeStaffPasswordDto dto)
+        public async Task<IActionResult> ChangeStaffPassword(int staffId, [FromForm]ChangeStaffPasswordDto dto)
         {
             var isSuccess = await _manageStaffFeatures.ChangeStaffPassword(staffId, dto);
 
@@ -113,7 +113,7 @@ namespace CollegeUnity.API.Controllers.Admin
         }
 
         [HttpPost("Community/Create")]
-        public async Task<IActionResult> CreateStaffAccount([FromForm] CCommunityDto dto)
+        public async Task<IActionResult> CreateNewCommunity([FromForm] CCommunityDto dto)
         {
             var isSuccess = await _manageCommunityFeatures.CreateCommunityAsync(dto);
 
@@ -126,7 +126,7 @@ namespace CollegeUnity.API.Controllers.Admin
         }
 
         [HttpPost("Staff/Change/AccountStatus{staffId}")]
-        public async Task<IActionResult> CreateStaffAccount(int staffId, [FromForm]ChangeStaffStatusDto dto)
+        public async Task<IActionResult> ChangeStaffAccountStatus(int staffId, [FromForm]ChangeStaffStatusDto dto)
         {
             var isSuccess = await _manageStaffFeatures.ChangeStaffAccountStatus(staffId, dto);
 
