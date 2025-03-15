@@ -108,9 +108,9 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
             var nameParts = parameters.FullName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
             staffs = staffs.Where(s =>
-                (s.FirstName + " " + s.MiddleName + " " + s.LastName).StartsWith(parameters.FullName, StringComparison.OrdinalIgnoreCase) ||
                 (s.FirstName + " " + s.LastName).StartsWith(parameters.FullName, StringComparison.OrdinalIgnoreCase) ||
-                (s.FirstName).StartsWith(parameters.FullName, StringComparison.OrdinalIgnoreCase)
+                (s.FirstName).StartsWith(parameters.FullName, StringComparison.OrdinalIgnoreCase) ||
+                (s.LastName).StartsWith(parameters.FullName, StringComparison.OrdinalIgnoreCase)
             );
 
             return staffs.ToGStaffRoleMappers();
@@ -135,7 +135,7 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
         public async Task<IEnumerable<GStaffDto>> GetStaffByRole(GetStaffParameters parameters)
         {
             var staffs = await GetStaffsAsync(parameters);
-            staffs = staffs.Where(s => s.Roles.Contains((Core.Enums.Roles)parameters.Role));
+            staffs = staffs.Where(s => s.Roles.Contains((Roles)parameters.Role));
             return staffs.ToGStaffMappers();
         }
 

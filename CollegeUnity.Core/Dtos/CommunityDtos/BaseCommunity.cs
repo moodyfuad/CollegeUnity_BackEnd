@@ -10,14 +10,14 @@ namespace CollegeUnity.Core.Dtos.CommunityDtos
 {
     public class BaseCommunity
     {
-        [Required]
+        [Required(ErrorMessage = "Name is Required")]
         public required string Name { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Description is Required")]
         public required string Description { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "CommunityType is Required")]
         public required CommunityType CommunityType { get; set; }
-        [Required]
+        [Required(ErrorMessage = "CommunityState is Required")]
         public required CommunityState CommunityState { get; set; }
     }
 }

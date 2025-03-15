@@ -61,6 +61,34 @@ namespace CollegeUnity.Services.AdminFeatures.Communites
             return new(true, null);
         }
 
+        public async Task<ResultDto> SetAdminForCommunity(int studentId, int communityId)
+        {
+            if (studentId == null)
+            {
+                return new(false, "Student not found.");
+            }
+
+            if (communityId == null)
+            {
+                return new(false, "Community not found.");
+            }
+
+            var isAdmin = await _repositoryManager.StudentCommunityRepository
+                .AnyAsync(sc => sc.StudentId == studentId && sc.Role == CommunityMemberRoles.Admin);
+
+            if (isAdmin)
+            {
+                return new ResultDto(true, "Student is already a Admin in a community.");
+            }
+
+            var studentCommunity = CreateStudentCommunityExtention.ToAdminStudentCommunity(studentId, communityId);
+
+            await _repositoryManager.StudentCommunityRepository.CreateAsync(studentCommunity);
+            await _repositoryManager.SaveChangesAsync();
+
+            return new(true, null);
+        }
+
         public async Task<ResultDto> SetSuperAdminForCommunity(int studentId, int communityId)
         {
             if (studentId == null)
@@ -81,7 +109,7 @@ namespace CollegeUnity.Services.AdminFeatures.Communites
                 return new ResultDto(true, "Student is already a Super Admin in a community.");
             }
 
-            var studentCommunity = CreateStudentCommunityExtention.ToStudentCommunity(studentId, communityId);
+            var studentCommunity = CreateStudentCommunityExtention.ToSuperAdminStudentCommunity(studentId, communityId);
 
             await _repositoryManager.StudentCommunityRepository.CreateAsync(studentCommunity);
             await _repositoryManager.SaveChangesAsync();

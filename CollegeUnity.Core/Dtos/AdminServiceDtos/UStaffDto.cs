@@ -12,7 +12,7 @@ namespace CollegeUnity.Core.Dtos.AdminServiceDtos
     public class UStaffDto
     {
         [Required(ErrorMessage = "First Name is required")]
-        public string FirstName { get; set; }
+        public required string FirstName { get; set; }
         
         [Required(ErrorMessage = "Middle Name is required")]
         public required string MiddleName { get; set; }
