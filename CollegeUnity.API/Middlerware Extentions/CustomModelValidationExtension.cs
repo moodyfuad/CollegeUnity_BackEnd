@@ -13,10 +13,9 @@ namespace CollegeUnity.API.Middlerware_Extentions
                 options.InvalidModelStateResponseFactory = context =>
                 {
                     var errors = context.ModelState
-                        .Where(ms => ms.Value.Errors.Count > 0).
+                        .Where(ms => ms.Value != null && ms.Value.Errors.Count > 0).
                         Select(
-                        val => $"{val.Key} : [ {string.Join(", ", val.Value!.Errors.Select(error => error.ErrorMessage))} ]").ToList();
-
+                        keyValuePair => $"{keyValuePair.Key} : [ {string.Join(", ", keyValuePair.Value!.Errors.Select(error => error.ErrorMessage))} ]").ToList();
 
                     var responseObj = ApiResponse<object>.BadRequest(
                         "One or more validation failed",

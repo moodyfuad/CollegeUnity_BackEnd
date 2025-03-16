@@ -42,14 +42,19 @@ namespace CollegeUnity.API
             {
                 s.SwaggerDoc("v1", new OpenApiInfo { Title = "CollageUnityApi", Version = "v1" });
 
-                s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-                    Name = "Authorization",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer"
-                });
+                s.AddSecurityDefinition(
+                    "Bearer",
+                    new OpenApiSecurityScheme
+                    {
+                        Description = "Enter your JWT token below:\n" +
+                                      "1. Enter the token without 'Bearer ' keyword.\n\n" +
+                                      "2. Click 'Authorize' to apply authentication.\n\n",
+                        Name = "Authorization",
+                        In = ParameterLocation.Header,
+                        Type = SecuritySchemeType.Http,
+                        Scheme = "Bearer",
+                        BearerFormat = "JWT"
+                    });
 
                 s.AddSecurityRequirement(new OpenApiSecurityRequirement()
                 {
@@ -61,7 +66,9 @@ namespace CollegeUnity.API
                                 Type = ReferenceType.SecurityScheme,
                                 Id = "Bearer"
                             },
-                            Scheme = "oauth2",
+                            //Scheme = "Http",
+                            Scheme = SecuritySchemeType.Http.ToString(),
+                            BearerFormat = "JWT",
                             Name = "Bearer",
                             In = ParameterLocation.Header,
                         },

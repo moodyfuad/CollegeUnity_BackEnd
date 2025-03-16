@@ -26,25 +26,29 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers(options =>
 {
-    options.Filters.Add<ModelValidateActionFilter>();
     options.Filters.Add<EditResponseActionFilter>();
 });
 
 builder.Services.ConfigureModelValidationResponse();
 
-builder.Services.AddDbContext<CollegeUnityDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
-    //options.UseSqlServer(builder.Configuration.GetConnectionString("FaisalLocal"));
-    //options.UseSqlServer(builder.Configuration.GetConnectionString("Local"));
-});
+#region this part is moved to CollegeUnity.EF.EntityFrameworkDIExtensions
+//builder.Services.AddDbContext<CollegeUnityDbContext>(options =>
+//{
+//    //options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
+//    //options.UseSqlServer(builder.Configuration.GetConnectionString("FaisalLocal"));
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("Local"));
+//});
 
-builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
+#endregion
+
+// EF DI
+builder.Services.AddCollegeUnityDbContext(builder.Configuration);
+builder.Services.AddEFLayerDI();
+
 builder.Services.AddScoped<IServiceManager, ServiceManager>();
 
-
 // Features DI
-builder.Services.AddFeaturesDI();
+builder.Services.AddFeaturesLayerDI();
 
 
 // jwt authentication

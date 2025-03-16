@@ -1,6 +1,7 @@
 ﻿using CollegeUnity.Core.Dtos.ResponseDto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Reflection;
 
 namespace CollegeUnity.API.Filters
 {
@@ -16,8 +17,14 @@ namespace CollegeUnity.API.Filters
                     var val = jsonResult.Value;
                     var valType = val.GetType();
 
-                    object? statusCode = (int)valType.GetProperties().FirstOrDefault(
-                        p => p.Name == "StatusCode").GetValue(val);
+
+                    PropertyInfo? statusCodeProperty = valType.GetProperties().
+                        FirstOrDefault(p => p.Name == "StatusCode", null);
+
+                    object statusCode =
+                        statusCodeProperty == null || statusCodeProperty.GetValue(val) == null ?
+                        jsonResult.StatusCode! :
+                        statusCodeProperty.GetValue(val)!;
 
                     jsonResult.StatusCode = (int)statusCode;
                 }

@@ -13,11 +13,6 @@ using CollegeUnity.Services.StudentFeatures.Account;
 using EmailService.EmailService;
 using EmailService;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CollegeUnity.Contract.StudentFeatures.Request;
 using CollegeUnity.Services.StudentFeatures.Requests;
 using CollegeUnity.Contract.StudentFeatures.Subjects;
@@ -27,12 +22,21 @@ namespace CollegeUnity.Services
 {
     public static class FeaturesDIExtensions
     {
-        public static IServiceCollection AddFeaturesDI(this IServiceCollection services)
+        public static IServiceCollection AddFeaturesLayerDI(this IServiceCollection services)
         {
-            //Admin Features
-            services.AddScoped<IManageCommunityFeatures, ManageCommunityFeatures>();
-            services.AddScoped<IManageStaffFeatures, ManageStaffFeatures>();
+            services.AddSharedFeaturesDI();
 
+            services.AddAdminFeaturesDI();
+
+            services.AddStudentFeaturesDI();
+
+            services.AddStaffFeaturesDI();
+
+            return services;
+        }
+
+        private static IServiceCollection AddSharedFeaturesDI(this IServiceCollection services)
+        {
             // Shared Features
             services.AddScoped<ILoginFeatures, LoginFeatures>();
             services.AddScoped<IForgetPasswordFeatures, ForgetPasswordFeatures>();
@@ -40,13 +44,30 @@ namespace CollegeUnity.Services
             services.AddScoped<IVoteFeatures, VoteFeatures>();
             services.AddScoped<IEmailServices, EmailServices>();
 
+            return services;
+        }
 
+        private static IServiceCollection AddAdminFeaturesDI(this IServiceCollection services)
+        {
+            // Admin Features
+            services.AddScoped<IManageCommunityFeatures, ManageCommunityFeatures>();
+            services.AddScoped<IManageStaffFeatures, ManageStaffFeatures>();
 
+            return services;
+        }
+
+        private static IServiceCollection AddStudentFeaturesDI(this IServiceCollection services)
+        {
             // Student Features
             services.AddScoped<ISignUpFeatures, SignUpFeature>();
             services.AddScoped<IRequestsFeature, RequestsFeature>();
             services.AddScoped<IStudentSubjectFeatures, StudentSubjectFeatures>();
 
+            return services;
+        }
+
+        private static IServiceCollection AddStaffFeaturesDI(this IServiceCollection services)
+        {
             // Staff Features
             return services;
         }
