@@ -1,4 +1,5 @@
 ﻿using CollegeUnity.Core.Dtos.ResponseDto;
+using CollegeUnity.Core.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Reflection;
@@ -16,7 +17,6 @@ namespace CollegeUnity.API.Filters
                 {
                     var val = jsonResult.Value;
                     var valType = val.GetType();
-
 
                     PropertyInfo? statusCodeProperty = valType.GetProperties().
                         FirstOrDefault(p => p.Name == "StatusCode", null);

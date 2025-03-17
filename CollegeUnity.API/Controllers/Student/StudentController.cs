@@ -8,6 +8,7 @@ using CollegeUnity.Core.Dtos.AuthenticationServicesDtos;
 using CollegeUnity.Core.Dtos.InterestedSubjectDtos;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
+using CollegeUnity.Core.Dtos.SharedFeatures.Requests;
 using CollegeUnity.Core.Dtos.StudentFeatures;
 using CollegeUnity.Core.Dtos.StudentServiceDtos;
 using CollegeUnity.Core.Entities;
@@ -23,21 +24,24 @@ using System.Text.Json.Serialization;
 
 namespace CollegeUnity.API.Controllers.Student
 {
-    [Route("api/[controller]")]
+    [Route("api/Student")]
     [ApiController]
+    [Authorize(Roles = nameof(Roles.Student))]
+    [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status500InternalServerError)]
     public class StudentController : ControllerBase
     {
         private readonly IServiceManager _serviceManager;
         private readonly IStudentSubjectFeatures _studentSubjectFeatures;
-        private readonly IRequestsFeature _sendRequestFeature;
+        private readonly IRequestsFeature _requestsFeature;
 
         public StudentController(IServiceManager serviceManager,
             IStudentSubjectFeatures studentSubjectFeatures,
-            IRequestsFeature sendRequestFeatures)
+            IRequestsFeature requestsFeature)
         {
             _serviceManager = serviceManager;
             _studentSubjectFeatures = studentSubjectFeatures;
-            _sendRequestFeature = sendRequestFeatures;
+            _requestsFeature = requestsFeature;
         }
 
         [HttpGet("InterestedSubjects")]
@@ -83,21 +87,24 @@ namespace CollegeUnity.API.Controllers.Student
 
         [HttpPost("Request/{staffId}")]
         [ValidateEntityExist("staffId")]
+        [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SendRequest(int staffId, SendRequestDto dto)
         {
             int studentid = User.GetUserId();
 
-            var response = new JsonResult(await _sendRequestFeature.Send(studentid, staffId, dto));
+            var response = new JsonResult(await _requestsFeature.Send(studentid, staffId, dto));
 
             return response;
         }
 
         [HttpGet("Requests")]
-        public async Task<IActionResult> GetRequests()
+        [ProducesResponseType(typeof(ApiResponse<PagedList<GetStudentRequestsDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetRequests([FromQuery] GetStudentRequestsQueryString queryString)
         {
             int studentid = User.GetUserId();
-
-            var response = new JsonResult(await _sendRequestFeature.Get(studentid));
+            var result = await _requestsFeature.Get(studentid, queryString);
+            //HttpContext.Response.AddPagination(result.Data);
+            var response = new JsonResult(result);
 
             return response;
         }

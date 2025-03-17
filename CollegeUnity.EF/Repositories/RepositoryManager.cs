@@ -26,6 +26,7 @@ namespace CollegeUnity.EF.Repositories
         private IVotesRepository _votesRepository;
         private ICommunityRepository _communityRepository;
         private IStudentCommunityRepository _studentCommunityRepository;
+        private IRequestRepository _requestRepository;
 
         public RepositoryManager(CollegeUnityDbContext dbContext)
         {
@@ -89,6 +90,12 @@ namespace CollegeUnity.EF.Repositories
         public ICommunityRepository CommunityRepository
         {
             get => _communityRepository ??= new CommunityRepository(_dbContext);
+            private set { }
+        }
+
+        public IRequestRepository RequestRepository
+        {
+            get => _requestRepository ??= new RequestRepository(_dbContext);
             private set { }
         }
 

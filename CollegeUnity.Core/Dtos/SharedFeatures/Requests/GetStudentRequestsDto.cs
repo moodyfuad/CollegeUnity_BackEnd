@@ -10,6 +10,7 @@ namespace CollegeUnity.Core.Dtos.SharedFeatures.Requests
 {
     public class GetStudentRequestsDto
     {
+        public int RequestId { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
         public DateTime Date { get; set; }

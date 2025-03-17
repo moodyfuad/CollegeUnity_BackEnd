@@ -1,14 +1,18 @@
 ﻿using CollegeUnity.Contract.EF_Contract;
 using CollegeUnity.Contract.StudentFeatures.Request;
+using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Dtos.SharedFeatures.Requests;
 using CollegeUnity.Core.Dtos.StudentFeatures;
 using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Helpers;
+using CollegeUnity.Core.MappingExtensions.Requests;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -71,43 +75,49 @@ namespace CollegeUnity.Services.StudentFeatures.Requests
             return request;
         }
 
-        public async Task<ApiResponse<ICollection<GetStudentRequestsDto>?>> Get(int studentId)
+        public async Task<ApiResponse<PagedList<GetStudentRequestsDto>?>> Get(
+            int studentId,
+            GetStudentRequestsQueryString queryString)
         {
-            var student = await _repositories.StudentRepository.GetByConditionsAsync(
-                 condition: s => s.Id.Equals(studentId),
-                 includes: s => s.Requests);
+            var student = await _repositories.StudentRepository.GetByIdAsync(studentId);
             if (student == null)
             {
-                return ApiResponse<ICollection<GetStudentRequestsDto>>.BadRequest("Failed Retrieving The Requests", ["Student Not Found"]);
+                return ApiResponse<PagedList<GetStudentRequestsDto>>.BadRequest("Failed Retrieving The Requests", ["Student Not Found"]);
             }
 
-            if (student.Requests == null || student.Requests.Count == 0)
+            var nameContains = new Func<string, string, bool>((name, searchValue) =>
             {
-                return ApiResponse<ICollection<GetStudentRequestsDto>>.Success(null, "No Requests To Retrieve");
-            }
-            var result = await MapToGetStudentRequestsDto(student.Requests);
-
-            return ApiResponse<ICollection<GetStudentRequestsDto>>.Success(result, $"[{result.Count}] records retrieved.");
-        }
-
-        private async Task<ICollection<GetStudentRequestsDto>> MapToGetStudentRequestsDto(ICollection<Request> requests)
-        {
-            ICollection<GetStudentRequestsDto> result = [];
-            foreach (Request request in requests)
-            {
-                request.Staff = await _repositories.StaffRepository.GetByIdAsync(request.StaffId);
-                result.Add(new GetStudentRequestsDto()
+                if (string.IsNullOrEmpty(searchValue) || string.IsNullOrWhiteSpace(searchValue))
                 {
-                    Title = request.Title,
-                    Content = request.Content,
-                    Date = request.Date,
-                    RequestStatus = request.RequestStatus,
-                    StaffId = request.StaffId,
-                    StaffFullName = $"{request.Staff.FirstName} {request.Staff.MiddleName} {request.Staff.LastName}"
-                });
+                    return true;
+                }
+
+                return name.ToLower().Contains(searchValue.ToLower());
+            });
+            List<string> fullName = queryString.StaffName.Split(' ').ToList();
+            string firstName = fullName.Count > 0 ? fullName[0] : string.Empty;
+            string middleName = fullName.Count > 1 ? fullName[1] : string.Empty;
+            string lastName = fullName.Count > 2 ? fullName[2] : string.Empty;
+
+            var requests = await _repositories.RequestRepository.GetRangeByConditionsAsync(
+                condition: request =>
+                    request.StudentId == studentId &&
+                    request.Staff.FirstName.Contains(firstName) &&
+                    request.Staff.MiddleName.Contains(middleName) &&
+                    request.Staff.LastName.Contains(lastName),
+                queryStringParameters: queryString,
+                includes:
+                    request => request.Staff);
+
+            requests.MapTo(out var result);
+
+            if (requests != null && requests.Count == 0)
+            {
+                return ApiResponse<PagedList<GetStudentRequestsDto>>.Success(result, "No Requests To Retrieve");
             }
 
-            return result;
+
+            return ApiResponse<PagedList<GetStudentRequestsDto>>.Success(result, $"[{result.Count}] records retrieved.");
         }
     }
 }

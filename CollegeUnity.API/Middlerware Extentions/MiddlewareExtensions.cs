@@ -1,4 +1,5 @@
 ﻿using CollegeUnity.Core.Constants.AuthenticationConstants;
+using CollegeUnity.Core.Dtos.ResponseDto;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -9,6 +10,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 
 namespace CollegeUnity.API
 {
@@ -26,14 +28,34 @@ namespace CollegeUnity.API
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config[$"Jwt:{JwtKeys.Key}"]!)),
             };
+
             AuthenticationOptions authenticationOptions = new()
             {
                 DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme,
                 DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme,
             };
 
+            var jwtBearerEvents = new JwtBearerEvents
+            {
+                OnChallenge = async context =>
+                {
+                    context.HandleResponse(); // Prevent default behavior
+
+                    ApiResponse<string> response = ApiResponse<string>.Unauthorized();
+
+                    context.Response.StatusCode = response.StatusCode;
+                    context.Response.ContentType = "application/json";
+                    await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+                }
+            };
             return services.AddAuthentication(options => options = authenticationOptions)
-                .AddJwtBearer(option => option.TokenValidationParameters = tokenValidationParameters);
+                .AddJwtBearer(
+                option =>
+                {
+                    option.TokenValidationParameters = tokenValidationParameters;
+                    option.Events = jwtBearerEvents;
+                }
+                );
         }
 
         public static void AddSwaggerCustomeGen(this IServiceCollection services)
