@@ -102,17 +102,15 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
             return true;
         }
 
-        public async Task<IEnumerable<GStaffByRoleDto>> GetStaffByFullName(GetStaffParameters parameters)
+        public async Task<PagedList<GStaffByRoleDto>> GetStaffByFullName(GetStaffParameters parameters)
         {
-            var staffs = await GetStaffsAsync(parameters);
-            var nameParts = parameters.FullName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            Expression<Func<Staff, bool>> conditions = s =>
+                (s.FirstName + " " + s.LastName).StartsWith(parameters.FullName) ||
+                (s.FirstName).StartsWith(parameters.FullName) ||
+                (s.LastName).StartsWith(parameters.FullName)
+            ;
 
-            staffs = staffs.Where(s =>
-                (s.FirstName + " " + s.LastName).StartsWith(parameters.FullName, StringComparison.OrdinalIgnoreCase) ||
-                (s.FirstName).StartsWith(parameters.FullName, StringComparison.OrdinalIgnoreCase) ||
-                (s.LastName).StartsWith(parameters.FullName, StringComparison.OrdinalIgnoreCase)
-            );
-
+            var staffs = await _repositoryManager.StaffRepository.GetRangeByConditionsAsync(conditions, parameters);
             return staffs.ToGStaffRoleMappers();
         }
 
@@ -132,17 +130,17 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
             return true;
         }
 
-        public async Task<IEnumerable<GStaffDto>> GetStaffByRole(GetStaffParameters parameters)
+        public async Task<PagedList<GStaffDto>> GetStaffByRole(GetStaffParameters parameters)
         {
-            var staffs = await GetStaffsAsync(parameters);
-            staffs = staffs.Where(s => s.Roles.Contains((Roles)parameters.Role));
+            Expression<Func<Staff, bool>> conditions = s => s.Roles.Contains((Roles)parameters.Role);
+            var staffs = await _repositoryManager.StaffRepository.GetRangeByConditionsAsync(conditions, parameters);
             return staffs.ToGStaffMappers();
         }
 
-        public async Task<IEnumerable<GStaffByRoleDto>> GetAllStaff(GetStaffParameters parameters)
+        public async Task<PagedList<GStaffByRoleDto>> GetAllStaff(GetStaffParameters parameters)
         {
-            var query = await GetStaffsAsync(parameters);
-            return query.ToGStaffRoleMappers();
+            var results = await _repositoryManager.StaffRepository.GetRangeAsync(parameters);
+            return results.ToGStaffRoleMappers();
         }
 
         public async Task<ResultDto> ChangeStaffAccountStatus(int id, ChangeStaffStatusDto dto)
@@ -160,11 +158,6 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
             await _repositoryManager.SaveChangesAsync();
 
             return new(true, null);
-        }
-
-        public async Task<IEnumerable<Staff>> GetStaffsAsync(GetStaffParameters parameters)
-        {
-            return await _repositoryManager.StaffRepository.GetRangeAsync(parameters);
         }
     }
 }
