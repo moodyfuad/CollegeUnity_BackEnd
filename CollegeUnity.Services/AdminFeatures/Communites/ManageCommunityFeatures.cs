@@ -1,6 +1,7 @@
 ﻿using CollegeUnity.Contract.AdminFeatures.Communites;
 using CollegeUnity.Contract.EF_Contract;
 using CollegeUnity.Core.Dtos.CommunityDtos.Create;
+using CollegeUnity.Core.Dtos.CommunityDtos.Get;
 using CollegeUnity.Core.Dtos.CommunityDtos.Update;
 using CollegeUnity.Core.Dtos.FailureResualtDtos;
 using CollegeUnity.Core.Dtos.QueryStrings;
@@ -8,6 +9,7 @@ using CollegeUnity.Core.Dtos.StudentCommunityDtos.Get;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Enums;
 using CollegeUnity.Core.MappingExtensions.CommunityExtensions.Create;
+using CollegeUnity.Core.MappingExtensions.CommunityExtensions.Get;
 using CollegeUnity.Core.MappingExtensions.CommunityExtensions.Update;
 using CollegeUnity.Core.MappingExtensions.StudentCommunityExtensions.Create;
 using CollegeUnity.Core.MappingExtensions.StudentCommunityExtensions.Get;
@@ -64,12 +66,17 @@ namespace CollegeUnity.Services.AdminFeatures.Communites
             return new(true, null);
         }
 
-        public async Task<IEnumerable<GCommunityAdmins>> GetAdmins(GetStudentCommunityAdminsParameters parameters)
+        public async Task<IEnumerable<GCommunityAdminsDto>> GetAdmins(GetStudentCommunityAdminsParameters parameters)
         {
             var admins = await _repositoryManager.StudentCommunityRepository.GetRangeByConditionsAsync(c => c.CommunityId == parameters.Id, parameters);
             admins.OrderByDescending(a => a.Role);
             return admins.ToCommunityAdminsMappers();
+        }
 
+        public async Task<IEnumerable<GCommunitesDto>> GetCommunites(GetCommunitesParameters parameters)
+        {
+            var communites = await _repositoryManager.CommunityRepository.GetRangeAsync(parameters);
+            return communites.ToGetCommunites();
         }
 
         public async Task<ResultDto> SetAdminForCommunity(int studentId, int communityId)
