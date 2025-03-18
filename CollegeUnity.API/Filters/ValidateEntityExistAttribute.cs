@@ -38,14 +38,23 @@ namespace CollegeUnity.API.Filters
             public async override Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
             {
                 var routeData = context.RouteData.Values;
+                var queryData = context.HttpContext.Request.Query;
+
                 bool found = true;
                 foreach (string idName in _idNames)
                 {
                     bool isInRoute = routeData.ContainsKey(idName);
-                    found = isInRoute;
+                    bool isInQuery = queryData.ContainsKey(idName);
+                    found = isInRoute || isInQuery;
                     if (isInRoute)
                     {
                         int id = GetIdFromRoute(idName, routeData);
+                        bool exist = await CallIsExistGenericAsync(id, idName);
+                        found = exist;
+                    }
+                    else if (isInQuery)
+                    {
+                        int id = GetIdFromQuery(idName, queryData);
                         bool exist = await CallIsExistGenericAsync(id, idName);
                         found = exist;
                     }
@@ -71,9 +80,17 @@ namespace CollegeUnity.API.Filters
                 return parseResult ? id : 0;
             }
 
-            private static void ReturnNotFoundResult(ref ActionExecutingContext context)
+            private static int GetIdFromQuery(string propertyIdName, IQueryCollection queryData)
             {
-                context.Result = new JsonResult(new { msg = "Resource not found" });
+                var vla = queryData.FirstOrDefault(kvp => kvp.Key.Equals(propertyIdName)).Value;
+                bool parseResult = int.TryParse(vla!.ToString(), out int id);
+
+                return parseResult ? id : 0;
+            }
+
+            private static void ReturnNotFoundResult(ref ActionExecutingContext context, object? obj = null)
+            {
+                context.Result = new JsonResult(new NotFoundObjectResult(obj ?? "Resource not found"));
             }
 
             private async Task<bool> CallIsExistGenericAsync(int id, string propertyName)
@@ -111,10 +128,10 @@ namespace CollegeUnity.API.Filters
             {
                 string name = propertyName.ToLower();
                 type =
-                    name.Contains("post") ? typeof(Post) :
-                    name.Contains("user") ? typeof(User) :
-                    name.Contains("vote") ? typeof(PostVote) :
-                    name.Contains("comment") ? typeof(PostComment) :
+                    name.Contains("postid") ? typeof(Post) :
+                    name.Contains("userid") ? typeof(User) :
+                    name.Contains("voteid") ? typeof(PostVote) :
+                    name.Contains("commentid") ? typeof(PostComment) :
                     name.Contains("staffId") ? typeof(Staff) :
                     name.Contains("studentId") ? typeof(Student) :
                     typeof(User);

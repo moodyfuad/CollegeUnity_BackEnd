@@ -26,7 +26,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers(options =>
 {
-    options.Filters.Add<EditResponseActionFilter>();
+    options.Filters.Add<AddStatusCodeToResponseActionFilter>();
+    options.Filters.Add<AddPaginationToResponseActionFilter>();
 });
 
 builder.Services.ConfigureModelValidationResponse();

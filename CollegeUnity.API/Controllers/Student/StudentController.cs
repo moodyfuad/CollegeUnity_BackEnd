@@ -35,7 +35,8 @@ namespace CollegeUnity.API.Controllers.Student
         private readonly IStudentSubjectFeatures _studentSubjectFeatures;
         private readonly IRequestsFeature _requestsFeature;
 
-        public StudentController(IServiceManager serviceManager,
+        public StudentController(
+            IServiceManager serviceManager,
             IStudentSubjectFeatures studentSubjectFeatures,
             IRequestsFeature requestsFeature)
         {
@@ -47,13 +48,14 @@ namespace CollegeUnity.API.Controllers.Student
         [HttpGet("InterestedSubjects")]
         public async Task<IActionResult> GetStudentIntresetedSubject(GetInterestedSubjectParameters parameters)
         {
-            var studentId = User.GetUserId();
-            var interestesSubjects = await _studentSubjectFeatures.GetStudentIntrestedSubject(parameters, studentId);
+            int _studentId = User.GetUserId();
+            var interestesSubjects = await _studentSubjectFeatures.GetStudentIntrestedSubject(parameters, _studentId);
 
             if (interestesSubjects != null)
             {
                 return new JsonResult(ApiResponse<IEnumerable<GInterestedSubjectDto>>.Success(interestesSubjects));
             }
+
             return new JsonResult(ApiResponse<IEnumerable<GInterestedSubjectDto>>.NotFound("No Resource yet."));
         }
 
@@ -65,23 +67,27 @@ namespace CollegeUnity.API.Controllers.Student
             {
                 var result = await _serviceManager.StudentServices.GetStudentsAsync(searchParameters);
 
-                Response.AddPagination(result.CurrentPage, result.TotalPages, result.PageSize, result.HasPrevious, result.HasNext);
-
                 if (!result.Any())
-                    return Ok(ApiResponse<List<Core.Entities.Student>>.NotFound());
+                {
+                    return new JsonResult(ApiResponse<PagedList<Core.Entities.Student>>.NotFound());
+                }
 
                 if (result.Count.Equals(1))
-                    return Ok(ApiResponse<Core.Entities.Student>.Success(data: result.FirstOrDefault()!));
+                {
+                    return new JsonResult(ApiResponse<PagedList<Core.Entities.Student>>.Success(message: $"[{result.Count}] records fetched.", data: result));
+                }
 
                 if (result.Count > 1)
-                    return Ok(ApiResponse<PagedList<Core.Entities.Student>>.Success(message: $"[{result.Count}] records fetched.",data: result));
-                else 
-                    return Ok(ApiResponse<string>.InternalServerError(errors :["error fetching students"]));
-
+                {
+                    return new JsonResult(ApiResponse<PagedList<Core.Entities.Student>>.Success(message: $"[{result.Count}] records fetched.", data: result));
+                }
+                else{
+                    return new JsonResult(ApiResponse<string>.InternalServerError(errors :["error fetching students"]));
+                }
             }
             catch (Exception ex)
             {
-                return Ok(ApiResponse<string>.InternalServerError(errors: [ex.Message]));
+                return new JsonResult(ApiResponse<string>.InternalServerError(errors: [ex.Message]));
             }
         }
 
@@ -90,9 +96,8 @@ namespace CollegeUnity.API.Controllers.Student
         [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SendRequest(int staffId, SendRequestDto dto)
         {
-            int studentid = User.GetUserId();
-
-            var response = new JsonResult(await _requestsFeature.Send(studentid, staffId, dto));
+            int _studentId = User.GetUserId();
+            var response = new JsonResult(await _requestsFeature.Send(_studentId, staffId, dto));
 
             return response;
         }
@@ -101,9 +106,9 @@ namespace CollegeUnity.API.Controllers.Student
         [ProducesResponseType(typeof(ApiResponse<PagedList<GetStudentRequestsDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRequests([FromQuery] GetStudentRequestsQueryString queryString)
         {
-            int studentid = User.GetUserId();
-            var result = await _requestsFeature.Get(studentid, queryString);
-            //HttpContext.Response.AddPagination(result.Data);
+            int _studentId = User.GetUserId();
+            var result = await _requestsFeature.Get(_studentId, queryString);
+
             var response = new JsonResult(result);
 
             return response;

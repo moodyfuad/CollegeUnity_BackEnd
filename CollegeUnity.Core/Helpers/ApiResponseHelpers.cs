@@ -37,6 +37,7 @@ namespace CollegeUnity.Core.Helpers
                 PageNumber = pl.CurrentPage,
                 TotalPages = pl.TotalPages,
                 PageSize = pl.PageSize,
+                TotalCount = pl.TotalCount,
                 HasPrevious = pl.HasPrevious,
                 HasNext = pl.HasNext,
             };
