@@ -1,5 +1,6 @@
 ﻿using CollegeUnity.Core.Dtos.CommunityDtos.Get;
 using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,9 +23,17 @@ namespace CollegeUnity.Core.MappingExtensions.CommunityExtensions.Get
             };
         }
 
-        public static IEnumerable<GCommunitesDto> ToGetCommunites(this IEnumerable<Community> communities)
+        public static PagedList<GCommunitesDto> ToGetCommunites(this PagedList<Community> communities)
         {
-            return communities.Select(c => c.GetCommunity());
+            var results = communities.Select(c => c.GetCommunity()).ToList();
+            var pagedList = new PagedList<GCommunitesDto>
+                (
+                    items: results,
+                    count: communities.Count(),
+                    pageNumber: communities.CurrentPage,
+                    pageSize: communities.PageSize
+                );
+            return pagedList;
         }
     }
 }

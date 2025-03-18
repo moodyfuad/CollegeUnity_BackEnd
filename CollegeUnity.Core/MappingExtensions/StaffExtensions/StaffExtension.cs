@@ -1,4 +1,5 @@
 ﻿using CollegeUnity.Core.Dtos.AdminServiceDtos;
+using CollegeUnity.Core.Dtos.CommunityDtos.Get;
 using CollegeUnity.Core.Dtos.PostDtos.Get;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Enums;
@@ -55,9 +56,17 @@ namespace CollegeUnity.Core.MappingExtensions.StaffExtensions
             };
         }
 
-        public static IEnumerable<GStaffDto> ToGStaffMappers(this IEnumerable<Staff> staff)
+        public static PagedList<GStaffDto> ToGStaffMappers(this PagedList<Staff> staffs)
         {
-            return staff.Select(s => s.MapTo());
+            var results = staffs.Select(s => s.MapTo()).ToList();
+            var pagedList = new PagedList<GStaffDto>
+            (
+                items: results,
+                count: staffs.Count(),
+                pageNumber: staffs.CurrentPage,
+                pageSize: staffs.PageSize
+            );
+            return pagedList;
         }
         #endregion
 
@@ -80,9 +89,17 @@ namespace CollegeUnity.Core.MappingExtensions.StaffExtensions
             };
         }
 
-        public static IEnumerable<GStaffByRoleDto> ToGStaffRoleMappers(this IEnumerable<Staff> staff)
+        public static PagedList<GStaffByRoleDto> ToGStaffRoleMappers(this PagedList<Staff> staffs)
         {
-            return staff.Select(s => s.MapToRole());
+            var results = staffs.Select(s => s.MapToRole()).ToList();
+            var pagedList = new PagedList<GStaffByRoleDto>
+            (
+                items: results,
+                count: staffs.Count(),
+                pageNumber: staffs.CurrentPage,
+                pageSize: staffs.PageSize
+            );
+            return pagedList;
         }
         #endregion
     }

@@ -4,6 +4,7 @@ using CollegeUnity.Core.Dtos.CommunityDtos.Update;
 using CollegeUnity.Core.Dtos.FailureResualtDtos;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.StudentCommunityDtos.Get;
+using CollegeUnity.Core.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,9 +24,9 @@ namespace CollegeUnity.Contract.AdminFeatures.Communites
         // Edit Info
         Task<ResultDto> EditCommunityInfo(int communityId, UCommunityInfoDto dto);
         // Get Admins
-        Task<IEnumerable<GCommunityAdminsDto>> GetAdmins(GetStudentCommunityAdminsParameters parameters);
+        Task<PagedList<GCommunityAdminsDto>> GetAdmins(GetStudentCommunityAdminsParameters parameters);
         //Get Communites
-        Task<IEnumerable<GCommunitesDto>> GetCommunites(GetCommunitesParameters parameters);
+        Task<PagedList<GCommunitesDto>> GetCommunites(GetCommunitesParameters parameters);
         // Remove Admin
         // Change State
     }

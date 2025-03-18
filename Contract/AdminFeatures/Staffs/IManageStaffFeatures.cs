@@ -3,6 +3,7 @@ using CollegeUnity.Core.Dtos.FailureResualtDtos;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +16,9 @@ namespace CollegeUnity.Contract.AdminFeatures.Staffs
     {
         Task<bool> CreateStaffAccount(CreateStaffDto staffDto);
         Task<bool> UpdateStaffAccount(int staffId, UStaffDto dto);
-        Task<IEnumerable<GStaffByRoleDto>> GetStaffByFullName(GetStaffParameters parameters);
-        Task<IEnumerable<GStaffDto>> GetStaffByRole(GetStaffParameters parameters);
-        Task<IEnumerable<GStaffByRoleDto>> GetAllStaff(GetStaffParameters parameters);
+        Task<PagedList<GStaffByRoleDto>> GetStaffByFullName(GetStaffParameters parameters);
+        Task<PagedList<GStaffDto>> GetStaffByRole(GetStaffParameters parameters);
+        Task<PagedList<GStaffByRoleDto>> GetAllStaff(GetStaffParameters parameters);
         Task<bool> ChangeStaffPassword(int staffId, ChangeStaffPasswordDto dto);
         Task<ResultDto> ChangeStaffAccountStatus(int id, ChangeStaffStatusDto dto);
     }

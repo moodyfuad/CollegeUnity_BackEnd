@@ -8,6 +8,7 @@ using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.StudentCommunityDtos.Get;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Enums;
+using CollegeUnity.Core.Helpers;
 using CollegeUnity.Core.MappingExtensions.CommunityExtensions.Create;
 using CollegeUnity.Core.MappingExtensions.CommunityExtensions.Get;
 using CollegeUnity.Core.MappingExtensions.CommunityExtensions.Update;
@@ -66,14 +67,14 @@ namespace CollegeUnity.Services.AdminFeatures.Communites
             return new(true, null);
         }
 
-        public async Task<IEnumerable<GCommunityAdminsDto>> GetAdmins(GetStudentCommunityAdminsParameters parameters)
+        public async Task<PagedList<GCommunityAdminsDto>> GetAdmins(GetStudentCommunityAdminsParameters parameters)
         {
             var admins = await _repositoryManager.StudentCommunityRepository.GetRangeByConditionsAsync(c => c.CommunityId == parameters.Id, parameters);
             admins.OrderByDescending(a => a.Role);
             return admins.ToCommunityAdminsMappers();
         }
 
-        public async Task<IEnumerable<GCommunitesDto>> GetCommunites(GetCommunitesParameters parameters)
+        public async Task<PagedList<GCommunitesDto>> GetCommunites(GetCommunitesParameters parameters)
         {
             var communites = await _repositoryManager.CommunityRepository.GetRangeAsync(parameters);
             return communites.ToGetCommunites();

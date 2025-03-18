@@ -13,6 +13,7 @@ using CollegeUnity.Core.Dtos.StudentCommunityDtos.Get;
 using CollegeUnity.Core.Dtos.StudentServiceDtos;
 using CollegeUnity.Core.Dtos.SubjectDtos;
 using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
@@ -70,19 +71,19 @@ namespace CollegeUnity.API.Controllers.Admin
             if (!string.IsNullOrEmpty(parameters.FullName) && parameters.Role == null)
             {
                 var resualt = await _manageStaffFeatures.GetStaffByFullName(parameters);
-                return new JsonResult(ApiResponse<IEnumerable<GStaffByRoleDto>?>.Success(resualt, pageNumber: parameters.PageNumber, pageSize:parameters.PageSize));
+                return new JsonResult(ApiResponse<PagedList<GStaffByRoleDto>?>.Success(resualt));
             }
 
             else if (string.IsNullOrEmpty(parameters.FullName) && parameters.Role != null)
             {
                 var resualt = await _manageStaffFeatures.GetStaffByRole(parameters);
-                return new JsonResult(ApiResponse<IEnumerable<GStaffDto>?>.Success(resualt, pageNumber: parameters.PageNumber, pageSize: parameters.PageSize));
+                return new JsonResult(ApiResponse<PagedList<GStaffDto>?>.Success(resualt));
             }
 
             else
             {
                 var resualt = await _manageStaffFeatures.GetAllStaff(parameters);
-                return new JsonResult(ApiResponse<IEnumerable<GStaffDto>?>.Success(resualt, pageNumber: parameters.PageNumber, pageSize: parameters.PageSize));
+                return new JsonResult(ApiResponse<PagedList<GStaffByRoleDto>?>.Success(resualt));
             }
         }
 
@@ -91,7 +92,7 @@ namespace CollegeUnity.API.Controllers.Admin
         {
             var isSuccess = await _manageStaffFeatures.ChangeStaffPassword(staffId, dto);
 
-            return new JsonResult(ApiResponse<bool?>.Success(null, pageNumber: null, pageSize: null));
+            return new JsonResult(ApiResponse<bool?>.Success(null));
 
         }
 
@@ -102,7 +103,7 @@ namespace CollegeUnity.API.Controllers.Admin
 
             if (isSuccess.success)
             {
-                return new JsonResult(ApiResponse<bool?>.Success(null, pageNumber: null, pageSize: null));
+                return new JsonResult(ApiResponse<bool?>.Success(null));
             }
 
             return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
@@ -115,7 +116,7 @@ namespace CollegeUnity.API.Controllers.Admin
 
             if (isSuccess.success)
             {
-                return new JsonResult(ApiResponse<bool?>.Success(null, pageNumber: null, pageSize: null));
+                return new JsonResult(ApiResponse<bool?>.Success(null));
             }
 
             return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
@@ -125,7 +126,7 @@ namespace CollegeUnity.API.Controllers.Admin
         public async Task<IActionResult> GetCommunites([FromQuery] GetCommunitesParameters parameters)
         {
             var communites = await _manageCommunityFeatures.GetCommunites(parameters);
-            return new JsonResult(ApiResponse<IEnumerable<GCommunitesDto>>.Success(communites, pageNumber: null, pageSize: null));
+            return new JsonResult(ApiResponse<PagedList<GCommunitesDto>>.Success(communites));
         }
 
         [HttpPost("Community/SetSuperAdmin/{studentId}")]
@@ -135,7 +136,7 @@ namespace CollegeUnity.API.Controllers.Admin
 
             if (isSuccess.success)
             {
-                return new JsonResult(ApiResponse<bool?>.Success(null, pageNumber: null, pageSize: null));
+                return new JsonResult(ApiResponse<bool?>.Success(null));
             }
 
             return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
@@ -148,7 +149,7 @@ namespace CollegeUnity.API.Controllers.Admin
 
             if (isSuccess.success)
             {
-                return new JsonResult(ApiResponse<bool?>.Success(null, pageNumber: null, pageSize: null));
+                return new JsonResult(ApiResponse<bool?>.Success(null));
             }
 
             return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
@@ -158,7 +159,7 @@ namespace CollegeUnity.API.Controllers.Admin
         public async Task<IActionResult> GetCommunityAdmins([FromQuery]GetStudentCommunityAdminsParameters parameters)
         {
             var admins = await _manageCommunityFeatures.GetAdmins(parameters);
-            return new JsonResult(ApiResponse<IEnumerable<GCommunityAdminsDto>>.Success(admins, pageNumber: null, pageSize: null));
+            return new JsonResult(ApiResponse<PagedList<GCommunityAdminsDto>>.Success(admins));
         }
 
 
@@ -169,7 +170,7 @@ namespace CollegeUnity.API.Controllers.Admin
 
             if (isSuccess.success)
             {
-                return new JsonResult(ApiResponse<bool?>.Success(null, pageNumber: null, pageSize: null));
+                return new JsonResult(ApiResponse<bool?>.Success(null));
             }
 
             return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
