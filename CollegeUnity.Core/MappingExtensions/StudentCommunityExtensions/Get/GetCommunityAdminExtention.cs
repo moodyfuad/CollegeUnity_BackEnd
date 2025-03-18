@@ -12,9 +12,9 @@ namespace CollegeUnity.Core.MappingExtensions.StudentCommunityExtensions.Get
 {
     public static class GetCommunityAdminExtention
     {
-        public static GCommunityAdmins GetCommunityAdmins(this StudentCommunity studentCommunity)
+        public static GCommunityAdminsDto GetCommunityAdmins(this StudentCommunity studentCommunity)
         {
-            var admin = new GCommunityAdmins 
+            var admin = new GCommunityAdminsDto 
             {
                 Id = studentCommunity.StudentId,
                 FullName = $"{studentCommunity.Student.FirstName} {studentCommunity.Student.MiddleName} {studentCommunity.Student.LastName}",
@@ -23,7 +23,7 @@ namespace CollegeUnity.Core.MappingExtensions.StudentCommunityExtensions.Get
             return admin;
         }
 
-        public static IEnumerable<GCommunityAdmins> ToCommunityAdminsMappers(this IEnumerable<StudentCommunity> studentCommunities)
+        public static IEnumerable<GCommunityAdminsDto> ToCommunityAdminsMappers(this IEnumerable<StudentCommunity> studentCommunities)
         {
             return studentCommunities.Select(admin => admin.GetCommunityAdmins());
         }

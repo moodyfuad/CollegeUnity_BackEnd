@@ -5,6 +5,7 @@ using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
 using CollegeUnity.Core.Dtos.AdminServiceDtos;
 using CollegeUnity.Core.Dtos.CommunityDtos.Create;
+using CollegeUnity.Core.Dtos.CommunityDtos.Get;
 using CollegeUnity.Core.Dtos.CommunityDtos.Update;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
@@ -120,6 +121,13 @@ namespace CollegeUnity.API.Controllers.Admin
             return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
         }
 
+        [HttpGet("Communites")]
+        public async Task<IActionResult> GetCommunites([FromQuery] GetCommunitesParameters parameters)
+        {
+            var communites = await _manageCommunityFeatures.GetCommunites(parameters);
+            return new JsonResult(ApiResponse<IEnumerable<GCommunitesDto>>.Success(communites, pageNumber: null, pageSize: null));
+        }
+
         [HttpPost("Community/SetSuperAdmin/{studentId}")]
         public async Task<IActionResult> SetSuperAdmin(int studentId, [FromForm] int communityId)
         {
@@ -150,7 +158,7 @@ namespace CollegeUnity.API.Controllers.Admin
         public async Task<IActionResult> GetCommunityAdmins([FromQuery]GetStudentCommunityAdminsParameters parameters)
         {
             var admins = await _manageCommunityFeatures.GetAdmins(parameters);
-            return new JsonResult(ApiResponse<IEnumerable<GCommunityAdmins>>.Success(admins, pageNumber: null, pageSize: null));
+            return new JsonResult(ApiResponse<IEnumerable<GCommunityAdminsDto>>.Success(admins, pageNumber: null, pageSize: null));
         }
 
 
