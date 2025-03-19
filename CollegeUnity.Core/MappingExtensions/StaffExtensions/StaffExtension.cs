@@ -31,7 +31,7 @@ namespace CollegeUnity.Core.MappingExtensions.StaffExtensions
                 Roles = newInfo.Roles,
                 BirthDate = newInfo.BirthDate,
                 EducationDegree = newInfo.EducationDegree,
-                AccountStatus = newInfo.AccountStatus,
+                AccountStatus = oldInfo.AccountStatus,
                 Gender = newInfo.Gender,
             };
 

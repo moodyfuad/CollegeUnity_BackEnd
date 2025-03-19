@@ -40,8 +40,5 @@ namespace CollegeUnity.Core.Dtos.AdminServiceDtos
 
         [Required(ErrorMessage = "Roles Field is required")]
         public required ICollection<Roles> Roles { get; set; }
-
-        [Required]
-        public required AccountStatus AccountStatus { get; set; }
     }
 }
