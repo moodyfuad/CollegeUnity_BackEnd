@@ -1,10 +1,12 @@
 ﻿using CollegeUnity.API.Filters;
 using CollegeUnity.API.Middlerware_Extentions;
 using CollegeUnity.Contract.Services_Contract;
+using CollegeUnity.Contract.StudentFeatures.Community;
 using CollegeUnity.Contract.StudentFeatures.Request;
 using CollegeUnity.Contract.StudentFeatures.Subjects;
 using CollegeUnity.Core.Dtos.AuthenticationDtos;
 using CollegeUnity.Core.Dtos.AuthenticationServicesDtos;
+using CollegeUnity.Core.Dtos.CommunityDtos.Get;
 using CollegeUnity.Core.Dtos.InterestedSubjectDtos;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
@@ -34,15 +36,19 @@ namespace CollegeUnity.API.Controllers.Student
         private readonly IServiceManager _serviceManager;
         private readonly IStudentSubjectFeatures _studentSubjectFeatures;
         private readonly IRequestsFeature _requestsFeature;
+        private readonly IStudentCommunityFeatures _studentCommunityFeatures;
 
         public StudentController(
             IServiceManager serviceManager,
             IStudentSubjectFeatures studentSubjectFeatures,
-            IRequestsFeature requestsFeature)
+            IRequestsFeature requestsFeature,
+            IStudentCommunityFeatures studentCommunityFeatures
+            )
         {
             _serviceManager = serviceManager;
             _studentSubjectFeatures = studentSubjectFeatures;
             _requestsFeature = requestsFeature;
+            _studentCommunityFeatures = studentCommunityFeatures;
         }
 
         [HttpGet("InterestedSubjects")]
@@ -57,6 +63,20 @@ namespace CollegeUnity.API.Controllers.Student
             }
 
             return new JsonResult(ApiResponse<IEnumerable<GInterestedSubjectDto>>.NotFound("No Resource yet."));
+        }
+
+        [HttpGet("GetMyCommunites")]
+        public async Task<IActionResult> GetStudentCommunites(GetStudentCommunitesParameters parameters)
+        {
+            int _studentId = User.GetUserId();
+            var communites = await _studentCommunityFeatures.GetMyCommunites(_studentId, parameters);
+
+            if (communites != null)
+            {
+                return new JsonResult(ApiResponse<PagedList<GStudentCommunitesDto>>.Success(communites));
+            }
+
+            return new JsonResult(ApiResponse<PagedList<GStudentCommunitesDto>>.NotFound("No Resource yet."));
         }
 
 
