@@ -13,6 +13,7 @@ using CollegeUnity.Core.Dtos.StudentCommunityDtos.Get;
 using CollegeUnity.Core.Dtos.StudentServiceDtos;
 using CollegeUnity.Core.Dtos.SubjectDtos;
 using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Enums;
 using CollegeUnity.Core.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -52,8 +53,86 @@ namespace CollegeUnity.API.Controllers.Admin
             return new JsonResult(ApiResponse<bool?>.BadRequest("There is staff with the same email or phone, try again."));
         }
 
-        [HttpPut("Staff/Update")]
-        public async Task<IActionResult> UpdateStaffInfo([FromHeader] int staffId, [FromForm] UStaffDto dto)
+        [HttpPost("Community/Update/{communityId}")]
+        public async Task<IActionResult> UpdateCommunityInfo(int communityId, [FromBody] UCommunityInfoDto dto)
+        {
+            var isSuccess = await _manageCommunityFeatures.EditCommunityInfo(communityId, dto);
+
+            if (isSuccess.success)
+            {
+                return new JsonResult(ApiResponse<bool?>.Success(null));
+            }
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
+        }
+
+        [HttpPost("Community/RemoveAdmin/{studentId}")]
+        public async Task<IActionResult> ReemoveAdmin(int studentId, [FromBody] int communityId)
+        {
+            var isSuccess = await _manageCommunityFeatures.RemoveAdminFromCommunites(studentId, communityId);
+
+            if (isSuccess.success)
+            {
+                return new JsonResult(ApiResponse<bool?>.Success(null));
+            }
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
+        }
+
+        [HttpPost("Community/SetAdmin/{studentId}")]
+        public async Task<IActionResult> SetAdmin(int studentId, [FromBody] int communityId)
+        {
+            var isSuccess = await _manageCommunityFeatures.SetAdminForCommunity(studentId, communityId);
+
+            if (isSuccess.success)
+            {
+                return new JsonResult(ApiResponse<bool?>.Success(null));
+            }
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
+        }
+
+        [HttpPost("Community/SetSuperAdmin/{studentId}")]
+        public async Task<IActionResult> SetSuperAdmin(int studentId, [FromBody] int communityId)
+        {
+            var isSuccess = await _manageCommunityFeatures.SetSuperAdminForCommunity(studentId, communityId);
+
+            if (isSuccess.success)
+            {
+                return new JsonResult(ApiResponse<bool?>.Success(null));
+            }
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
+        }
+
+        [HttpPost("Staff/Change/AccountStatus{staffId}")]
+        public async Task<IActionResult> ChangeStaffAccountStatus(int staffId, [FromBody] ChangeStaffStatusDto dto)
+        {
+            var isSuccess = await _manageStaffFeatures.ChangeStaffAccountStatus(staffId, dto);
+
+            if (isSuccess.success)
+            {
+                return new JsonResult(ApiResponse<bool?>.Success(null));
+            }
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
+        }
+
+        [HttpPost("Community/Create")]
+        public async Task<IActionResult> CreateNewCommunity([FromBody] CCommunityDto dto)
+        {
+            var isSuccess = await _manageCommunityFeatures.CreateCommunityAsync(dto);
+
+            if (isSuccess.success)
+            {
+                return new JsonResult(ApiResponse<bool?>.Success(null));
+            }
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
+        }
+
+        [HttpPut("Staff/Update/{staffId}")]
+        public async Task<IActionResult> UpdateStaffInfo(int staffId, [FromForm] UStaffDto dto)
         {
             var isSuccess = await _manageStaffFeatures.UpdateStaffAccount(staffId, dto);
 
@@ -63,6 +142,41 @@ namespace CollegeUnity.API.Controllers.Admin
             }
 
             return new JsonResult(ApiResponse<bool?>.BadRequest("There is staff with the same email or phone, try again."));
+        }
+
+        [HttpPut("Staff/ChangePassword/{staffId}")]
+        public async Task<IActionResult> ChangeStaffPassword(int staffId, [FromBody]ChangeStaffPasswordDto dto)
+        {
+            var isSuccess = await _manageStaffFeatures.ChangeStaffPassword(staffId, dto);
+
+            return new JsonResult(ApiResponse<bool?>.Success(null));
+
+        }
+
+        [HttpPut("Community/ChangeState/{communityId}")]
+        public async Task<IActionResult> ChangeCommuntiyState(int communityId, CommunityState state)
+        {
+            var isSuccess = await _manageCommunityFeatures.ChangeCommunityState(communityId, state);
+
+            if (isSuccess.success)
+            {
+                return new JsonResult(ApiResponse<bool?>.Success(null));
+            }
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
+        }
+
+        [HttpPut("Community/ChangeType/{communityId}")]
+        public async Task<IActionResult> ChangeCommuntiyType(int communityId, CommunityType type)
+        {
+            var isSuccess = await _manageCommunityFeatures.ChangeCommunityType(communityId, type);
+
+            if (isSuccess.success)
+            {
+                return new JsonResult(ApiResponse<bool?>.Success(null));
+            }
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
         }
 
         [HttpGet("Staffs")]
@@ -87,72 +201,26 @@ namespace CollegeUnity.API.Controllers.Admin
             }
         }
 
-        [HttpPut("Staff/ChangePassword/{staffId}")]
-        public async Task<IActionResult> ChangeStaffPassword(int staffId, [FromForm]ChangeStaffPasswordDto dto)
-        {
-            var isSuccess = await _manageStaffFeatures.ChangeStaffPassword(staffId, dto);
-
-            return new JsonResult(ApiResponse<bool?>.Success(null));
-
-        }
-
-        [HttpPost("Community/Create")]
-        public async Task<IActionResult> CreateNewCommunity([FromForm] CCommunityDto dto)
-        {
-            var isSuccess = await _manageCommunityFeatures.CreateCommunityAsync(dto);
-
-            if (isSuccess.success)
-            {
-                return new JsonResult(ApiResponse<bool?>.Success(null));
-            }
-
-            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
-        }
-
-        [HttpPost("Staff/Change/AccountStatus{staffId}")]
-        public async Task<IActionResult> ChangeStaffAccountStatus(int staffId, [FromForm]ChangeStaffStatusDto dto)
-        {
-            var isSuccess = await _manageStaffFeatures.ChangeStaffAccountStatus(staffId, dto);
-
-            if (isSuccess.success)
-            {
-                return new JsonResult(ApiResponse<bool?>.Success(null));
-            }
-
-            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
-        }
-
         [HttpGet("Communites")]
         public async Task<IActionResult> GetCommunites([FromQuery] GetCommunitesParameters parameters)
         {
-            var communites = await _manageCommunityFeatures.GetCommunites(parameters);
-            return new JsonResult(ApiResponse<PagedList<GCommunitesDto>>.Success(communites));
-        }
-
-        [HttpPost("Community/SetSuperAdmin/{studentId}")]
-        public async Task<IActionResult> SetSuperAdmin(int studentId, [FromForm] int communityId)
-        {
-            var isSuccess = await _manageCommunityFeatures.SetSuperAdminForCommunity(studentId, communityId);
-
-            if (isSuccess.success)
+            if (parameters.CommunityState != null)
             {
-                return new JsonResult(ApiResponse<bool?>.Success(null));
+                var communites = await _manageCommunityFeatures.GetCommunitesByState(parameters);
+                return new JsonResult(ApiResponse<PagedList<GCommunitesDto>>.Success(communites));
             }
 
-            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
-        }
-
-        [HttpPost("Community/SetAdmin/{studentId}")]
-        public async Task<IActionResult> SetAdmin(int studentId, [FromForm] int communityId)
-        {
-            var isSuccess = await _manageCommunityFeatures.SetAdminForCommunity(studentId, communityId);
-
-            if (isSuccess.success)
+            else if (parameters.CommunityType != null)
             {
-                return new JsonResult(ApiResponse<bool?>.Success(null));
+                var communites = await _manageCommunityFeatures.GetCommunitesByType(parameters);
+                return new JsonResult(ApiResponse<PagedList<GCommunitesDto>>.Success(communites));
             }
 
-            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
+            else
+            {
+                var communites = await _manageCommunityFeatures.GetCommunites(parameters);
+                return new JsonResult(ApiResponse<PagedList<GCommunitesDto>>.Success(communites));
+            }
         }
 
         [HttpGet("Community/Admins")]
@@ -160,20 +228,6 @@ namespace CollegeUnity.API.Controllers.Admin
         {
             var admins = await _manageCommunityFeatures.GetAdmins(parameters);
             return new JsonResult(ApiResponse<PagedList<GCommunityAdminsDto>>.Success(admins));
-        }
-
-
-        [HttpPost("Community/Update/{communityId}")]
-        public async Task<IActionResult> UpdateCommunityInfo(int communityId, [FromForm] UCommunityInfoDto dto)
-        {
-            var isSuccess = await _manageCommunityFeatures.EditCommunityInfo(communityId, dto);
-
-            if (isSuccess.success)
-            {
-                return new JsonResult(ApiResponse<bool?>.Success(null));
-            }
-
-            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
         }
     }
 }
