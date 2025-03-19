@@ -23,5 +23,16 @@ namespace CollegeUnity.EF.Repositories.EntitiesRepository
         {
             return await _context.StudentCommunities.AnyAsync(predicate);
         }
+
+        public async Task<List<int>> GetCommunitiesByStudentIdAsync(int studentId)
+        {
+            var communities = await _context.StudentCommunities
+                .Where(sc => sc.StudentId == studentId)
+                .Select(sc => sc.CommunityId)
+                .Distinct()
+                .ToListAsync();
+
+            return communities;
+        }
     }
 }

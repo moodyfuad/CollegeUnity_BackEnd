@@ -11,5 +11,6 @@ namespace CollegeUnity.Contract.EF_Contract.IEntitiesRepository
     public interface IStudentCommunityRepository : IBaseRepository<StudentCommunity>
     {
         Task<bool> AnyAsync(Expression<Func<StudentCommunity, bool>> predicate);
+        Task<List<int>> GetCommunitiesByStudentIdAsync(int studentId);
     }
 }
