@@ -8,6 +8,6 @@ namespace CollegeUnity.Core.Dtos.QueryStrings
 {
     public class GetStudentCommunityAdminsParameters : QueryStringParameters
     {
-        public int Id { get; set; }
+        public int communityId { get; set; }
     }
 }

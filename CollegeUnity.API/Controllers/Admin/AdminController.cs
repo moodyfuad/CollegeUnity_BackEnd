@@ -91,7 +91,7 @@ namespace CollegeUnity.API.Controllers.Admin
 
             if (isSuccess.success)
             {
-                return new JsonResult(ApiResponse<bool?>.Success(null));
+                return new JsonResult(ApiResponse<bool?>.Success(null, isSuccess.message));
             }
 
             return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
@@ -104,7 +104,7 @@ namespace CollegeUnity.API.Controllers.Admin
 
             if (isSuccess.success)
             {
-                return new JsonResult(ApiResponse<bool?>.Success(null));
+                return new JsonResult(ApiResponse<bool?>.Success(null, isSuccess.message));
             }
 
             return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
@@ -216,6 +216,12 @@ namespace CollegeUnity.API.Controllers.Admin
         {
             if (parameters.CommunityState != null)
             {
+                var communites = await _manageCommunityFeatures.GetCommunitesByName(parameters);
+                return new JsonResult(ApiResponse<PagedList<GCommunitesDto>>.Success(communites));
+            }
+
+            if (parameters.CommunityState != null)
+            {
                 var communites = await _manageCommunityFeatures.GetCommunitesByState(parameters);
                 return new JsonResult(ApiResponse<PagedList<GCommunitesDto>>.Success(communites));
             }
@@ -234,7 +240,7 @@ namespace CollegeUnity.API.Controllers.Admin
         }
 
         [HttpGet("Community/Admins")]
-        public async Task<IActionResult> GetCommunityAdmins([FromQuery]GetStudentCommunityAdminsParameters parameters)
+        public async Task<IActionResult> GetCommunityAdmins([FromQuery] GetStudentCommunityAdminsParameters parameters)
         {
             var admins = await _manageCommunityFeatures.GetAdmins(parameters);
             return new JsonResult(ApiResponse<PagedList<GCommunityAdminsDto>>.Success(admins));
