@@ -187,7 +187,7 @@ namespace CollegeUnity.Services.AdminFeatures.Communites
                 return new ResultDto(true, "Student is already a Admin in a community.");
             }
 
-            var studentCommunity = CreateStudentCommunityExtention.ToAdminStudentCommunity(studentId, communityId);
+            var studentCommunity = StudentCommunityExtention.ToAdminStudentCommunity(studentId, communityId);
 
             await _repositoryManager.StudentCommunityRepository.CreateAsync(studentCommunity);
             await _repositoryManager.SaveChangesAsync();
@@ -215,7 +215,7 @@ namespace CollegeUnity.Services.AdminFeatures.Communites
                 return new ResultDto(true, "Student is already a Super Admin in a community.");
             }
 
-            var studentCommunity = CreateStudentCommunityExtention.ToSuperAdminStudentCommunity(studentId, communityId);
+            var studentCommunity = StudentCommunityExtention.ToSuperAdminStudentCommunity(studentId, communityId);
 
             await _repositoryManager.StudentCommunityRepository.CreateAsync(studentCommunity);
             await _repositoryManager.SaveChangesAsync();

@@ -1,4 +1,5 @@
 ﻿using CollegeUnity.Core.Dtos.CommunityDtos.Get;
+using CollegeUnity.Core.Dtos.FailureResualtDtos;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Helpers;
 using System;
@@ -13,11 +14,9 @@ namespace CollegeUnity.Contract.StudentFeatures.Community
     {
         // Get
         Task<PagedList<GStudentCommunitesDto>> GetMyCommunites(int studentId, GetStudentCommunitesParameters parameters);
-        // Search
-        //Task<PagedList<>> SearchByName();
         // join
-        //Task<PagedList<>> JoinToCommunity();
+        Task<ResultDto> JoinToCommunity(int studentId, int communityId);
         // Leave
-        //Task<PagedList<>> LeaveFromCommunity();
+        Task<ResultDto> LeaveFromCommunity(int studentId, int communityId);
     }
 }

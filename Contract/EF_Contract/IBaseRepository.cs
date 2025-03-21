@@ -13,6 +13,8 @@ namespace CollegeUnity.Contract.EF_Contract
     {
         Task<T> GetByIdAsync(int id);
 
+        Task<bool> ExistsAsync(int id);
+
         Task<T> GetByConditionsAsync(Expression<Func<T, bool>> condition, params Expression<Func<T, object>>[] includes);
 
         Task<IQueryable<T>> GetAsQueryable();

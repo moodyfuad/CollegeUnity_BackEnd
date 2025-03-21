@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Core.MappingExtensions.StudentCommunityExtensions.Create
 {
-    public static class CreateStudentCommunityExtention
+    public static class StudentCommunityExtention
     {
         public static StudentCommunity ToSuperAdminStudentCommunity(int studentId, int communityId)
         {
@@ -28,6 +28,18 @@ namespace CollegeUnity.Core.MappingExtensions.StudentCommunityExtensions.Create
                 CommunityId = communityId,
                 StudentId = studentId,
                 Role = Enums.CommunityMemberRoles.Admin
+            };
+
+            return community;
+        }
+
+        public static StudentCommunity ToNormalStudentCommunity(int studentId, int communityId)
+        {
+            StudentCommunity community = new()
+            {
+                CommunityId = communityId,
+                StudentId = studentId,
+                Role = Enums.CommunityMemberRoles.Normal
             };
 
             return community;
