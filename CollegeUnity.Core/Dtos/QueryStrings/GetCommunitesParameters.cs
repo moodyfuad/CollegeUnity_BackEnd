@@ -11,7 +11,7 @@ namespace CollegeUnity.Core.Dtos.QueryStrings
     public class GetCommunitesParameters : QueryStringParameters
     {
         public string? Name { get; set; }
-        public CommunityType CommunityType { get; set; }
-        public CommunityState CommunityState { get; set; }
+        public CommunityType? CommunityType { get; set; }
+        public CommunityState? CommunityState { get; set; }
     }
 }

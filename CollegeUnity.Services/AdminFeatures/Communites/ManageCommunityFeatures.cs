@@ -92,6 +92,18 @@ namespace CollegeUnity.Services.AdminFeatures.Communites
                 return new(false, check);
             }
 
+            var currentCommunity = await _repositoryManager.CommunityRepository.GetByIdAsync(communityId);
+
+            if (currentCommunity == null)
+            {
+                return new(false, "No community found.");
+            }
+
+            if (currentCommunity.CommunityType == CommunityType.LookedPrivate || currentCommunity.CommunityType == CommunityType.LookedPublic)
+            {
+                return new(false, $"You can't change this status of the community because it's {currentCommunity.CommunityType.ToString()}.");
+            }
+
             // here i do for UCommunityInfoDto mapper and must be updated to be one with CCommunityDto
             var community = dto.ToCommunity<Community>(communityId);
 
@@ -103,7 +115,7 @@ namespace CollegeUnity.Services.AdminFeatures.Communites
 
         public async Task<PagedList<GCommunityAdminsDto>> GetAdmins(GetStudentCommunityAdminsParameters parameters)
         {
-            var admins = await _repositoryManager.StudentCommunityRepository.GetRangeByConditionsAsync(c => c.CommunityId == parameters.Id, parameters);
+            var admins = await _repositoryManager.StudentCommunityRepository.GetRangeByConditionsAsync(c => c.CommunityId == parameters.communityId, parameters, i => i.Student);
             admins.OrderByDescending(a => a.Role);
             return admins.ToCommunityAdminsMappers();
         }
@@ -180,9 +192,9 @@ namespace CollegeUnity.Services.AdminFeatures.Communites
             }
 
             var isAdmin = await _repositoryManager.StudentCommunityRepository
-                .AnyAsync(sc => sc.StudentId == studentId && sc.Role == CommunityMemberRoles.Admin);
+                .GetByConditionsAsync(sc => sc.StudentId == studentId && sc.CommunityId == communityId && sc.Role == CommunityMemberRoles.Admin);
 
-            if (isAdmin)
+            if (isAdmin != null)
             {
                 return new ResultDto(true, "Student is already a Admin in a community.");
             }
@@ -208,9 +220,9 @@ namespace CollegeUnity.Services.AdminFeatures.Communites
             }
 
             var isSuperAdmin = await _repositoryManager.StudentCommunityRepository
-                .AnyAsync(sc => sc.StudentId == studentId && sc.Role == CommunityMemberRoles.SuperAdmin);
+                .GetByConditionsAsync(sc => sc.StudentId == studentId && sc.CommunityId == communityId && sc.Role == CommunityMemberRoles.SuperAdmin);
 
-            if (isSuperAdmin)
+            if (isSuperAdmin != null)
             {
                 return new ResultDto(true, "Student is already a Super Admin in a community.");
             }

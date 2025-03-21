@@ -20,7 +20,7 @@ namespace CollegeUnity.Core.MappingExtensions.StudentCommunityExtensions.Get
             {
                 Id = studentCommunity.StudentId,
                 FullName = $"{studentCommunity.Student.FirstName} {studentCommunity.Student.MiddleName} {studentCommunity.Student.LastName}",
-                Role = studentCommunity.Role != null ? (int?)studentCommunity.Role : null
+                Role = studentCommunity.Role != null ? (int)studentCommunity.Role : null
             };
             return admin;
         }
