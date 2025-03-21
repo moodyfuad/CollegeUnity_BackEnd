@@ -14,6 +14,7 @@ namespace CollegeUnity.Contract.StudentFeatures.Community
     {
         // Get
         Task<PagedList<GStudentCommunitesDto>> GetMyCommunites(int studentId, GetStudentCommunitesParameters parameters);
+        Task<PagedList<GStudentCommunitesDto>> GetNotJoinedCommunities(int studentId, GetStudentCommunitesParameters parameters);
         // join
         Task<ResultDto> JoinToCommunity(int studentId, int communityId);
         // Leave
