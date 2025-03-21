@@ -43,6 +43,29 @@ namespace CollegeUnity.Services.StudentFeatures.Communites
             return result;
         }
 
+        public async Task<PagedList<GStudentCommunitesDto>> GetNotJoinedCommunities(int studentId, GetStudentCommunitesParameters parameters)
+        {
+            var joinedCommunities = await _repositoryManager.StudentCommunityRepository.GetCommunitiesByStudentIdAsync(studentId);
+
+            PagedList<Community> communities;
+
+            if (string.IsNullOrEmpty(parameters.Name))
+            {
+                communities = await _repositoryManager.CommunityRepository.GetRangeByConditionsAsync(
+                    s => !joinedCommunities.Contains(s.Id),
+                    parameters);
+            }
+            else
+            {
+                communities = await _repositoryManager.CommunityRepository.GetRangeByConditionsAsync(
+                    s => !joinedCommunities.Contains(s.Id) && s.Name.StartsWith(parameters.Name),
+                    parameters);
+            }
+
+            var result = communities.ToGetStudentCommunites();
+            return result;
+        }
+
         public async Task<ResultDto> JoinToCommunity(int studentId, int communityId)
         {
             var student = await _repositoryManager.StudentRepository.ExistsAsync(studentId);

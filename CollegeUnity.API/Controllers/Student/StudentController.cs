@@ -66,11 +66,25 @@ namespace CollegeUnity.API.Controllers.Student
             return new JsonResult(ApiResponse<IEnumerable<GInterestedSubjectDto>>.NotFound("No Resource yet."));
         }
 
-        [HttpGet("GetMyCommunites")]
+        [HttpGet("MyCommunites")]
         public async Task<IActionResult> GetStudentCommunites(GetStudentCommunitesParameters parameters)
         {
             int _studentId = User.GetUserId();
             var communites = await _studentCommunityFeatures.GetMyCommunites(_studentId, parameters);
+
+            if (communites != null)
+            {
+                return new JsonResult(ApiResponse<PagedList<GStudentCommunitesDto>>.Success(communites));
+            }
+
+            return new JsonResult(ApiResponse<PagedList<GStudentCommunitesDto>>.NotFound("No Resource yet."));
+        }
+
+        [HttpGet("Communites")]
+        public async Task<IActionResult> GetNotJoindCommunites(GetStudentCommunitesParameters parameters)
+        {
+            int _studentId = User.GetUserId();
+            var communites = await _studentCommunityFeatures.GetNotJoinedCommunities(_studentId, parameters);
 
             if (communites != null)
             {
