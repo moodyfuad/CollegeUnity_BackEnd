@@ -53,19 +53,6 @@ namespace CollegeUnity.API.Controllers.Admin
             return new JsonResult(ApiResponse<bool?>.BadRequest("There is staff with the same email or phone, try again."));
         }
 
-        [HttpPost("Community/Update/{communityId}")]
-        public async Task<IActionResult> UpdateCommunityInfo(int communityId, [FromBody] UCommunityInfoDto dto)
-        {
-            var isSuccess = await _manageCommunityFeatures.EditCommunityInfo(communityId, dto);
-
-            if (isSuccess.success)
-            {
-                return new JsonResult(ApiResponse<bool?>.Success(null));
-            }
-
-            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
-        }
-
         [HttpPost("Community/RemoveAdmin/{studentId}")]
         public async Task<IActionResult> ReemoveAdmin(int studentId, [FromBody] int communityId)
         {
@@ -105,10 +92,10 @@ namespace CollegeUnity.API.Controllers.Admin
             return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
         }
 
-        [HttpPost("Staff/Change/AccountStatus{staffId}")]
-        public async Task<IActionResult> ChangeStaffAccountStatus(int staffId, [FromBody] ChangeStaffStatusDto dto)
+        [HttpPost("Community/Create")]
+        public async Task<IActionResult> CreateNewCommunity([FromBody] CCommunityDto dto)
         {
-            var isSuccess = await _manageStaffFeatures.ChangeStaffAccountStatus(staffId, dto);
+            var isSuccess = await _manageCommunityFeatures.CreateCommunityAsync(dto);
 
             if (isSuccess.success)
             {
@@ -118,10 +105,10 @@ namespace CollegeUnity.API.Controllers.Admin
             return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
         }
 
-        [HttpPost("Community/Create")]
-        public async Task<IActionResult> CreateNewCommunity([FromBody] CCommunityDto dto)
+        [HttpPut("Staff/Change/AccountStatus/{staffId}")]
+        public async Task<IActionResult> ChangeStaffAccountStatus(int staffId, [FromBody] ChangeStaffStatusDto dto)
         {
-            var isSuccess = await _manageCommunityFeatures.CreateCommunityAsync(dto);
+            var isSuccess = await _manageStaffFeatures.ChangeStaffAccountStatus(staffId, dto);
 
             if (isSuccess.success)
             {
@@ -142,6 +129,19 @@ namespace CollegeUnity.API.Controllers.Admin
             }
 
             return new JsonResult(ApiResponse<bool?>.BadRequest("There is staff with the same email or phone, try again."));
+        }
+
+        [HttpPut("Community/Update/{communityId}")]
+        public async Task<IActionResult> UpdateCommunityInfo(int communityId, [FromBody] UCommunityInfoDto dto)
+        {
+            var isSuccess = await _manageCommunityFeatures.EditCommunityInfo(communityId, dto);
+
+            if (isSuccess.success)
+            {
+                return new JsonResult(ApiResponse<bool?>.Success(null));
+            }
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
         }
 
         [HttpPut("Staff/ChangePassword/{staffId}")]

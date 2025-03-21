@@ -7,6 +7,7 @@ using CollegeUnity.Contract.StudentFeatures.Subjects;
 using CollegeUnity.Core.Dtos.AuthenticationDtos;
 using CollegeUnity.Core.Dtos.AuthenticationServicesDtos;
 using CollegeUnity.Core.Dtos.CommunityDtos.Get;
+using CollegeUnity.Core.Dtos.FailureResualtDtos;
 using CollegeUnity.Core.Dtos.InterestedSubjectDtos;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
@@ -78,6 +79,36 @@ namespace CollegeUnity.API.Controllers.Student
 
             return new JsonResult(ApiResponse<PagedList<GStudentCommunitesDto>>.NotFound("No Resource yet."));
         }
+
+        [HttpPost("Community/Join/{communityId}")]
+        public async Task<IActionResult> JoinToCommunity(int communityId)
+        {
+            int _studentId = User.GetUserId();
+            var isSuccess = await _studentCommunityFeatures.JoinToCommunity(_studentId, communityId);
+
+            if (isSuccess.success)
+            {
+                return new JsonResult(ApiResponse<ResultDto>.Success(null));
+            }
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
+        }
+
+        [HttpDelete("Community/Leave/{communityId}")]
+        public async Task<IActionResult> LeaveFromCommunity(int communityId)
+        {
+            int _studentId = User.GetUserId();
+            var isSuccess = await _studentCommunityFeatures.LeaveFromCommunity(_studentId, communityId);
+
+            if (isSuccess.success)
+            {
+                return new JsonResult(ApiResponse<bool?>.Success(null));
+            }
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
+        }
+
+
 
 
         [HttpPost("Search")]
