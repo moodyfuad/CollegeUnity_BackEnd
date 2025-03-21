@@ -32,7 +32,7 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
         {
             var path = FileExtentionhelper.GetProfilePicturePath(staffId, profilePicture);
             await FileExtentionhelper.SaveFileAsync(path, profilePicture);
-            return path;
+            return FileExtentionhelper.ConvertBaseDirctoryToBaseUrl(path);
         }
 
         public async Task<bool> CreateStaffAccount(CreateStaffDto dto)
@@ -57,7 +57,7 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
                     string picturePath = await MappingFormToProfilePicture(dto.ProfilePictureFile, staff.Id);
                     staff.ProfilePicturePath = picturePath;
 
-                    _repositoryManager.StaffRepository.Update(staff);
+                    await _repositoryManager.StaffRepository.Update(staff);
                     await _repositoryManager.SaveChangesAsync();
                 }
 

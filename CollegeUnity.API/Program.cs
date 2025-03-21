@@ -19,6 +19,7 @@ using CollegeUnity.Services.SharedFeatures.Authentication;
 using CollegeUnity.Contract.StudentFeatures.Account;
 using CollegeUnity.Services.StudentFeatures.Account;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -74,8 +75,14 @@ app.ConfigureCustomeExceptionHandler();
 
 app.UseSwagger();
 app.UseSwaggerUI();
-
 app.UseStaticFiles();
+
+var filesPath = Path.Combine(Directory.GetCurrentDirectory(), "..", "Files");
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(filesPath),
+    RequestPath = "/Files"
+});
 
 app.UseHttpsRedirection();
 

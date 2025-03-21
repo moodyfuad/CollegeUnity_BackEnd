@@ -43,18 +43,23 @@ namespace CollegeUnity.API.Controllers.Admin
         [HttpPost("Staff/Create")]
         public async Task<IActionResult> CreateStaffAccount([FromForm] CreateStaffDto dto)
         {
-            var isSuccess = await _manageStaffFeatures.CreateStaffAccount(dto);
-
-            if (isSuccess)
+            if (FileExtentionhelper.IsValidImage(dto.ProfilePictureFile))
             {
-                return new JsonResult(ApiResponse<bool?>.Created(null));
+                var isSuccess = await _manageStaffFeatures.CreateStaffAccount(dto);
+
+                if (isSuccess)
+                {
+                    return new JsonResult(ApiResponse<bool?>.Created(null));
+                }
+
+                return new JsonResult(ApiResponse<bool?>.BadRequest("There is staff with the same email or phone, try again."));
             }
 
-            return new JsonResult(ApiResponse<bool?>.BadRequest("There is staff with the same email or phone, try again."));
+            return new JsonResult(ApiResponse<bool?>.BadRequest("The uploaded file is not a valid image. Please upload a picture file."));
         }
 
         [HttpPost("Community/RemoveAdmin/{studentId}")]
-        public async Task<IActionResult> ReemoveAdmin(int studentId, [FromBody] int communityId)
+        public async Task<IActionResult> RemoveAdmin(int studentId, [FromBody] int communityId)
         {
             var isSuccess = await _manageCommunityFeatures.RemoveAdminFromCommunites(studentId, communityId);
 
@@ -121,14 +126,19 @@ namespace CollegeUnity.API.Controllers.Admin
         [HttpPut("Staff/Update/{staffId}")]
         public async Task<IActionResult> UpdateStaffInfo(int staffId, [FromForm] UStaffDto dto)
         {
-            var isSuccess = await _manageStaffFeatures.UpdateStaffAccount(staffId, dto);
-
-            if (isSuccess)
+            if (FileExtentionhelper.IsValidImage(dto.ProfilePicturePath))
             {
-                return new JsonResult(ApiResponse<bool?>.Success(null));
+                var isSuccess = await _manageStaffFeatures.UpdateStaffAccount(staffId, dto);
+
+                if (isSuccess)
+                {
+                    return new JsonResult(ApiResponse<bool?>.Success(null));
+                }
+
+                return new JsonResult(ApiResponse<bool?>.BadRequest("There is staff with the same email or phone, try again."));
             }
 
-            return new JsonResult(ApiResponse<bool?>.BadRequest("There is staff with the same email or phone, try again."));
+            return new JsonResult(ApiResponse<bool?>.BadRequest("The uploaded file is not a valid image. Please upload a picture file."));
         }
 
         [HttpPut("Community/Update/{communityId}")]
