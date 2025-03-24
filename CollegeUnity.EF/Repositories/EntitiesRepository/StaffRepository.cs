@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,6 +26,11 @@ namespace CollegeUnity.EF.Repositories.EntitiesRepository
         public async Task<bool> IsExistById(int id)
         {
             return await _context.Staffs.AnyAsync(s => s.Id == id);
+        }
+
+        public async Task<bool> GetByConditions(Expression<Func<Staff, bool>> expression)
+        {
+            return await _context.Staffs.AnyAsync(expression);
         }
     }
 }

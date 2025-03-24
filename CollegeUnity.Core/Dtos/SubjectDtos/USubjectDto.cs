@@ -8,6 +8,5 @@ namespace CollegeUnity.Core.Dtos.SubjectDtos
 {
     public class USubjectDto : SubjectDto
     {
-
     }
 }

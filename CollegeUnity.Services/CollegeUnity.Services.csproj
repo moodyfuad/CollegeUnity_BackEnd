@@ -26,4 +26,8 @@
     <ProjectReference Include="..\EmailService\EmailService.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="SubjectServices\" />
+  </ItemGroup>
+
 </Project>

@@ -17,6 +17,8 @@ using CollegeUnity.Contract.StudentFeatures.Request;
 using CollegeUnity.Services.StudentFeatures.Requests;
 using CollegeUnity.Contract.StudentFeatures.Subjects;
 using CollegeUnity.Services.StudentFeatures.Subjects;
+using CollegeUnity.Contract.StaffFeatures.Subject;
+using CollegeUnity.Services.AdminFeatures.Subjects;
 
 namespace CollegeUnity.Services
 {
@@ -52,6 +54,7 @@ namespace CollegeUnity.Services
             // Admin Features
             services.AddScoped<IManageCommunityFeatures, ManageCommunityFeatures>();
             services.AddScoped<IManageStaffFeatures, ManageStaffFeatures>();
+            services.AddScoped<IManageSubjectFeatures, ManageSubjectFeatures>();
 
             return services;
         }

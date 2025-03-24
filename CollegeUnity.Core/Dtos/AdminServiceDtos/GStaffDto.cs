@@ -19,6 +19,7 @@ namespace CollegeUnity.Core.Dtos.AdminServiceDtos
         public string Gender { get; set; } 
         public string EducationDegree { get; set; } 
         public string profilePicturePath { get; set; }
+        public string AccountStatus { get; set; }
 
     }
 }

@@ -10,18 +10,16 @@ using CollegeUnity.Contract.StaffFeatures.Posts.PostsVotes;
 using CollegeUnity.Contract.StaffFeatures.Subject;
 using CollegeUnity.Contract.StudentFeatures.Subjects;
 using CollegeUnity.Services.AdminFeatures.Staffs;
+using CollegeUnity.Services.AdminFeatures.Subjects;
 using CollegeUnity.Services.AdminServices;
 using CollegeUnity.Services.CommentServices;
 using CollegeUnity.Services.PostFilesServices;
-using CollegeUnity.Services.PostServices;
 using CollegeUnity.Services.SharedFeatures.Posts;
 using CollegeUnity.Services.StaffFeatures.Posts;
 using CollegeUnity.Services.StaffFeatures.Posts.PostsVotes;
-using CollegeUnity.Services.StaffFeatures.Subjects;
 using CollegeUnity.Services.StaffServices;
 using CollegeUnity.Services.StudentFeatures.Subjects;
 using CollegeUnity.Services.StudentServices;
-using CollegeUnity.Services.SubjectServices;
 using CollegeUnity.Services.VoteServices;
 using EmailService;
 using EmailService.EmailService;
@@ -86,12 +84,8 @@ namespace CollegeUnity.Services
 
         public IAdminServices AdminServices => new AdminService(_repositoryManager);
 
-        public ISubjectServices SubjectServices => new SubjectService(_repositoryManager);
-
         //public IStudentServices StudentServices => new StudentService(_repositoryManager, _emailServices);
         public IStudentServices StudentServices => new StudentService(_repositoryManager);
-
-        public IPostServices PostServices => new PostService(_repositoryManager, PostFilesServices, SubjectServices);
 
         public IStaffServices StaffServices => new StaffService(_repositoryManager);
 

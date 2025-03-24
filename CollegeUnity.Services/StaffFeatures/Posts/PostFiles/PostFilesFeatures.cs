@@ -20,6 +20,14 @@ namespace CollegeUnity.Contract.SharedFeatures.Posts.PostFiles
             _repositoryManager = repositoryManager;
         }
 
+        private async Task<string> MappingFormToProfilePicture(IFormFile profilePicture, int postId)
+        {
+            var path = FileExtentionhelper.GetPostPicturePath(postId, profilePicture);
+            await FileExtentionhelper.SaveFileAsync(path, profilePicture);
+            //return FileExtentionhelper.ConvertBaseDirctoryToBaseUrl(path);
+            return path;
+        }
+
         //Check on it
         public async Task CreatePostFiles(IEnumerable<IFormFile> files, int postId)
         {
@@ -35,8 +43,9 @@ namespace CollegeUnity.Contract.SharedFeatures.Posts.PostFiles
             foreach (var file in files)
             {
                 PostFile postFile = file.ToPostFile<PostFile>(postId);
-                postFiles.Add(postFile);
                 await FileExtentionhelper.SaveFileAsync(postFile.Path, file);
+                postFile.Path = FileExtentionhelper.ConvertBaseDirctoryToBaseUrl(postFile.Path);
+                postFiles.Add(postFile);
             }
             return postFiles;
         }

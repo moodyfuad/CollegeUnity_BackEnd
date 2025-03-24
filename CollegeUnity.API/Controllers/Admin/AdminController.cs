@@ -43,19 +43,14 @@ namespace CollegeUnity.API.Controllers.Admin
         [HttpPost("Staff/Create")]
         public async Task<IActionResult> CreateStaffAccount([FromForm] CreateStaffDto dto)
         {
-            if (FileExtentionhelper.IsValidImage(dto.ProfilePictureFile))
+            var isSuccess = await _manageStaffFeatures.CreateStaffAccount(dto);
+
+            if (isSuccess.success)
             {
-                var isSuccess = await _manageStaffFeatures.CreateStaffAccount(dto);
-
-                if (isSuccess)
-                {
-                    return new JsonResult(ApiResponse<bool?>.Created(null));
-                }
-
-                return new JsonResult(ApiResponse<bool?>.BadRequest("There is staff with the same email or phone, try again."));
+                return new JsonResult(ApiResponse<bool?>.Created(null));
             }
 
-            return new JsonResult(ApiResponse<bool?>.BadRequest("The uploaded file is not a valid image. Please upload a picture file."));
+            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
         }
 
         [HttpPost("Community/RemoveAdmin/{studentId}")]
@@ -104,7 +99,7 @@ namespace CollegeUnity.API.Controllers.Admin
 
             if (isSuccess.success)
             {
-                return new JsonResult(ApiResponse<bool?>.Success(null, isSuccess.message));
+                return new JsonResult(ApiResponse<bool?>.Success(null));
             }
 
             return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
@@ -126,19 +121,14 @@ namespace CollegeUnity.API.Controllers.Admin
         [HttpPut("Staff/Update/{staffId}")]
         public async Task<IActionResult> UpdateStaffInfo(int staffId, [FromForm] UStaffDto dto)
         {
-            if (FileExtentionhelper.IsValidImage(dto.ProfilePicturePath))
+            var isSuccess = await _manageStaffFeatures.UpdateStaffAccount(staffId, dto);
+
+            if (isSuccess.success)
             {
-                var isSuccess = await _manageStaffFeatures.UpdateStaffAccount(staffId, dto);
-
-                if (isSuccess)
-                {
-                    return new JsonResult(ApiResponse<bool?>.Success(null));
-                }
-
-                return new JsonResult(ApiResponse<bool?>.BadRequest("There is staff with the same email or phone, try again."));
+                return new JsonResult(ApiResponse<bool?>.Success(null));
             }
 
-            return new JsonResult(ApiResponse<bool?>.BadRequest("The uploaded file is not a valid image. Please upload a picture file."));
+            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
         }
 
         [HttpPut("Community/Update/{communityId}")]

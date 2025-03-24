@@ -8,6 +8,7 @@ namespace CollegeUnity.Core.Dtos.SubjectDtos
 {
     public class GSubjectDto : SubjectDto
     {
+        public int Id { get; set; }
         public string? TeacherName { get; set; }
         public string? AssignedByName { get; set; }
     }
