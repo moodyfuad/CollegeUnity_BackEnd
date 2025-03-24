@@ -4,6 +4,7 @@ using CollegeUnity.Contract.SharedFeatures.Posts;
 using CollegeUnity.Core.Dtos.PostDtos.Get;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Helpers;
 using CollegeUnity.Core.MappingExtensions.PostExtensions.Get;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace CollegeUnity.Services.SharedFeatures.Posts
         }
         public async Task<IEnumerable<GPublicPostDto>> GetPublicPostAsync(PublicPostParameters postParameters)
         {
-            IEnumerable<Post> posts = await _repositoryManager.PostRepository.GetRangeByConditionsAsync(
+            PagedList<Post> posts = await _repositoryManager.PostRepository.GetRangeByConditionsAsync(
                 p => p.IsPublic == true,
                 postParameters,
                 [

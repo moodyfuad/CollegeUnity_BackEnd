@@ -1,6 +1,8 @@
-﻿using CollegeUnity.Core.Dtos.QueryStrings;
+﻿using CollegeUnity.Core.Dtos.FailureResualtDtos;
+using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.SubjectDtos;
 using CollegeUnity.Core.Enums;
+using CollegeUnity.Core.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,12 +13,12 @@ namespace CollegeUnity.Contract.StaffFeatures.Subject
 {
     public interface IManageSubjectFeatures
     {
-        Task<bool> CreateSubjectAsync(CSubjectDto dto);
-        Task<bool> DeleteSubjectAsync(int Id);
-        Task<IEnumerable<GSubjectDto>?> GetAllAsync(SubjectParameters subjectParameters);
-        Task<bool> UpdateSubjectAsync(SubjectDto dto);
+        Task<ResultDto> CreateSubjectAsync(CSubjectDto dto);
+        Task<ResultDto> DeleteSubjectAsync(int Id);
+        Task<ResultDto> UpdateSubjectAsync(int subjectId, USubjectDto dto);
+        Task<ResultDto> AssignSubjectToTeacher(int teacherId, int subjectId);
         //Task<bool> IsExistAsync(int Id);
         Task<bool> SubjectStudyCheck(int subjectId, int teacherId);
-        Task<IEnumerable<GSubjectDto>?> GetSubjectsByName(GetSubjectByNameParameters parameters);
+        Task<PagedList<GSubjectDto>> GetSubjects(GetSubjectParameters parameters);
     }
 }

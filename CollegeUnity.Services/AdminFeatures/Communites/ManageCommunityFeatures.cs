@@ -107,6 +107,8 @@ namespace CollegeUnity.Services.AdminFeatures.Communites
             // here i do for UCommunityInfoDto mapper and must be updated to be one with CCommunityDto
             var community = dto.ToCommunity<Community>(communityId);
 
+            _repositoryManager.Detach(currentCommunity);
+
             await _repositoryManager.CommunityRepository.Update(community);
             await _repositoryManager.SaveChangesAsync();
 

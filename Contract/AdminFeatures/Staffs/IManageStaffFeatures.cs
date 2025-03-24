@@ -14,8 +14,8 @@ namespace CollegeUnity.Contract.AdminFeatures.Staffs
 {
     public interface IManageStaffFeatures
     {
-        Task<bool> CreateStaffAccount(CreateStaffDto staffDto);
-        Task<bool> UpdateStaffAccount(int staffId, UStaffDto dto);
+        Task<ResultDto> CreateStaffAccount(CreateStaffDto staffDto);
+        Task<ResultDto> UpdateStaffAccount(int staffId, UStaffDto dto);
         Task<PagedList<GStaffByRoleDto>> GetStaffByFullName(GetStaffParameters parameters);
         Task<PagedList<GStaffDto>> GetStaffByRole(GetStaffParameters parameters);
         Task<PagedList<GStaffByRoleDto>> GetAllStaff(GetStaffParameters parameters);
