@@ -75,14 +75,14 @@ namespace CollegeUnity.Services.StudentFeatures.Requests
             return request;
         }
 
-        public async Task<ApiResponse<PagedList<GetStudentRequestsDto>?>> Get(
+        public async Task<ApiResponse<PagedList<GetUserRequestsDto>?>> Get(
             int studentId,
             GetStudentRequestsQueryString queryString)
         {
             var student = await _repositories.StudentRepository.GetByIdAsync(studentId);
             if (student == null)
             {
-                return ApiResponse<PagedList<GetStudentRequestsDto>>.BadRequest("Failed Retrieving The Requests", ["Student Not Found"]);
+                return ApiResponse<PagedList<GetUserRequestsDto>>.BadRequest("Failed Retrieving The Requests", ["Student Not Found"]);
             }
 
             var nameContains = new Func<string, string, bool>((name, searchValue) =>
@@ -113,11 +113,11 @@ namespace CollegeUnity.Services.StudentFeatures.Requests
 
             if (requests != null && requests.Count == 0)
             {
-                return ApiResponse<PagedList<GetStudentRequestsDto>>.Success(result, "No Requests To Retrieve");
+                return ApiResponse<PagedList<GetUserRequestsDto>>.Success(result, "No Requests To Retrieve");
             }
 
 
-            return ApiResponse<PagedList<GetStudentRequestsDto>>.Success(result, $"[{result.Count}] records retrieved.");
+            return ApiResponse<PagedList<GetUserRequestsDto>>.Success(result, $"[{result.Count}] records retrieved.");
         }
     }
 }

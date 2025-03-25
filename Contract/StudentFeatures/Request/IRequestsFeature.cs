@@ -16,6 +16,6 @@ namespace CollegeUnity.Contract.StudentFeatures.Request
     {
         Task<ApiResponse<string?>> Send(int studentId, int staffId, SendRequestDto sendRequestDto);
 
-        Task<ApiResponse<PagedList<GetStudentRequestsDto>>> Get(int studentId, GetStudentRequestsQueryString queryString);
+        Task<ApiResponse<PagedList<GetUserRequestsDto>>> Get(int studentId, GetStudentRequestsQueryString queryString);
     }
 }
