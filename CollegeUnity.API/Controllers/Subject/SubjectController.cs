@@ -4,6 +4,7 @@ using CollegeUnity.Contract.StudentFeatures.Subjects;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Dtos.SubjectDtos;
+using CollegeUnity.Core.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,42 +24,51 @@ namespace CollegeUnity.API.Controllers.Subject
         }
 
         [HttpPost("Create")]
-        public async Task<IActionResult> CreateNewSubject([FromForm] CSubjectDto dto)
+        public async Task<IActionResult> CreateNewSubject([FromBody] CSubjectDto dto)
         {
             var response = await _manageSubjectFeatures.CreateSubjectAsync(dto);
 
-            if (response)
+            if (response.success)
             {
-                return new JsonResult(ApiResponse<bool?>.Created(data: null));
+                return new JsonResult(ApiResponse<bool?>.Success(null));
             }
-            else
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest(response.message));
+        }
+
+        [HttpPut("Update/{subjectId}")]
+        public async Task<IActionResult> UpdateSubject(int subjectId, [FromBody] USubjectDto dto)
+        {
+
+            var response = await _manageSubjectFeatures.UpdateSubjectAsync(subjectId, dto);
+
+            if (response.success)
             {
-                return new JsonResult(ApiResponse<bool?>.BadRequest("Subject already exists."));
+                return new JsonResult(ApiResponse<bool?>.Success(null, "Subject updated successfully."));
             }
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest(response.message));
+        }
+
+        [HttpPut("Assign/{teacherId}/{subjectId}")]
+        public async Task<IActionResult> AssignSubjectToTeacher(int teacherId, int subjectId)
+        {
+
+            var response = await _manageSubjectFeatures.AssignSubjectToTeacher(teacherId, subjectId);
+
+            if (response.success)
+            {
+                return new JsonResult(ApiResponse<bool?>.Success(null, response.message));
+            }
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest(response.message));
         }
 
         [HttpGet("Subjects")]
-        public async Task<IActionResult> GetSubjects([FromQuery] SubjectParameters subjectParameters)
+        public async Task<IActionResult> GetSubjectsByName([FromQuery] GetSubjectParameters parameters)
         {
-            var response = await _manageSubjectFeatures.GetAllAsync(subjectParameters);
-
-            if (response != null)
-            {
-                return new JsonResult(ApiResponse<IEnumerable<GSubjectDto>>.Success(data: response));
-            }
-            return new JsonResult(ApiResponse<GSubjectDto>.NotFound("No Subjects yet."));
-        }
-
-        [HttpGet("ByName")]
-        public async Task<IActionResult> GetSubjectsByName([FromQuery] GetSubjectByNameParameters parameters)
-        {
-            var response = await _manageSubjectFeatures.GetSubjectsByName(parameters);
-
-            if (response != null)
-            {
-                return new JsonResult(ApiResponse<IEnumerable<GSubjectDto>>.Success(data: response));
-            }
-            return new JsonResult(ApiResponse<GSubjectDto>.NotFound("No Subjects with this Name yet."));
+            var response = await _manageSubjectFeatures.GetSubjects(parameters);
+            return new JsonResult(ApiResponse<PagedList<GSubjectDto>>.Success(data: response));
         }
 
         [HttpDelete("Delete/{Id}")]
@@ -66,30 +76,12 @@ namespace CollegeUnity.API.Controllers.Subject
         {
             var response = await _manageSubjectFeatures.DeleteSubjectAsync(Id);
 
-            if (response)
+            if (response.success)
             {
-                return new JsonResult(ApiResponse<bool?>.Success(data: null, "Subject deleted successfully."));
+                return new JsonResult(ApiResponse<bool?>.Success(null, "Subject deleted successfully."));
             }
-            else
-            {
-                return new JsonResult(ApiResponse<bool?>.NotFound("No Subject, try again."));
-            }
-        }
 
-        [HttpPut("Update")]
-        public async Task<IActionResult> UpdateSubject([FromForm] USubjectDto dto)
-        {
-            
-            var response = await _manageSubjectFeatures.UpdateSubjectAsync(dto);
-
-            if (response)
-            {
-                return new JsonResult(ApiResponse<bool?>.Success(data: null, "Subject updated successfully."));
-            }
-            else
-            {
-                return new JsonResult(ApiResponse<bool?>.BadRequest("nO Subject, try again"));
-            }
+            return new JsonResult(ApiResponse<bool?>.BadRequest(response.message));
         }
     }
 }

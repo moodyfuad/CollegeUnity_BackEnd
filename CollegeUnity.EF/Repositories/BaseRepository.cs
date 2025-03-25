@@ -139,6 +139,12 @@ namespace CollegeUnity.EF.Repositories
             return _dbContext.Set<T>().Update(await GetByIdAsync(Id)).Entity;
         }
 
+        public async Task<bool> ExistsAsync(int id)
+        {
+            var entity = await _dbContext.Set<T>().FindAsync(id);
+            return entity != null;
+        }
+
         public async Task<T> Update(T updatedEntity)
         {
             return _dbContext.Set<T>().Update(updatedEntity).Entity;

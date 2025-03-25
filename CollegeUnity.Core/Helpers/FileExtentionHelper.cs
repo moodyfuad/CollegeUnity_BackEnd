@@ -9,7 +9,7 @@ namespace CollegeUnity.Core.Helpers
 {
     public static class FileExtentionhelper
     {
-        private static readonly string BaseDirectory = Path.Combine(AppContext.BaseDirectory, "wwwroot", "CollegeUnity.API", "wwwroot");
+        private static readonly string RootPath = Directory.GetParent(Directory.GetCurrentDirectory()).FullName + "/Files";
 
         public static readonly string ProfilePictureFolder = GetProfilePicturePath();
 
@@ -17,32 +17,45 @@ namespace CollegeUnity.Core.Helpers
 
         static FileExtentionhelper()
         {
-            Directory.CreateDirectory(BaseDirectory);
+            Directory.CreateDirectory(RootPath);
+        }
 
+        public static string ConvertBaseDirctoryToBaseUrl(string path)
+        {
+            return path.Replace("D:/Sites/site16780/", "http://collageunity.runasp.net/");
+        }
+
+        public static string ConvertToUrlPath(string filePath)
+        {            
+            return filePath.Replace("\\", "/");
         }
 
         public static string GetPostPicturePath(int postId, IFormFile file)
         {
             string datePath = DateTime.Now.ToString("yyyy/MM");
-            string postPath = Path.Combine(BaseDirectory, "posts", datePath, postId.ToString(), "pictures");
+            string postPath = Path.Combine(RootPath, "posts", datePath, postId.ToString(), "pictures");
 
             Directory.CreateDirectory(postPath);
 
-            return Path.Combine(postPath, file.FileName);
+            string fullFilePath = Path.Combine(postPath, file.FileName);
+
+            return ConvertToUrlPath(fullFilePath);
         }
 
         public static string GetProfilePicturePath(int accountId, IFormFile file)
         {
-            string baseDirectory = Path.Combine(BaseDirectory, "accounts", "profile-pictures");
-
+            string baseDirectory = Path.Combine(RootPath, "accounts", "profile-pictures");
             string accountPath = Path.Combine(baseDirectory, accountId.ToString());
 
             Directory.CreateDirectory(accountPath);
 
             var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
 
-            return Path.Combine(accountPath, fileName);
+            string fullFilePath = Path.Combine(accountPath, fileName);
+
+            return ConvertToUrlPath(fullFilePath);
         }
+
 
         public static async Task SaveFileAsync(string filePath, IFormFile file)
         {
@@ -59,7 +72,7 @@ namespace CollegeUnity.Core.Helpers
 
         private static string GetProfilePicturePath()
         {
-            string profilePicturesPath = Path.Combine(BaseDirectory, "Profile-Pictures");
+            string profilePicturesPath = Path.Combine(RootPath, "Profile-Pictures");
 
 
             bool exists = Directory.Exists(profilePicturesPath);
@@ -76,7 +89,7 @@ namespace CollegeUnity.Core.Helpers
         
         private static string GetCardIdPictureFolder()
         {
-            string profilePicturesPath = Path.Combine(BaseDirectory, "Students-Card-Id-Pictures");
+            string profilePicturesPath = Path.Combine(RootPath, "Students-Card-Id-Pictures");
 
 
             bool exists = Directory.Exists(profilePicturesPath);

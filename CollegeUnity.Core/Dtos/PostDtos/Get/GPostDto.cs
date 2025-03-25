@@ -7,6 +7,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CollegeUnity.Core.Dtos.QueryStrings;
+using CollegeUnity.Core.Dtos.VoteDtos;
 
 namespace CollegeUnity.Core.Dtos.PostDtos.Get
 {
@@ -18,7 +20,7 @@ namespace CollegeUnity.Core.Dtos.PostDtos.Get
         public DateTime? EditedAt { get; set; }
         public StaffInfo Staff { get; set; }
         public IEnumerable<string>? PostFiles { get; set; }
-        public IEnumerable<string>? Votes { get; set; }
+        public IEnumerable<GVoteDto>? Votes { get; set; }
 
         public class StaffInfo
         {

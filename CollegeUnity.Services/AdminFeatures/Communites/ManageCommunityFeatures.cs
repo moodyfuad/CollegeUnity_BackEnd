@@ -13,10 +13,12 @@ using CollegeUnity.Core.MappingExtensions.CommunityExtensions.Create;
 using CollegeUnity.Core.MappingExtensions.CommunityExtensions.Get;
 using CollegeUnity.Core.MappingExtensions.CommunityExtensions.Update;
 using CollegeUnity.Core.MappingExtensions.StudentCommunityExtensions.Create;
+using CollegeUnity.Core.MappingExtensions.StudentCommunityExtensions.Delete;
 using CollegeUnity.Core.MappingExtensions.StudentCommunityExtensions.Get;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,6 +31,38 @@ namespace CollegeUnity.Services.AdminFeatures.Communites
         public ManageCommunityFeatures(IRepositoryManager repositoryManager)
         {
             _repositoryManager = repositoryManager;
+        }
+
+        public async Task<ResultDto> ChangeCommunityType(int communityId, CommunityType communityType)
+        {
+            var community = await _repositoryManager.CommunityRepository.GetByIdAsync(communityId);
+
+            if (community == null)
+            {
+                return new(false, "Community not found.");
+            }
+
+            community.CommunityType = communityType;
+            await _repositoryManager.CommunityRepository.Update(community);
+            await _repositoryManager.SaveChangesAsync();
+
+            return new(true, null);
+        }
+
+        public async Task<ResultDto> ChangeCommunityState(int communityId, CommunityState communityState)
+        {
+            var community = await _repositoryManager.CommunityRepository.GetByIdAsync(communityId);
+
+            if (community == null)
+            {
+                return new(false, "Community not found.");
+            }
+
+            community.CommunityState = communityState;
+            await _repositoryManager.CommunityRepository.Update(community);
+            await _repositoryManager.SaveChangesAsync();
+
+            return new(true, null);
         }
 
         public async Task<ResultDto> CreateCommunityAsync(CCommunityDto dto)
@@ -58,8 +92,22 @@ namespace CollegeUnity.Services.AdminFeatures.Communites
                 return new(false, check);
             }
 
+            var currentCommunity = await _repositoryManager.CommunityRepository.GetByIdAsync(communityId);
+
+            if (currentCommunity == null)
+            {
+                return new(false, "No community found.");
+            }
+
+            if (currentCommunity.CommunityType == CommunityType.LookedPrivate || currentCommunity.CommunityType == CommunityType.LookedPublic)
+            {
+                return new(false, $"You can't change this status of the community because it's {currentCommunity.CommunityType.ToString()}.");
+            }
+
             // here i do for UCommunityInfoDto mapper and must be updated to be one with CCommunityDto
             var community = dto.ToCommunity<Community>(communityId);
+
+            _repositoryManager.Detach(currentCommunity);
 
             await _repositoryManager.CommunityRepository.Update(community);
             await _repositoryManager.SaveChangesAsync();
@@ -69,7 +117,7 @@ namespace CollegeUnity.Services.AdminFeatures.Communites
 
         public async Task<PagedList<GCommunityAdminsDto>> GetAdmins(GetStudentCommunityAdminsParameters parameters)
         {
-            var admins = await _repositoryManager.StudentCommunityRepository.GetRangeByConditionsAsync(c => c.CommunityId == parameters.Id, parameters);
+            var admins = await _repositoryManager.StudentCommunityRepository.GetRangeByConditionsAsync(c => c.CommunityId == parameters.communityId, parameters, i => i.Student);
             admins.OrderByDescending(a => a.Role);
             return admins.ToCommunityAdminsMappers();
         }
@@ -78,6 +126,59 @@ namespace CollegeUnity.Services.AdminFeatures.Communites
         {
             var communites = await _repositoryManager.CommunityRepository.GetRangeAsync(parameters);
             return communites.ToGetCommunites();
+        }
+
+        public async Task<PagedList<GCommunitesDto>> GetCommunitesByName(GetCommunitesParameters parameters)
+        {
+            Expression<Func<Community, bool>> conditions = cm => cm.Name.StartsWith(parameters.Name);
+            var communites = await _repositoryManager.CommunityRepository.GetRangeByConditionsAsync(conditions, parameters);
+            return communites.ToGetCommunites();
+        }
+
+        public async Task<PagedList<GCommunitesDto>> GetCommunitesByState(GetCommunitesParameters parameters)
+        {
+            Expression<Func<Community, bool>> conditions = cm => cm.CommunityState == parameters.CommunityState;
+
+            var communites = await _repositoryManager.CommunityRepository.GetRangeByConditionsAsync(conditions, parameters);
+            return communites.ToGetCommunites();
+        }
+
+        public async Task<PagedList<GCommunitesDto>> GetCommunitesByType(GetCommunitesParameters parameters)
+        {
+            Expression<Func<Community, bool>> conditions = cm => cm.CommunityType == parameters.CommunityType;
+
+            var communites = await _repositoryManager.CommunityRepository.GetRangeByConditionsAsync(conditions, parameters);
+            return communites.ToGetCommunites();
+        }
+
+        public async Task<ResultDto> RemoveAdminFromCommunites(int studentId, int communityId)
+        {
+            var studentExist = await _repositoryManager.StudentRepository.GetByIdAsync(studentId);
+            var communityExist = await _repositoryManager.CommunityRepository.GetByIdAsync(communityId);
+
+            if (studentExist == null)
+            {
+                return new(false, "Student not found.");
+            }
+
+            if (communityExist == null)
+            {
+                return new(false, "Community not found.");
+            }
+
+            var isAdmin = await _repositoryManager.StudentCommunityRepository
+                .AnyAsync(sc => sc.StudentId == studentId && (sc.Role == CommunityMemberRoles.Admin || sc.Role == CommunityMemberRoles.SuperAdmin));
+
+            if (isAdmin)
+            {
+                return new ResultDto(false, "Student is not Admin in a community.");
+            }
+
+            var studentCommunity = RemoveCommunityAdminExtention.ToNormalStudentCommunity(studentId, communityId);
+            await _repositoryManager.StudentCommunityRepository.Update(studentCommunity);
+            await _repositoryManager.SaveChangesAsync();
+
+            return new(true, null);
         }
 
         public async Task<ResultDto> SetAdminForCommunity(int studentId, int communityId)
@@ -93,14 +194,14 @@ namespace CollegeUnity.Services.AdminFeatures.Communites
             }
 
             var isAdmin = await _repositoryManager.StudentCommunityRepository
-                .AnyAsync(sc => sc.StudentId == studentId && sc.Role == CommunityMemberRoles.Admin);
+                .GetByConditionsAsync(sc => sc.StudentId == studentId && sc.CommunityId == communityId && sc.Role == CommunityMemberRoles.Admin);
 
-            if (isAdmin)
+            if (isAdmin != null)
             {
                 return new ResultDto(true, "Student is already a Admin in a community.");
             }
 
-            var studentCommunity = CreateStudentCommunityExtention.ToAdminStudentCommunity(studentId, communityId);
+            var studentCommunity = StudentCommunityExtention.ToAdminStudentCommunity(studentId, communityId);
 
             await _repositoryManager.StudentCommunityRepository.CreateAsync(studentCommunity);
             await _repositoryManager.SaveChangesAsync();
@@ -121,14 +222,14 @@ namespace CollegeUnity.Services.AdminFeatures.Communites
             }
 
             var isSuperAdmin = await _repositoryManager.StudentCommunityRepository
-                .AnyAsync(sc => sc.StudentId == studentId && sc.Role == CommunityMemberRoles.SuperAdmin);
+                .GetByConditionsAsync(sc => sc.StudentId == studentId && sc.CommunityId == communityId && sc.Role == CommunityMemberRoles.SuperAdmin);
 
-            if (isSuperAdmin)
+            if (isSuperAdmin != null)
             {
                 return new ResultDto(true, "Student is already a Super Admin in a community.");
             }
 
-            var studentCommunity = CreateStudentCommunityExtention.ToSuperAdminStudentCommunity(studentId, communityId);
+            var studentCommunity = StudentCommunityExtention.ToSuperAdminStudentCommunity(studentId, communityId);
 
             await _repositoryManager.StudentCommunityRepository.CreateAsync(studentCommunity);
             await _repositoryManager.SaveChangesAsync();

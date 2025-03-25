@@ -31,7 +31,7 @@ namespace CollegeUnity.Core.MappingExtensions.StaffExtensions
                 Roles = newInfo.Roles,
                 BirthDate = newInfo.BirthDate,
                 EducationDegree = newInfo.EducationDegree,
-                AccountStatus = newInfo.AccountStatus,
+                AccountStatus = oldInfo.AccountStatus,
                 Gender = newInfo.Gender,
             };
 
@@ -52,6 +52,7 @@ namespace CollegeUnity.Core.MappingExtensions.StaffExtensions
                 Email = staff.Email,
                 EducationDegree = ConvertToArabicHelper.EducationToArabic(staff.EducationDegree),
                 Gender = ConvertToArabicHelper.GenderToArabic(staff.Gender),
+                AccountStatus = staff.AccountStatus.ToString(),
                 profilePicturePath = staff.ProfilePicturePath
             };
         }
@@ -85,6 +86,7 @@ namespace CollegeUnity.Core.MappingExtensions.StaffExtensions
                 EducationDegree = ConvertToArabicHelper.EducationToArabic(staff.EducationDegree),
                 Gender = ConvertToArabicHelper.GenderToArabic(staff.Gender),
                 profilePicturePath = staff.ProfilePicturePath,
+                AccountStatus = staff.AccountStatus.ToString(),
                 roles = ConvertToArabicHelper.RolesToArabic(staff.Roles)
             };
         }

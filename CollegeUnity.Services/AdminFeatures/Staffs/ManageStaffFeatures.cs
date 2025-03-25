@@ -32,15 +32,15 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
         {
             var path = FileExtentionhelper.GetProfilePicturePath(staffId, profilePicture);
             await FileExtentionhelper.SaveFileAsync(path, profilePicture);
-            return path;
+            return FileExtentionhelper.ConvertBaseDirctoryToBaseUrl(path);
         }
 
-        public async Task<bool> CreateStaffAccount(CreateStaffDto dto)
+        public async Task<ResultDto> CreateStaffAccount(CreateStaffDto dto)
         {
             var isExist = await _repositoryManager.StaffRepository.GetByConditionsAsync(s => s.Email == dto.Email || s.Phone == dto.Phone);
             if (isExist != null)
             {
-                return false;
+                return new(false, "There is a staff with the same email or phone number.");
             }
 
             Staff staff = dto.MapTo<Staff>(null);
@@ -54,16 +54,23 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
 
                 if (dto.ProfilePictureFile != null)
                 {
-                    string picturePath = await MappingFormToProfilePicture(dto.ProfilePictureFile, staff.Id);
-                    staff.ProfilePicturePath = picturePath;
+                    if (FileExtentionhelper.IsValidImage(dto.ProfilePictureFile))
+                    {
+                        string picturePath = await MappingFormToProfilePicture(dto.ProfilePictureFile, staff.Id);
+                        staff.ProfilePicturePath = picturePath;
 
-                    _repositoryManager.StaffRepository.Update(staff);
-                    await _repositoryManager.SaveChangesAsync();
+                        await _repositoryManager.StaffRepository.Update(staff);
+                        await _repositoryManager.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new(false, "The uploaded file is not a valid image. Please upload a picture file.");
+                    }
                 }
 
                 await transaction.CommitAsync();
 
-                return true;
+                return new(true, null);
             }
             catch (Exception)
             {
@@ -72,34 +79,52 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
             }
         }
 
-        public async Task<bool> UpdateStaffAccount(int staffId, UStaffDto dto)
+        public async Task<ResultDto> UpdateStaffAccount(int staffId, UStaffDto dto)
         {
             var isExist = await _repositoryManager.StaffRepository.GetByConditionsAsync(s => (s.Email == dto.Email || s.Phone == dto.Phone) && s.Id != staffId);
             if (isExist != null)
             {
-                return false;
+                return new(false, "There is a staff with the same email or phone number.");
             }
 
             var staff = await _repositoryManager.StaffRepository.GetByConditionsAsync(s => s.Id == staffId);
             if (staff == null)
             {
-                return false;
+                return new(false, "No staff found.");
             }
 
-            _repositoryManager.Detach(staff);
+            await using var transaction = await _repositoryManager.BeginTransactionAsync();
 
-            var newStaffInfo = staff.MapTo<Staff>(dto);
-
-            if (dto.ProfilePicturePath != null)
+            try
             {
-                string picturePath = await MappingFormToProfilePicture(dto.ProfilePicturePath, newStaffInfo.Id);
-                newStaffInfo.ProfilePicturePath = picturePath;
+                _repositoryManager.Detach(staff);
+
+                var newStaffInfo = staff.MapTo<Staff>(dto);
+
+                if (dto.ProfilePicturePath != null)
+                {
+                    if (FileExtentionhelper.IsValidImage(dto.ProfilePicturePath))
+                    {
+                        string picturePath = await MappingFormToProfilePicture(dto.ProfilePicturePath, newStaffInfo.Id);
+                        newStaffInfo.ProfilePicturePath = picturePath;
+
+                        await _repositoryManager.StaffRepository.Update(newStaffInfo);
+                        await _repositoryManager.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new(false, "The uploaded file is not a valid image. Please upload a picture file.");
+                    }
+                }
+
+                await transaction.CommitAsync();
+                return new(true, null);
             }
-
-            await _repositoryManager.StaffRepository.Update(newStaffInfo);
-            await _repositoryManager.SaveChangesAsync();
-
-            return true;
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
 
         public async Task<PagedList<GStaffByRoleDto>> GetStaffByFullName(GetStaffParameters parameters)
