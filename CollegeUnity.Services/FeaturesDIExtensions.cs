@@ -19,6 +19,8 @@ using CollegeUnity.Contract.StudentFeatures.Subjects;
 using CollegeUnity.Services.StudentFeatures.Subjects;
 using CollegeUnity.Contract.StaffFeatures.Subject;
 using CollegeUnity.Services.AdminFeatures.Subjects;
+using CollegeUnity.Contract.StudentFeatures.Courses;
+using CollegeUnity.Services.StudentFeatures.Courses;
 
 namespace CollegeUnity.Services
 {
@@ -65,6 +67,7 @@ namespace CollegeUnity.Services
             services.AddScoped<ISignUpFeatures, SignUpFeature>();
             services.AddScoped<IRequestsFeature, RequestsFeature>();
             services.AddScoped<IStudentSubjectFeatures, StudentSubjectFeatures>();
+            services.AddScoped<IStudentCoursesFeatures, StudentCoursesFeatures>();
 
             return services;
         }

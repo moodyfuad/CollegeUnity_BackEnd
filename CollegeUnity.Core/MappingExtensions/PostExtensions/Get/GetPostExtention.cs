@@ -1,9 +1,6 @@
 ﻿using CollegeUnity.Core.Dtos.PostDtos.Create;
 using CollegeUnity.Core.Dtos.PostDtos.Get;
 using CollegeUnity.Core.Entities;
-using CollegeUnity.Core.Enums;
-using CollegeUnity.Core.Helpers;
-using CollegeUnity.Core.MappingExtensions.VoteExtentions.Get;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,8 +14,8 @@ namespace CollegeUnity.Core.MappingExtensions.PostExtensions.Get
         /// <summary>
         /// this method will map any type of getting post to send it to client
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="post"></param>
+        /// <typeparam Name="T"></typeparam>
+        /// <param Name="post"></param>
         /// <returns></returns>
         #region Public post
         public static T ToGPostDto<T>(this Post post) where T : GPostDto, new()
@@ -36,7 +33,7 @@ namespace CollegeUnity.Core.MappingExtensions.PostExtensions.Get
                     EducationDegree = post.Staff.EducationDegree
                 },
                 PostFiles = post.PostFiles?.Select(p => p.Path).ToList(),
-                Votes = post.Votes?.MapToGVotesDto() ?? null
+                //Votes = post.Votes?.Select(p => p.Name).ToList()
             };
 
             if (dto is GPublicPostDto publicPostDto)

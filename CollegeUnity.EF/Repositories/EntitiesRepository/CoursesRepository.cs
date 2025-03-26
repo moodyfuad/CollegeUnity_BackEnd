@@ -8,19 +8,14 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.EF.Repositories.EntitiesRepository
 {
-    public class VotesRepository : BaseRepository<PostVote>, IVotesRepository
+    public class CoursesRepository : BaseRepository<Course>, ICoursesRepository
     {
         private readonly CollegeUnityDbContext _context;
 
-        public VotesRepository(CollegeUnityDbContext context)
+        public CoursesRepository(CollegeUnityDbContext context)
             : base(context)
         {
             _context = context;
-        }
-
-        public async Task AddRangeAsync(IEnumerable<PostVote> votes)
-        {
-            await _context.PostVotes.AddRangeAsync(votes);
         }
     }
 }
