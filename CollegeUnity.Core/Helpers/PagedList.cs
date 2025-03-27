@@ -17,8 +17,9 @@ namespace CollegeUnity.Core.Helpers
         public bool HasPrevious => CurrentPage > 1;
         public bool HasNext => CurrentPage < TotalPages;
 
-        public PagedList(List<T> items, int count, int pageNumber, int pageSize)
+        public PagedList(List<T>? items, int count, int pageNumber, int pageSize)
         {
+            items ??= new List<T>();
             CurrentPage = pageNumber;
             TotalCount = count;
             PageSize = pageSize;

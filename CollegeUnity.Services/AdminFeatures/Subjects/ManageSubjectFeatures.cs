@@ -140,7 +140,7 @@ namespace CollegeUnity.Services.AdminFeatures.Subjects
         /// <summary>
         /// method to check if the subject is already Subject exists
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param Name="dto"></param>
         /// <returns></returns>
         private async Task<Subject> _checkCreateNewSubjectAsync(CSubjectDto dto)
         {

@@ -78,6 +78,7 @@ app.UseSwaggerUI();
 app.UseStaticFiles();
 
 var filesPath = Path.Combine(Directory.GetCurrentDirectory(), "..", "Files");
+Directory.CreateDirectory(filesPath);
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(filesPath),
