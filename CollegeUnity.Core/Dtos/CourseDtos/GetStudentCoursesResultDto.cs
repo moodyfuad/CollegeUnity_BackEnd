@@ -44,11 +44,11 @@ namespace CollegeUnity.Core.Dtos.CourseDtos
 
         public List<RegisteredStudentForCoursesResultDto>? RegisteredStudents { get; set; }
 
-        public static GetStudentCoursesResultDto MapFrom(Course course)
+        public static GetStudentCoursesResultDto MapFrom(Course course, bool includeStudents)
         {
             int takenSeats = course.RegisteredStudents?.Count ?? 0;
-            List<RegisteredStudentForCoursesResultDto>? students =
-                course.RegisteredStudents?.Select(s => RegisteredStudentForCoursesResultDto.MapFrom(s)).ToList() ?? null;
+            List<RegisteredStudentForCoursesResultDto>? students = includeStudents ?
+                course.RegisteredStudents?.Select(s => RegisteredStudentForCoursesResultDto.MapFrom(s)).ToList() ?? null : null;
 
             GetStudentCoursesResultDto result = new GetStudentCoursesResultDto(
                 id: course.Id,
@@ -64,11 +64,11 @@ namespace CollegeUnity.Core.Dtos.CourseDtos
             return result;
         }
 
-        public static PagedList<GetStudentCoursesResultDto> MapFrom(PagedList<Course>? courses)
+        public static PagedList<GetStudentCoursesResultDto> MapFrom(PagedList<Course> courses, bool includeStudents)
         {
             //courses ??= new PagedList<Course>([],0,1,10);
             PagedList<GetStudentCoursesResultDto> result = new(
-                items: courses.Select(c => MapFrom(c)).ToList()??[],
+                items: courses.Select(c => MapFrom(c,includeStudents))?.ToList(),
                 count: courses.TotalCount,
                 pageNumber: courses.CurrentPage,
                 pageSize: courses.PageSize);

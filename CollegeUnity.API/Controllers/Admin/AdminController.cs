@@ -1,5 +1,6 @@
 ﻿using CollegeUnity.API.Controllers.Student;
 using CollegeUnity.Contract.AdminFeatures.Communites;
+using CollegeUnity.Contract.AdminFeatures.Courses;
 using CollegeUnity.Contract.AdminFeatures.Staffs;
 using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
@@ -7,6 +8,7 @@ using CollegeUnity.Core.Dtos.AdminServiceDtos;
 using CollegeUnity.Core.Dtos.CommunityDtos.Create;
 using CollegeUnity.Core.Dtos.CommunityDtos.Get;
 using CollegeUnity.Core.Dtos.CommunityDtos.Update;
+using CollegeUnity.Core.Dtos.CourseDtos;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Dtos.StudentCommunityDtos.Get;
@@ -15,6 +17,7 @@ using CollegeUnity.Core.Dtos.SubjectDtos;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Enums;
 using CollegeUnity.Core.Helpers;
+using CollegeUnity.Services.AdminFeatures.Courses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
@@ -32,12 +35,15 @@ namespace CollegeUnity.API.Controllers.Admin
         private readonly IServiceManager _serviceManager;
         private readonly IManageStaffFeatures _manageStaffFeatures;
         private readonly IManageCommunityFeatures _manageCommunityFeatures;
+        private readonly IManageCoursesFeatures _manageCoursesFeatures;
 
-        public AdminController(IServiceManager serviceManager, IManageStaffFeatures manageStaffFeatures, IManageCommunityFeatures manageCommunityFeatures)
+        public AdminController(IServiceManager serviceManager, IManageStaffFeatures manageStaffFeatures, IManageCommunityFeatures manageCommunityFeatures,
+            IManageCoursesFeatures manageCoursesFeatures)
         {
             _serviceManager = serviceManager;
             _manageStaffFeatures = manageStaffFeatures;
             _manageCommunityFeatures = manageCommunityFeatures;
+            _manageCoursesFeatures = manageCoursesFeatures;
         }
 
         [HttpPost("Staff/Create")]
@@ -234,6 +240,38 @@ namespace CollegeUnity.API.Controllers.Admin
         {
             var admins = await _manageCommunityFeatures.GetAdmins(parameters);
             return new JsonResult(ApiResponse<PagedList<GCommunityAdminsDto>>.Success(admins));
+        }
+
+        [HttpGet("Courses")]
+        public async Task<IActionResult> GetCourseS([FromQuery] GetCoursesForAdminQS queryString)
+        {
+            var result = await _manageCoursesFeatures.Get(queryString);
+
+            return new JsonResult(result);
+        }
+
+        [HttpPost("Course")]
+        public async Task<IActionResult> CreateCourse([FromBody] CreateCourseDto dto)
+        {
+            var result = await _manageCoursesFeatures.Create(dto);
+
+            return new JsonResult(result);
+        }
+
+        [HttpPut("Course/{courseId}")]
+        public async Task<IActionResult> UpdateCourse(int courseId, [FromBody] CreateCourseDto dto)
+        {
+            var result = await _manageCoursesFeatures.Update(courseId, dto);
+
+            return new JsonResult(result);
+        }
+
+        [HttpDelete("Course/{courseId}")]
+        public async Task<IActionResult> DeleteCourse(int courseId)
+        {
+            var result = await _manageCoursesFeatures.Remove(courseId);
+
+            return new JsonResult(result);
         }
     }
 }

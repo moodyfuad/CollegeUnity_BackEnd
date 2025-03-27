@@ -15,6 +15,6 @@ namespace CollegeUnity.Contract.StudentFeatures.Courses
 
         Task<ApiResponse<bool>> UnRegister(int studentId, int courseId);
 
-        Task<ApiResponse<PagedList<GetStudentCoursesResultDto>>> Get(int studentId, GetStudentCoursesQS queryString);
+        Task<ApiResponse<PagedList<GetStudentCoursesResultDto>>> Get(int studentId, GetCoursesForStudentQS queryString);
     }
 }

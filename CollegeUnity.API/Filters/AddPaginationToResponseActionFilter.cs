@@ -37,6 +37,10 @@ namespace CollegeUnity.API.Filters
                 }
 
                 object pagedListObj = dataProperty.GetValue(obj);
+                if (pagedListObj == null)
+                {
+                    goto skip;
+                }
 
                 Type pagedListObjType = pagedListObj.GetType();
 

@@ -8,11 +8,13 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Core.Dtos.CourseDtos
 {
-    public class GetStudentCoursesQS : QueryStringParameters
+    public class GetCoursesForStudentQS : QueryStringParameters
     {
         [DisplayName("Course Name")]
         public string Name { get; set; } = string.Empty;
 
         public bool IsMyCourses { get; set; } = false;
+
+        public bool IncludeStudents { get; set; } = false;
     }
 }

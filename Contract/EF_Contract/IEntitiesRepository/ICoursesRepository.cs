@@ -9,5 +9,6 @@ namespace CollegeUnity.Contract.EF_Contract.IEntitiesRepository
 {
     public interface ICoursesRepository : IBaseRepository<Course>
     {
+        new Task<Course> Delete(int id);
     }
 }

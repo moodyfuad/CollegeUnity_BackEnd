@@ -22,11 +22,31 @@ namespace CollegeUnity.API.Controllers.Student
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] GetStudentCoursesQS queryString)
+        public async Task<IActionResult> Get([FromQuery] GetCoursesForStudentQS queryString)
         {
             int studentId = User.GetUserId();
 
             var result = await _studentCoursesFeatures.Get(studentId, queryString);
+
+            return new JsonResult(result);
+        }
+
+        [HttpPost("{courseId}/register")]
+        public async Task<IActionResult> Register(int courseId)
+        {
+            int studentId = User.GetUserId();
+
+            var result = await _studentCoursesFeatures.Register(studentId, courseId);
+
+            return new JsonResult(result);
+        }
+
+        [HttpPost("{courseId}/unregister")]
+        public async Task<IActionResult> Unregister(int courseId)
+        {
+            int studentId = User.GetUserId();
+
+            var result = await _studentCoursesFeatures.UnRegister(studentId, courseId);
 
             return new JsonResult(result);
         }
