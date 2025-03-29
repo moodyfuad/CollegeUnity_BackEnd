@@ -21,5 +21,8 @@ namespace CollegeUnity.Core.Dtos.QueryStrings
         }
 
         public bool DesOrder { get; set; } = false;
+
+        public string? OrderBy { get; set; } = null;
+        public string? ThenBy { get; set; } = null;
     }
 }

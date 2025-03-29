@@ -31,6 +31,9 @@ namespace CollegeUnity.Core.Entities
         [Required]
         public required int AvailableSeats { get; set; }
 
+        [Required]
+        public bool IsDeleted { get; set; } = false;
+
         [InverseProperty(nameof(Student.RegisteredCourses))]
         public virtual ICollection<Student>? RegisteredStudents { get; set; }
     }

@@ -16,7 +16,7 @@ namespace CollegeUnity.Contract.AdminFeatures.Courses
 
         Task<ApiResponse<bool>> Create(CreateCourseDto dto);
 
-        Task<ApiResponse<bool>> Remove(int courseId);
+        Task<ApiResponse<bool>> Remove(int courseId, bool ignoreRegisteredStudents = false);
 
         Task<ApiResponse<bool>> Update(int courseId, CreateCourseDto dto);
     }
