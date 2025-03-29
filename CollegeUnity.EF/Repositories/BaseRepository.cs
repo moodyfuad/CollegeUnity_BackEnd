@@ -50,17 +50,20 @@ namespace CollegeUnity.EF.Repositories
             {
                 foreach (var include in includes)
                 {
-                    entity = entity.Include(include);
+                    if (entity != null && entity.Any())
+                    {
+                        entity = entity.Include(include);
+                    }
                 }
             }
 
-            if (condition != null)
+            if (condition != null && entity.Any())
             {
                 entity = entity.Where(condition);
             }
 
             return await PagedList<T>.ToPagedListAsync(
-                entity,
+                entity??= new List<T>().AsQueryable(),
                 queryStringParameters.PageNumber,
                 queryStringParameters.PageSize,
                 queryStringParameters.DesOrder);
@@ -76,7 +79,10 @@ namespace CollegeUnity.EF.Repositories
             {
                 foreach (var include in includes)
                 {
-                    entity = entity.Include(include);
+                    if (entity != null && entity.Any())
+                    {
+                        entity = entity.Include(include);
+                    }
                 }
             }
 
@@ -84,12 +90,15 @@ namespace CollegeUnity.EF.Repositories
             {
                 foreach (var expression in condition)
                 {
-                    entity = entity.Where(expression);
+                    if (entity != null && entity.Any())
+                    {
+                        entity = entity.Where(expression);
+                    }
                 }
             }
 
             return await PagedList<T>.ToPagedListAsync(
-                entity.AsSingleQuery(),
+                entity?.AsSingleQuery() ?? new List<T>().AsQueryable(),
                 queryStringParameters.PageNumber,
                 queryStringParameters.PageSize,
                 queryStringParameters.DesOrder);
@@ -102,7 +111,10 @@ namespace CollegeUnity.EF.Repositories
             {
                 foreach (var include in includes)
                 {
-                    entity = entity.Include(include);
+                    if (entity != null && entity.Any())
+                    {
+                        entity = entity.Include(include);
+                    }
                 }
             }
 

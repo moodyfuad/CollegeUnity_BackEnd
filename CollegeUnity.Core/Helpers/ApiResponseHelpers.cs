@@ -30,16 +30,16 @@ namespace CollegeUnity.Core.Helpers
             response.Headers.Append("X-Pagination", JsonConvert.SerializeObject(meta));
         }
 
-        public static void AddPagination<T>(this HttpResponse response, PagedList<T> pl)
+        public static void AddPagination<T>(this HttpResponse response, PagedList<T>? pl)
         {
             var meta = new
             {
-                PageNumber = pl.CurrentPage,
-                TotalPages = pl.TotalPages,
-                PageSize = pl.PageSize,
-                TotalCount = pl.TotalCount,
-                HasPrevious = pl.HasPrevious,
-                HasNext = pl.HasNext,
+                PageNumber = pl?.CurrentPage??0,
+                TotalPages = pl?.TotalPages??0,
+                PageSize = pl?.PageSize ?? 0,
+                TotalCount = pl?.TotalCount ?? 0,
+                HasPrevious = pl?.HasPrevious?? false,
+                HasNext = pl?.HasNext?? false,
             };
             response.Headers.Append("X-Pagination", JsonConvert.SerializeObject(meta));
         }

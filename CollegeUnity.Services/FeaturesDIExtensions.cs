@@ -19,6 +19,10 @@ using CollegeUnity.Contract.StudentFeatures.Subjects;
 using CollegeUnity.Services.StudentFeatures.Subjects;
 using CollegeUnity.Contract.StaffFeatures.Subject;
 using CollegeUnity.Services.AdminFeatures.Subjects;
+using CollegeUnity.Contract.StudentFeatures.Courses;
+using CollegeUnity.Services.StudentFeatures.Courses;
+using CollegeUnity.Contract.AdminFeatures.Courses;
+using CollegeUnity.Services.AdminFeatures.Courses;
 
 namespace CollegeUnity.Services
 {
@@ -55,6 +59,7 @@ namespace CollegeUnity.Services
             services.AddScoped<IManageCommunityFeatures, ManageCommunityFeatures>();
             services.AddScoped<IManageStaffFeatures, ManageStaffFeatures>();
             services.AddScoped<IManageSubjectFeatures, ManageSubjectFeatures>();
+            services.AddScoped<IManageCoursesFeatures, ManageCoursesFeatures>();
 
             return services;
         }
@@ -65,6 +70,7 @@ namespace CollegeUnity.Services
             services.AddScoped<ISignUpFeatures, SignUpFeature>();
             services.AddScoped<IRequestsFeature, RequestsFeature>();
             services.AddScoped<IStudentSubjectFeatures, StudentSubjectFeatures>();
+            services.AddScoped<IStudentCoursesFeatures, StudentCoursesFeatures>();
 
             return services;
         }

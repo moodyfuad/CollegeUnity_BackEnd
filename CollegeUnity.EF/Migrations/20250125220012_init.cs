@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CollegeUnity.EF.Migrations
 {
     /// <inheritdoc />
-#pragma warning disable CS8981 // The type name only contains lower-cased ascii characters. Such names may become reserved for the language.
+#pragma warning disable CS8981 // The type Name only contains lower-cased ascii characters. Such names may become reserved for the language.
     public partial class init : Migration
-#pragma warning restore CS8981 // The type name only contains lower-cased ascii characters. Such names may become reserved for the language.
+#pragma warning restore CS8981 // The type Name only contains lower-cased ascii characters. Such names may become reserved for the language.
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

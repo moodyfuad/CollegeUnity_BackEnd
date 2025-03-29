@@ -1,11 +1,15 @@
 ﻿using CollegeUnity.Core.Dtos.SharedFeatures.Requests;
 using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Enums;
 using CollegeUnity.Core.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CollegeUnity.Core.MappingExtensions.Requests
 {
@@ -13,25 +17,17 @@ namespace CollegeUnity.Core.MappingExtensions.Requests
     {
 
         public static void MapTo(
-             this PagedList<Request> requests,
-             out PagedList<GetStudentRequestsDto> result)
+            this PagedList<Request> requests,
+            out PagedList<GetUserRequestsDto> result)
         {
-            List<GetStudentRequestsDto> items = [];
-
-            requests.ForEach(request => items.Add(new GetStudentRequestsDto()
+            List<GetUserRequestsDto> items = [];
+            foreach (var request in requests)
             {
-                RequestId = request.Id,
-                Title = request.Title,
-                Content = request.Content,
-                Date = request.Date,
-                RequestStatus = request.RequestStatus,
-                StaffId = request.StaffId,
-                StaffFullName = 
-                    request.Staff != null ?
-                    $"{request.Staff.FirstName} {request.Staff.MiddleName} {request.Staff.LastName}" :
-                    "staff is null"
-            }));
-            var pagedList = new PagedList<GetStudentRequestsDto>(
+                request.MapTo(out GetUserRequestsDto item);
+                items.Add(item);
+            }
+
+            var pagedList = new PagedList<GetUserRequestsDto>(
                 items: items,
                 count: requests.TotalCount,
                 pageNumber: requests.CurrentPage,
@@ -40,22 +36,22 @@ namespace CollegeUnity.Core.MappingExtensions.Requests
             result = pagedList;
         }
 
-        public static void MapMapGetStudentRequestsDto(this Request request, out GetStudentRequestsDto result)
+        public static void MapTo(this Request request, out GetUserRequestsDto result)
         {
-            string staffFullName = "staff is null";
-            if (request.Staff != null)
+            string eduDegree = request.Staff.EducationDegree.ToString();
+             result = new()
             {
-                staffFullName = $"{request.Staff.FirstName} {request.Staff.MiddleName} {request.Staff.LastName}";
-            }
+                RequestId = request.Id,
+                StudentId = request.StudentId,
+                StaffId = request.StaffId,
+                StaffFullName = request.Staff != null ? $"{eduDegree}. {request.Staff.FirstName} {request.Staff.MiddleName} {request.Staff.LastName}" : "staff is null",
 
-            result = new GetStudentRequestsDto()
-            {
+                StudentFullName = request.Student != null ? $"{request.Student.FirstName} {request.Student.MiddleName} {request.Student.LastName}" : "Student is null",
+
                 Title = request.Title,
                 Content = request.Content,
                 Date = request.Date,
-                RequestStatus = request.RequestStatus,
-                StaffId = request.StaffId,
-                StaffFullName = staffFullName
+                RequestStatus = request.RequestStatus
             };
         }
 
