@@ -66,15 +66,8 @@ namespace CollegeUnity.Services.AdminFeatures.Courses
                 return ApiResponse<bool>.BadRequest("Failed Deleting the course", ["Course Not Found To Be Deleted"]);
             }
 
-// <<<<<<< Features/Get-Student-And-account-status
-
-//             //#error the course can not be deleted due to the associated regiestered students //
-
-//             if (await _repositories.CoursesRepository.Delete(course) == null)
-// =======
-//             course.RegisteredStudents ??= [];
-//             if (course.RegisteredStudents.Any() && !ignoreRegisteredStudents)
-// >>>>>>> master
+             //#error the course can not be deleted due to the associated regiestered students //
+            if (course.RegisteredStudents.Any() && !ignoreRegisteredStudents)
             {
 
                 return ApiResponse<bool>.BadRequest(
