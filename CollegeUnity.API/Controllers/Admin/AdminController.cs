@@ -7,6 +7,7 @@ using CollegeUnity.Contract.AdminFeatures.Staffs;
 using CollegeUnity.Contract.AdminFeatures.Student;
 using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
+using CollegeUnity.Contract.SharedFeatures.ScheduleFiles;
 using CollegeUnity.Core.Dtos.AdminServiceDtos;
 using CollegeUnity.Core.Dtos.CommunityDtos.Create;
 using CollegeUnity.Core.Dtos.CommunityDtos.Get;
@@ -15,6 +16,7 @@ using CollegeUnity.Core.Dtos.CourseDtos;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Dtos.ScheduleFilesDtos.Create;
+using CollegeUnity.Core.Dtos.ScheduleFilesDtos.Get;
 using CollegeUnity.Core.Dtos.StudentCommunityDtos.Get;
 using CollegeUnity.Core.Dtos.StudentFeatures;
 using CollegeUnity.Core.Dtos.StudentServiceDtos;
@@ -43,9 +45,12 @@ namespace CollegeUnity.API.Controllers.Admin
         private readonly IManageCoursesFeatures _manageCoursesFeatures;
         private readonly IManageStudentFeatures _manageStudentFeatures;
         private readonly IManageScheduleFilesFeatures _manageScheduleFilesFeatures;
+        private readonly IGetScheduleFilesFeatures _getScheduleFilesFeatures;
 
         public AdminController(IServiceManager serviceManager, IManageStaffFeatures manageStaffFeatures, IManageCommunityFeatures manageCommunityFeatures,
-            IManageCoursesFeatures manageCoursesFeatures, IManageStudentFeatures manageStudentFeatures, IManageScheduleFilesFeatures manageScheduleFilesFeatures)
+            IManageCoursesFeatures manageCoursesFeatures, IManageStudentFeatures manageStudentFeatures, IManageScheduleFilesFeatures manageScheduleFilesFeatures,
+            IGetScheduleFilesFeatures getScheduleFilesFeatures
+            )
         {
             _serviceManager = serviceManager;
             _manageStaffFeatures = manageStaffFeatures;
@@ -53,6 +58,7 @@ namespace CollegeUnity.API.Controllers.Admin
             _manageCoursesFeatures = manageCoursesFeatures;
             _manageStudentFeatures = manageStudentFeatures;
             _manageScheduleFilesFeatures = manageScheduleFilesFeatures;
+            _getScheduleFilesFeatures = getScheduleFilesFeatures;
         }
 
         [HttpPost("Staff/Create")]
@@ -208,7 +214,7 @@ namespace CollegeUnity.API.Controllers.Admin
         }
 
         [HttpPut("Schedule/Update/{scheduleId}")]
-        public async Task<IActionResult> UpdateScheduleFile(int scheduleId, [FromForm] IFormFile SchedulePicture)
+        public async Task<IActionResult> UpdateScheduleFile(int scheduleId, IFormFile SchedulePicture)
         {
             var isSuccess = await _manageScheduleFilesFeatures.UpdateSchedule(scheduleId, SchedulePicture);
 
@@ -291,6 +297,14 @@ namespace CollegeUnity.API.Controllers.Admin
             var result = await _manageStudentFeatures.GetStudentSignUpRequest(parameters);
 
             return new JsonResult(ApiResponse<PagedList<GStudentDto>>.Success(result));
+        }
+
+        [HttpGet("Schedules")]
+        public async Task<IActionResult> GetScheduleFiles([FromQuery] GetScheduleFileParameters parameters)
+        {
+            var result = await _getScheduleFilesFeatures.GetSchedule(parameters);
+
+            return new JsonResult(ApiResponse<PagedList<GScheduleFileDto>>.Success(result));
         }
 
         [HttpGet("Courses")]

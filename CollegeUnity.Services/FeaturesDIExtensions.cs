@@ -28,6 +28,8 @@ using CollegeUnity.Contract.AdminFeatures.Student;
 using CollegeUnity.Services.AdminFeatures.Students;
 using CollegeUnity.Contract.AdminFeatures.ScheduleFiles;
 using CollegeUnity.Services.AdminFeatures.ScheduleFiles;
+using CollegeUnity.Contract.SharedFeatures.ScheduleFiles;
+using CollegeUnity.Services.SharedFeatures.ScheduleFiles;
 
 namespace CollegeUnity.Services
 {
@@ -53,7 +55,7 @@ namespace CollegeUnity.Services
             services.AddScoped<IForgetPasswordFeatures, ForgetPasswordFeatures>();
             services.AddScoped<ICommentFeatures, CommentFeatures>();
             services.AddScoped<IVoteFeatures, VoteFeatures>();
-            services.AddScoped<IManageScheduleFilesFeatures, ManageScheduleFilesFeatures>();
+            services.AddScoped<IGetScheduleFilesFeatures, GetScheduleFilesFeatures>();
             services.AddScoped<IEmailServices, EmailServices>();
 
             return services;
@@ -66,6 +68,7 @@ namespace CollegeUnity.Services
             services.AddScoped<IManageStaffFeatures, ManageStaffFeatures>();
             services.AddScoped<IManageSubjectFeatures, ManageSubjectFeatures>();
             services.AddScoped<IManageCoursesFeatures, ManageCoursesFeatures>();
+            services.AddScoped<IManageScheduleFilesFeatures, ManageScheduleFilesFeatures>();
 
             return services;
         }
