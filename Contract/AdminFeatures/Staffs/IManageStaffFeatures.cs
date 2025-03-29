@@ -20,6 +20,6 @@ namespace CollegeUnity.Contract.AdminFeatures.Staffs
         Task<PagedList<GStaffDto>> GetStaffByRole(GetStaffParameters parameters);
         Task<PagedList<GStaffByRoleDto>> GetAllStaff(GetStaffParameters parameters);
         Task<bool> ChangeStaffPassword(int staffId, ChangeStaffPasswordDto dto);
-        Task<ResultDto> ChangeStaffAccountStatus(int id, ChangeStaffStatusDto dto);
+        Task<ResultDto> ChangeUserAccountStatus(int id, ChangeUserStatusDto dto);
     }
 }

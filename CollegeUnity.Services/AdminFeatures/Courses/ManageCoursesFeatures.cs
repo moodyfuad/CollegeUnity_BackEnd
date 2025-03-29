@@ -65,7 +65,7 @@ namespace CollegeUnity.Services.AdminFeatures.Courses
             }
 
 
-            #error the course can not be deleted due to the associated regiestered students //
+            //#error the course can not be deleted due to the associated regiestered students //
 
             if (await _repositories.CoursesRepository.Delete(course) == null)
             {
