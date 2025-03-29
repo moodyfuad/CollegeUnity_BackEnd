@@ -2,6 +2,7 @@
 using CollegeUnity.API.Filters;
 using CollegeUnity.Contract.AdminFeatures.Communites;
 using CollegeUnity.Contract.AdminFeatures.Courses;
+using CollegeUnity.Contract.AdminFeatures.ScheduleFiles;
 using CollegeUnity.Contract.AdminFeatures.Staffs;
 using CollegeUnity.Contract.AdminFeatures.Student;
 using CollegeUnity.Contract.Services_Contract;
@@ -13,6 +14,7 @@ using CollegeUnity.Core.Dtos.CommunityDtos.Update;
 using CollegeUnity.Core.Dtos.CourseDtos;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
+using CollegeUnity.Core.Dtos.ScheduleFilesDtos.Create;
 using CollegeUnity.Core.Dtos.StudentCommunityDtos.Get;
 using CollegeUnity.Core.Dtos.StudentFeatures;
 using CollegeUnity.Core.Dtos.StudentServiceDtos;
@@ -40,15 +42,17 @@ namespace CollegeUnity.API.Controllers.Admin
         private readonly IManageCommunityFeatures _manageCommunityFeatures;
         private readonly IManageCoursesFeatures _manageCoursesFeatures;
         private readonly IManageStudentFeatures _manageStudentFeatures;
+        private readonly IManageScheduleFilesFeatures _manageScheduleFilesFeatures;
 
         public AdminController(IServiceManager serviceManager, IManageStaffFeatures manageStaffFeatures, IManageCommunityFeatures manageCommunityFeatures,
-            IManageCoursesFeatures manageCoursesFeatures, IManageStudentFeatures manageStudentFeatures)
+            IManageCoursesFeatures manageCoursesFeatures, IManageStudentFeatures manageStudentFeatures, IManageScheduleFilesFeatures manageScheduleFilesFeatures)
         {
             _serviceManager = serviceManager;
             _manageStaffFeatures = manageStaffFeatures;
             _manageCommunityFeatures = manageCommunityFeatures;
             _manageCoursesFeatures = manageCoursesFeatures;
             _manageStudentFeatures = manageStudentFeatures;
+            _manageScheduleFilesFeatures = manageScheduleFilesFeatures;
         }
 
         [HttpPost("Staff/Create")]
@@ -111,6 +115,19 @@ namespace CollegeUnity.API.Controllers.Admin
             if (isSuccess.success)
             {
                 return new JsonResult(ApiResponse<bool?>.Success(null));
+            }
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
+        }
+
+        [HttpPost("Schedule/Create")]
+        public async Task<IActionResult> CreateScheduleFile([FromForm] CScheduleFilesDto dto)
+        {
+            var isSuccess = await _manageScheduleFilesFeatures.AddSchedule(dto);
+
+            if (isSuccess.success)
+            {
+                return new JsonResult(ApiResponse<bool?>.Created(null));
             }
 
             return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
@@ -185,6 +202,19 @@ namespace CollegeUnity.API.Controllers.Admin
             if (isSuccess.success)
             {
                 return new JsonResult(ApiResponse<bool?>.Success(null));
+            }
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
+        }
+
+        [HttpPut("Schedule/Update/{scheduleId}")]
+        public async Task<IActionResult> UpdateScheduleFile(int scheduleId, [FromForm] IFormFile SchedulePicture)
+        {
+            var isSuccess = await _manageScheduleFilesFeatures.UpdateSchedule(scheduleId, SchedulePicture);
+
+            if (isSuccess.success)
+            {
+                return new JsonResult(ApiResponse<bool?>.Created(null));
             }
 
             return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
@@ -296,6 +326,19 @@ namespace CollegeUnity.API.Controllers.Admin
             var result = await _manageCoursesFeatures.Remove(courseId, ignoreRegisteredStudents);
 
             return new JsonResult(result);
+        }
+
+        [HttpDelete("Schedule/Delete/{scheduleId}")]
+        public async Task<IActionResult> DeleteScheduleFile(int scheduleId)
+        {
+            var isSuccess = await _manageScheduleFilesFeatures.DeleteSchedule(scheduleId);
+
+            if (isSuccess.success)
+            {
+                return new JsonResult(ApiResponse<bool?>.Created(null));
+            }
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
         }
     }
 }

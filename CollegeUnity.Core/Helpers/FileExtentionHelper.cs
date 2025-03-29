@@ -56,6 +56,20 @@ namespace CollegeUnity.Core.Helpers
             return ConvertToUrlPath(fullFilePath);
         }
 
+        public static string GetscheduleFilePicturePath(IFormFile file)
+        {
+            string baseDirectory = Path.Combine(RootPath, "schedules");
+            string accountPath = Path.Combine(baseDirectory);
+
+            Directory.CreateDirectory(accountPath);
+
+            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+
+            string fullFilePath = Path.Combine(accountPath, fileName);
+
+            return ConvertToUrlPath(fullFilePath);
+        }
+
 
         public static async Task SaveFileAsync(string filePath, IFormFile file)
         {

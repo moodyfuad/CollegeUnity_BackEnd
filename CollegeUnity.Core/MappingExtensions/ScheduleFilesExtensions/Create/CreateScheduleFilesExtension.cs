@@ -11,14 +11,14 @@ namespace CollegeUnity.Core.MappingExtensions.ScheduleFilesExtensions.Create
 {
     public static class CreateScheduleFilesExtension
     {
-        public static ScheduleFile ToScheduleFile(this CScheduleFilesDto dto)
+        public static ScheduleFile ToScheduleFile(this CScheduleFilesDto dto, string path)
         {
             return new()
             {
                 AcceptanceType = dto.AcceptanceType,
-                FileExtension = FileExtentionhelper.GetFileExtention(dto.Path),
+                FileExtension = FileExtentionhelper.GetFileExtention(dto.SchedulePicture.FileName),
                 Major = dto.Major,
-                Path = dto.Path,
+                Path = path,
                 ScheduleType = dto.ScheduleType,
                 Level = dto.Level
             };
