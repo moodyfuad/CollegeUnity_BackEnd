@@ -1,4 +1,5 @@
 ﻿using CollegeUnity.API.Controllers.Student;
+using CollegeUnity.API.Filters;
 using CollegeUnity.Contract.AdminFeatures.Communites;
 using CollegeUnity.Contract.AdminFeatures.Courses;
 using CollegeUnity.Contract.AdminFeatures.Staffs;
@@ -267,9 +268,12 @@ namespace CollegeUnity.API.Controllers.Admin
         }
 
         [HttpDelete("Course/{courseId}")]
-        public async Task<IActionResult> DeleteCourse(int courseId)
+        [ValidateEntityExist(nameof(courseId))]
+        public async Task<IActionResult> DeleteCourse(
+            int courseId,
+            [FromQuery] bool ignoreRegisteredStudents = false)
         {
-            var result = await _manageCoursesFeatures.Remove(courseId);
+            var result = await _manageCoursesFeatures.Remove(courseId, ignoreRegisteredStudents);
 
             return new JsonResult(result);
         }

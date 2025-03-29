@@ -13,7 +13,7 @@ namespace CollegeUnity.Core.Dtos.CourseDtos
 {
     public class GetStudentCoursesResultDto
     {
-        public GetStudentCoursesResultDto(int id, string name, string description, string lecturerName, DateTime date, string location, int availableSeats, int takenSeats, List<RegisteredStudentForCoursesResultDto>? registeredStudents)
+        public GetStudentCoursesResultDto(int id, string name, string description, string? lecturerName, DateTime? date, string? location, int? availableSeats, int? takenSeats, List<RegisteredStudentForCoursesResultDto>? registeredStudents)
         {
             Id = id;
             Name = name;
@@ -32,15 +32,15 @@ namespace CollegeUnity.Core.Dtos.CourseDtos
 
         public string Description { get; set; }
 
-        public string LecturerName { get; set; }
+        public string? LecturerName { get; set; }
 
-        public DateTime Date { get; set; }
+        public DateTime? Date { get; set; }
 
-        public string Location { get; set; }
+        public string? Location { get; set; }
 
-        public int AvailableSeats { get; set; }
+        public int? AvailableSeats { get; set; }
 
-        public int TakenSeats { get; set; }
+        public int? TakenSeats { get; set; }
 
         public List<RegisteredStudentForCoursesResultDto>? RegisteredStudents { get; set; }
 
@@ -50,16 +50,29 @@ namespace CollegeUnity.Core.Dtos.CourseDtos
             List<RegisteredStudentForCoursesResultDto>? students = includeStudents ?
                 course.RegisteredStudents?.Select(s => RegisteredStudentForCoursesResultDto.MapFrom(s)).ToList() ?? null : null;
 
-            GetStudentCoursesResultDto result = new GetStudentCoursesResultDto(
-                id: course.Id,
-                name: course.Name,
-                description: course.Description,
-                lecturerName: course.LecturerName,
-                date: course.Date,
-                location: course.Location,
-                availableSeats: course.AvailableSeats,
-                takenSeats: takenSeats,
-                registeredStudents: students);
+            GetStudentCoursesResultDto result =
+                course.IsDeleted ?
+                new GetStudentCoursesResultDto(
+                    id: course.Id,
+                    name: course.Name,
+                    description: "This Course Is Deleted By The Publisher",
+                    lecturerName: null,
+                    date: null,
+                    location: null,
+                    availableSeats: null,
+                    takenSeats: null,
+                    registeredStudents: null) 
+                :
+                new GetStudentCoursesResultDto(
+                    id: course.Id,
+                    name: course.Name,
+                    description: course.Description,
+                    lecturerName: course.LecturerName,
+                    date: course.Date,
+                    location: course.Location,
+                    availableSeats: course.AvailableSeats,
+                    takenSeats: takenSeats,
+                    registeredStudents: students);
 
             return result;
         }
