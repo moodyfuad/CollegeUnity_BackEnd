@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Contract.SharedFeatures.ScheduleFiles
 {
-    public interface IScheduleFilesFeatures
+    public interface IGetScheduleFilesFeatures
     {
         // Get
     }

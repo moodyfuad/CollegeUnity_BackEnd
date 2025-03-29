@@ -3,6 +3,7 @@ using CollegeUnity.API.Filters;
 using CollegeUnity.Contract.AdminFeatures.Communites;
 using CollegeUnity.Contract.AdminFeatures.Courses;
 using CollegeUnity.Contract.AdminFeatures.Staffs;
+using CollegeUnity.Contract.AdminFeatures.Student;
 using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
 using CollegeUnity.Core.Dtos.AdminServiceDtos;
@@ -13,6 +14,7 @@ using CollegeUnity.Core.Dtos.CourseDtos;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Dtos.StudentCommunityDtos.Get;
+using CollegeUnity.Core.Dtos.StudentFeatures;
 using CollegeUnity.Core.Dtos.StudentServiceDtos;
 using CollegeUnity.Core.Dtos.SubjectDtos;
 using CollegeUnity.Core.Entities;
@@ -37,14 +39,16 @@ namespace CollegeUnity.API.Controllers.Admin
         private readonly IManageStaffFeatures _manageStaffFeatures;
         private readonly IManageCommunityFeatures _manageCommunityFeatures;
         private readonly IManageCoursesFeatures _manageCoursesFeatures;
+        private readonly IManageStudentFeatures _manageStudentFeatures;
 
         public AdminController(IServiceManager serviceManager, IManageStaffFeatures manageStaffFeatures, IManageCommunityFeatures manageCommunityFeatures,
-            IManageCoursesFeatures manageCoursesFeatures)
+            IManageCoursesFeatures manageCoursesFeatures, IManageStudentFeatures manageStudentFeatures)
         {
             _serviceManager = serviceManager;
             _manageStaffFeatures = manageStaffFeatures;
             _manageCommunityFeatures = manageCommunityFeatures;
             _manageCoursesFeatures = manageCoursesFeatures;
+            _manageStudentFeatures = manageStudentFeatures;
         }
 
         [HttpPost("Staff/Create")]
@@ -112,10 +116,10 @@ namespace CollegeUnity.API.Controllers.Admin
             return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
         }
 
-        [HttpPut("Staff/Change/AccountStatus/{staffId}")]
-        public async Task<IActionResult> ChangeStaffAccountStatus(int staffId, [FromBody] ChangeStaffStatusDto dto)
+        [HttpPut("User/Change/AccountStatus/{userId}")]
+        public async Task<IActionResult> ChangeStaffAccountStatus(int userId, [FromBody] ChangeUserStatusDto dto)
         {
-            var isSuccess = await _manageStaffFeatures.ChangeStaffAccountStatus(staffId, dto);
+            var isSuccess = await _manageStaffFeatures.ChangeUserAccountStatus(userId, dto);
 
             if (isSuccess.success)
             {
@@ -241,6 +245,22 @@ namespace CollegeUnity.API.Controllers.Admin
         {
             var admins = await _manageCommunityFeatures.GetAdmins(parameters);
             return new JsonResult(ApiResponse<PagedList<GCommunityAdminsDto>>.Success(admins));
+        }
+
+        [HttpGet("Students")]
+        public async Task<IActionResult> GetStudents([FromQuery] GetStudentParameters parameters)
+        {
+            var result = await _manageStudentFeatures.GetStudents(parameters);
+
+            return new JsonResult(ApiResponse<PagedList<GStudentDto>>.Success(result));
+        }
+
+        [HttpGet("Request/SignUp/Students")]
+        public async Task<IActionResult> GetRequestSignUpStudents([FromQuery] GetStudentParameters parameters)
+        {
+            var result = await _manageStudentFeatures.GetStudentSignUpRequest(parameters);
+
+            return new JsonResult(ApiResponse<PagedList<GStudentDto>>.Success(result));
         }
 
         [HttpGet("Courses")]

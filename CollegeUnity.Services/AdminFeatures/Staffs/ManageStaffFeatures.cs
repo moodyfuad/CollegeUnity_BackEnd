@@ -168,18 +168,18 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
             return results.ToGStaffRoleMappers();
         }
 
-        public async Task<ResultDto> ChangeStaffAccountStatus(int id, ChangeStaffStatusDto dto)
+        public async Task<ResultDto> ChangeUserAccountStatus(int id, ChangeUserStatusDto dto)
         {
-            var staff = await _repositoryManager.StaffRepository.GetByIdAsync(id);
+            var user = await _repositoryManager.UserRepository.GetByIdAsync(id);
 
-            if (staff == null)
+            if (user == null)
             {
-                return new(false, "No Staff found.");
+                return new(false, "No User found.");
             }
 
-            staff.AccountStatus = dto.AccountStatus;
-            staff.AccountStatusReason = dto.AccountStatusReason;
-            await _repositoryManager.StaffRepository.Update(staff);
+            user.AccountStatus = dto.AccountStatus;
+            user.AccountStatusReason = dto.AccountStatusReason;
+            await _repositoryManager.UserRepository.Update(user);
             await _repositoryManager.SaveChangesAsync();
 
             return new(true, null);
