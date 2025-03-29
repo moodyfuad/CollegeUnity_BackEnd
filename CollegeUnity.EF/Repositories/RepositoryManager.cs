@@ -28,6 +28,7 @@ namespace CollegeUnity.EF.Repositories
         private IStudentCommunityRepository _studentCommunityRepository;
         private IRequestRepository _requestRepository;
         private ICoursesRepository _coursesRepository;
+        private IScheduleFilesRepository _scheduleFilesRepository;
 
         public RepositoryManager(CollegeUnityDbContext dbContext)
         {
@@ -103,6 +104,12 @@ namespace CollegeUnity.EF.Repositories
         public IRequestRepository RequestRepository
         {
             get => _requestRepository ??= new RequestRepository(_dbContext);
+            private set { }
+        }
+
+        public IScheduleFilesRepository ScheduleFilesRepository
+        {
+            get => _scheduleFilesRepository ??= new ScheduleFilesRepository(_dbContext);
             private set { }
         }
 

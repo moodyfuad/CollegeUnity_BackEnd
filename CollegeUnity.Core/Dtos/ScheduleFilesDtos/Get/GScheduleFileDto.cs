@@ -1,5 +1,4 @@
 ﻿using CollegeUnity.Core.Enums;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,20 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CollegeUnity.Core.Dtos.ScheduleFilesDtos
+namespace CollegeUnity.Core.Dtos.ScheduleFilesDtos.Get
 {
-    public class BaseScheduleFileDto
+    public class GScheduleFileDto
     {
-        [Required]
-        public required IFormFile SchedulePicture { get; set; }
-
-        [Required]
+        public required string Path { get; set; }
         public required ScheduleTypes ScheduleType { get; set; }
-        [Required]
         public required Major Major { get; set; }
-        [Required]
         public required AcceptanceType AcceptanceType { get; set; }
-
-        public Level? Level { get; set; }
     }
 }
