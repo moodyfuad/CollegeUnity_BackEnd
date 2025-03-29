@@ -41,7 +41,7 @@ namespace CollegeUnity.Services.AdminFeatures.Subjects
             if (check == null)
             {
                 var subject = dto.MapTo();
-                var response = await ProcessSubjectAsync(subject, subject.TeacherId, true);
+                var response = await ProcessSubjectAsync(subject, dto.TeacherId, true);
                 return response;
             }
 

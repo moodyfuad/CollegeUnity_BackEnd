@@ -23,7 +23,6 @@ namespace CollegeUnity.Core.MappingExtensions.SubjectExtenstions
                 Major = dto.Major,
                 AcceptanceType = dto.AcceptanceType,
                 HeadOfScientificDepartmentId = dto?.HeadOfScientificDepartmentId ?? null,
-                TeacherId = dto.TeacherId
             };
         }
 
