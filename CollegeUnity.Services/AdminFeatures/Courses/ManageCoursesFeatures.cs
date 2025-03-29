@@ -55,26 +55,30 @@ namespace CollegeUnity.Services.AdminFeatures.Courses
             return ApiResponse<bool>.Created(true);
         }
 
-        public async Task<ApiResponse<bool>> Remove(int courseId)
+        public async Task<ApiResponse<bool>> Remove(int courseId, bool ignoreRegisteredStudents = false)
         {
-            var course = await _repositories.CoursesRepository.GetByIdAsync(courseId);
+            var course = await _repositories.CoursesRepository.GetByConditionsAsync(
+                condition: c => c.Id.Equals(courseId),
+                includes: c => c.RegisteredStudents);
 
             if (course == null)
             {
                 return ApiResponse<bool>.BadRequest("Failed Deleting the course", ["Course Not Found To Be Deleted"]);
             }
 
-
-            #error the course can not be deleted due to the associated regiestered students //
-
-            if (await _repositories.CoursesRepository.Delete(course) == null)
+            course.RegisteredStudents ??= [];
+            if (course.RegisteredStudents.Any() && !ignoreRegisteredStudents)
             {
-                return ApiResponse<bool>.InternalServerError("Failed Deleting the course");
+
+                return ApiResponse<bool>.BadRequest(
+                    "Failed Deleting The Course",
+                    [$"There Are [{course.RegisteredStudents.Count}] Student Registered For This Course"]);
             }
 
+            course.IsDeleted = true;
+            await _repositories.CoursesRepository.Update(course);
             await _repositories.SaveChangesAsync();
-
-            return ApiResponse<bool>.Success(true);
+            return ApiResponse<bool>.Success(true, "Course Deleted");
         }
 
         public async Task<ApiResponse<bool>> Update(int courseId, CreateCourseDto dto)

@@ -9,13 +9,14 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Contract.EF_Contract
 {
-    public interface IBaseRepository<T> where T : class
+    public interface IBaseRepository<T>
+        where T : class
     {
-        Task<T> GetByIdAsync(int id);
+        Task<T?> GetByIdAsync(int id);
 
         Task<bool> ExistsAsync(int id);
 
-        Task<T> GetByConditionsAsync(Expression<Func<T, bool>> condition, params Expression<Func<T, object>>[] includes);
+        Task<T?> GetByConditionsAsync(Expression<Func<T, bool>> condition, params Expression<Func<T, object>>[] includes);
 
         Task<IQueryable<T>> GetAsQueryable();
 
@@ -27,7 +28,8 @@ namespace CollegeUnity.Contract.EF_Contract
             QueryStringParameters queryStringParameters,
             params Expression<Func<T, object>>[] includes);
 
-        Task<PagedList<T>> GetRangeByConditionsAsync(Expression<Func<T, bool>>[]? condition,
+        Task<PagedList<T>> GetRangeByConditionsAsync(
+            Expression<Func<T, bool>>[]? condition,
             QueryStringParameters queryStringParameters,
             params Expression<Func<T, object>>[] includes);
 
@@ -36,8 +38,9 @@ namespace CollegeUnity.Contract.EF_Contract
         Task<T> Delete(T entity);
 
         Task<T> Update(int Id, T updatedEntity);
-        Task<T> Update(T updatedEntity);
-        Task<T> CreateAsync(T entity);
 
+        Task<T> Update(T updatedEntity);
+
+        Task<T> CreateAsync(T entity);
     }
 }

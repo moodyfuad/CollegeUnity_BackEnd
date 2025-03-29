@@ -26,20 +26,5 @@ namespace CollegeUnity.EF.Repositories.EntitiesRepository
         {
             return await GetByConditionsAsync(s => s.Email.ToLower().Equals(email.ToLower()));
         }
-
-        public async Task<PagedList<Course>> GetCourses(int studentId, QueryStringParameters queryString)
-        {
-            Student student = await _context.Students.FindAsync(studentId);
-
-            var courses = _context.Courses.Include(c => c.RegisteredStudents)
-                .Where(c => c.RegisteredStudents.AsQueryable().Contains(student));
-
-            return await PagedList<Course>.ToPagedListAsync(
-                courses,
-                pageNumber: queryString.PageNumber,
-                pageSize: queryString.PageSize,
-                desOrder: queryString.DesOrder);
-
-        }
     }
 }

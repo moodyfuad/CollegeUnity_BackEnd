@@ -13,7 +13,5 @@ namespace CollegeUnity.Contract.EF_Contract.IEntitiesRepository
     public interface IStudentRepository : IBaseRepository<Student>
     {
         Task<Student> GetByEmail(string email);
-
-        Task<PagedList<Course>> GetCourses(int studentId, QueryStringParameters queryString);
     }
 }

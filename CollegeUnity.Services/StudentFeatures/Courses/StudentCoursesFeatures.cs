@@ -35,7 +35,7 @@ namespace CollegeUnity.Services.StudentFeatures.Courses
         private async Task<PagedList<Course>> getAll(GetCoursesForStudentQS queryString)
         {
             var courses = await _repositories.CoursesRepository.GetRangeByConditionsAsync(
-                    condition: c => c.Name.Contains(queryString.Name),
+                    condition: c => c.Name.Contains(queryString.Name) && c.IsDeleted == false,
                     includes : c => c.RegisteredStudents,
                     queryStringParameters: queryString);
             return courses;
@@ -43,7 +43,7 @@ namespace CollegeUnity.Services.StudentFeatures.Courses
 
         private async Task<PagedList<Course>> getRegisteredCourses(int studentId, GetCoursesForStudentQS queryString)
         {
-            var courses = await _repositories.StudentRepository.GetCourses(studentId, queryString);
+            var courses = await _repositories.CoursesRepository.GetStudentCourses(studentId, queryString);
 
             return courses;
         }
@@ -57,6 +57,10 @@ namespace CollegeUnity.Services.StudentFeatures.Courses
             if (course == null)
             {
                 return ApiResponse<bool>.NotFound("Course Not Found");
+            }
+            else if (course.IsDeleted)
+            {
+                return ApiResponse<bool>.BadRequest("This Course Is Deleted");
             }
 
             course.RegisteredStudents ??= [];
@@ -86,6 +90,10 @@ namespace CollegeUnity.Services.StudentFeatures.Courses
             if (course == null)
             {
                 return ApiResponse<bool>.NotFound("Course Not Found");
+            }
+            else if (course.IsDeleted)
+            {
+                return ApiResponse<bool>.BadRequest("This Course Is Deleted");
             }
 
             course.RegisteredStudents ??= [];
