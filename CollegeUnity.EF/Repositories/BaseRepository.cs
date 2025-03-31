@@ -1,12 +1,14 @@
 ﻿using CollegeUnity.Contract.EF_Contract;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Helpers;
+using CollegeUnity.EF.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
@@ -26,82 +28,69 @@ namespace CollegeUnity.EF.Repositories
 
         public async Task<PagedList<T>> GetRangeAsync(
             QueryStringParameters queryStringParameters,
-            params Expression<Func<T, object>>[]? includes)
+            bool trackChanges = false,
+            params Expression<Func<T, object>>[] includes)
         {
             var entity = _dbContext.Set<T>().IgnoreAutoIncludes();
 
-            _Include(ref entity, includes);
+            entity = entity.IncludeOneOrMany(includes);
 
-            _OrderBy(ref entity, queryStringParameters);
-            return await PagedList<T>.ToPagedListAsync(
-                entity,
-                queryStringParameters.PageNumber,
-                queryStringParameters.PageSize,
-                queryStringParameters.DesOrder);
+            entity = entity.OrderBy(queryStringParameters);
+
+            entity = entity.TrackChanges(trackChanges);
+
+            return await entity.AsPagedListAsync(queryStringParameters);
         }
 
         public async Task<PagedList<T>> GetRangeByConditionsAsync(
             Expression<Func<T, bool>> condition,
             QueryStringParameters queryStringParameters,
+            bool trackChanges = false,
             params Expression<Func<T, object>>[] includes)
         {
             var entity = _dbContext.Set<T>().IgnoreAutoIncludes();
 
-            _Include(ref entity, includes);
+            entity = entity.IncludeOneOrMany(includes);
 
-            if (condition != null && entity.Any())
-            {
-                entity = entity.Where(condition);
-            }
+            entity = entity.Condition(condition);
 
-            _OrderBy(ref entity, queryStringParameters);
+            entity = entity.OrderBy(queryStringParameters);
+
+            entity = entity.TrackChanges(trackChanges);
 
 
-            return await PagedList<T>.ToPagedListAsync(
-                entity??= new List<T>().AsQueryable(),
-                queryStringParameters.PageNumber,
-                queryStringParameters.PageSize,
-                queryStringParameters.DesOrder);
+            return await entity.AsPagedListAsync(queryStringParameters);
         }
 
         public async Task<PagedList<T>> GetRangeByConditionsAsync(
-            Expression<Func<T, bool>>[]? condition,
+            Expression<Func<T, bool>>[] condition,
             QueryStringParameters queryStringParameters,
+            bool trackChanges = false,
             params Expression<Func<T, object>>[] includes)
         {
             var entity = _dbContext.Set<T>().IgnoreAutoIncludes();
 
-            _Include(ref entity, includes);
+            entity = entity.IncludeOneOrMany(includes);
 
-            if (condition != null)
-            {
-                foreach (var expression in condition)
-                {
-                    if (entity != null && entity.Any())
-                    {
-                        entity = entity.Where(expression);
-                    }
-                }
-            }
+            entity = entity.Condition(condition);
 
-            _OrderBy(ref entity, queryStringParameters);
+            entity = entity.OrderBy(queryStringParameters);
 
-            return await PagedList<T>.ToPagedListAsync(
-                entity?.AsSingleQuery() ?? new List<T>().AsQueryable(),
-                queryStringParameters.PageNumber,
-                queryStringParameters.PageSize,
-                queryStringParameters.DesOrder);
+            entity = entity.TrackChanges(trackChanges);
+
+            return await entity.AsPagedListAsync(queryStringParameters);
         }
 
-        public async Task<T?> GetByConditionsAsync(Expression<Func<T, bool>> condition, params Expression<Func<T, object>>[] includes)
+        public async Task<T?> GetByConditionsAsync(Expression<Func<T, bool>> condition, bool trackChanges = true, params
+Expression<Func<T, object>>[] includes)
         {
             var entity = _dbContext.Set<T>().IgnoreAutoIncludes();
 
-            _Include(ref entity, includes);
+            entity = entity.IncludeOneOrMany(includes);
 
-            var result = await entity.FirstOrDefaultAsync(condition);
+            entity = entity.TrackChanges(trackChanges);
 
-            return result;
+            return await entity.FirstOrDefaultAsync(condition);
         }
 
         public async Task<T?> GetByIdAsync(int id)
@@ -111,25 +100,31 @@ namespace CollegeUnity.EF.Repositories
 
         public async Task<T> CreateAsync(T entity)
         {
-               var entity1 = await _dbContext.Set<T>().AddAsync(entity);
-            return entity1.Entity;
+            var result = await _dbContext.Set<T>().AddAsync(entity);
+            return result.Entity;
         }
 
         public async Task<T> Delete(int id)
         {
             var entity = await GetByIdAsync(id);
 
-            return _dbContext.Set<T>().Remove(entity).Entity;
+            ReturnKeyNotFoundExceptionWhenNull(entity);
+
+           return _dbContext.Set<T>().Remove(entity!).Entity;
         }
 
         public async Task<T> Delete(T entity)
         {
+            ReturnKeyNotFoundExceptionWhenNull(entity);
             return _dbContext.Set<T>().Remove(entity).Entity;
         }
 
         public async Task<T> Update(int Id, T updatedEntity)
         {
-            return _dbContext.Set<T>().Update(await GetByIdAsync(Id)).Entity;
+            var entity = await GetByIdAsync(Id);
+
+            ReturnKeyNotFoundExceptionWhenNull(entity);
+            return _dbContext.Set<T>().Update(entity!).Entity;
         }
 
         public async Task<bool> ExistsAsync(int id)
@@ -143,73 +138,18 @@ namespace CollegeUnity.EF.Repositories
             return _dbContext.Set<T>().Update(updatedEntity).Entity;
         }
 
-        public async Task<IQueryable<T>> GetAsQueryable()
+        public async Task<IQueryable<T>> GetAsQueryable(bool trackChanges = true)
         {
-            return _dbContext.Set<T>().AsQueryable<T>();
+            var entity = _dbContext.Set<T>();
+
+            return entity.TrackChanges(trackChanges);
         }
 
-        protected static void _OrderBy(ref IQueryable<T>? entity, QueryStringParameters queryString)
+        private static void ReturnKeyNotFoundExceptionWhenNull(T? entity)
         {
-            if (entity == null)
+            if (entity is null)
             {
-                return;
-            }
-            else if (!string.IsNullOrEmpty(queryString.ThenBy))
-            {
-                _OrderByWithThenBy(ref entity, queryString);
-            }
-            else if (!string.IsNullOrEmpty(queryString.OrderBy))
-            {
-                try
-                {
-                    var property = typeof(T).GetProperty(queryString.OrderBy, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
-                    if (property != null)
-                    {
-                        entity = !queryString.DesOrder
-                            ? entity.OrderBy(x => EFC.Property<object>(x, property.Name))
-                            : entity.OrderByDescending(x => EFC.Property<object>(x, property.Name));
-                    }
-                }
-                catch
-                {
-                }
-            }
-        }
-
-        private static void _OrderByWithThenBy(ref IQueryable<T>? entity, QueryStringParameters queryString)
-        {
-            if (entity != null && !string.IsNullOrEmpty(queryString.OrderBy))
-            {
-                try
-                {
-                    var propertyOrder = typeof(T).GetProperty(queryString.OrderBy, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
-                    var propertyThen = typeof(T).GetProperty(queryString.ThenBy!, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
-                    if (propertyOrder != null && propertyThen != null)
-                    {
-                        entity = !queryString.DesOrder
-                            ? entity.OrderBy(x => EFC.Property<object>(x, propertyOrder.Name))
-                            .ThenBy(x => EFC.Property<object>(x, propertyThen.Name))
-                            : entity.OrderByDescending(x => EFC.Property<object>(x, propertyOrder.Name))
-                            .ThenBy(x => EFC.Property<object>(x, propertyThen.Name));
-                    }
-                }
-                catch
-                {
-                }
-            }
-        }
-
-        protected static void _Include(ref IQueryable<T> entity, params Expression<Func<T, object>>[]? includes)
-        {
-            if (includes != null && includes.Length > 0)
-            {
-                foreach (var include in includes)
-                {
-                    if (entity != null && entity.Any())
-                    {
-                        entity = entity.Include(include);
-                    }
-                }
+                throw new KeyNotFoundException($"The {typeof(T).Name} Not Found With The Given Id");
             }
         }
     }

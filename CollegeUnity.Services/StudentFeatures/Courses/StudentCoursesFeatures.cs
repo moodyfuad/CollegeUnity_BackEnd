@@ -54,6 +54,8 @@ namespace CollegeUnity.Services.StudentFeatures.Courses
                 condition: c => c.Id.Equals(courseId),
                 includes: c => c.RegisteredStudents);
 
+            var courseQ = await _repositories.CoursesRepository.GetAsQueryable();
+
             if (course == null)
             {
                 return ApiResponse<bool>.NotFound("Course Not Found");

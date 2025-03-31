@@ -83,14 +83,14 @@ namespace CollegeUnity.Services.SharedFeatures.Posts.Comments
                 return EditCommentDto.Failed(dto.id, "can not post empty comment.");
             }
 
-            bool exist = await IsExist(dto.id);
-            if (!exist)
+            PostComment? comment = await _repositories.CommentRepository.GetByIdAsync(dto.id);
+            bool exist = comment != null;
+            if (!exist || comment?.Status == CommentStatus.Deleted)
             {
                 return EditCommentDto.Failed(dto.id, "can not find this comment, it may be deleted");
             }
 
-            PostComment comment = await _repositories.CommentRepository.GetByIdAsync(dto.id);
-            comment.Content = dto.newComment;
+            comment!.Content = dto.newComment;
             comment.EditedAt = DateTime.UtcNow.ToLocalTime();
             comment = await _repositories.CommentRepository.Update(comment);
 

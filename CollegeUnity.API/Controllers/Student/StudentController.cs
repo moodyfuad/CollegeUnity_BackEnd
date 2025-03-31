@@ -36,13 +36,15 @@ namespace CollegeUnity.API.Controllers.Student
     {
         private readonly IServiceManager _serviceManager;
         private readonly IStudentSubjectFeatures _studentSubjectFeatures;
-        private readonly IRequestsFeature _requestsFeature;
+        private readonly IStudentRequestsFeatures _requestsFeature;
+# warning look at line 47
         private readonly IStudentCommunityFeatures _studentCommunityFeatures;
 
         public StudentController(
             IServiceManager serviceManager,
             IStudentSubjectFeatures studentSubjectFeatures,
-            IRequestsFeature requestsFeature,
+            IStudentRequestsFeatures requestsFeature,
+            // this causes error the Interface must be implemented to be used [@faisal Fix it]
             IStudentCommunityFeatures studentCommunityFeatures
             )
         {

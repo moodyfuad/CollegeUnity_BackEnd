@@ -77,7 +77,7 @@ namespace CollegeUnity.Services
         {
             // Student Features
             services.AddScoped<ISignUpFeatures, SignUpFeature>();
-            services.AddScoped<IRequestsFeature, RequestsFeature>();
+            services.AddScoped<IStudentRequestsFeatures, StudentRequestsFeatures>();
             services.AddScoped<IStudentSubjectFeatures, StudentSubjectFeatures>();
             services.AddScoped<IStudentCoursesFeatures, StudentCoursesFeatures>();
             services.AddScoped<IManageStudentFeatures, ManageStudentFeatures>();

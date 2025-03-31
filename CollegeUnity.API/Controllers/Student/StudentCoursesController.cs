@@ -1,4 +1,5 @@
-﻿using CollegeUnity.API.Middlerware_Extentions;
+﻿using CollegeUnity.API.Filters;
+using CollegeUnity.API.Middlerware_Extentions;
 using CollegeUnity.Contract.StudentFeatures.Courses;
 using CollegeUnity.Core.Dtos.CourseDtos;
 using CollegeUnity.Core.Enums;
@@ -31,7 +32,8 @@ namespace CollegeUnity.API.Controllers.Student
             return new JsonResult(result);
         }
 
-        [HttpPost("{courseId}/register")]
+        [HttpPost("{courseId:int}/register")]
+        [ValidateEntityExist(nameof(courseId))]
         public async Task<IActionResult> Register(int courseId)
         {
             int studentId = User.GetUserId();
@@ -41,7 +43,8 @@ namespace CollegeUnity.API.Controllers.Student
             return new JsonResult(result);
         }
 
-        [HttpPost("{courseId}/unregister")]
+        [HttpPost("{courseId:int}/unregister")]
+        [ValidateEntityExist(nameof(courseId))]
         public async Task<IActionResult> Unregister(int courseId)
         {
             int studentId = User.GetUserId();

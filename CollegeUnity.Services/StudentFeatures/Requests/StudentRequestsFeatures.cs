@@ -18,11 +18,11 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Services.StudentFeatures.Requests
 {
-    public class RequestsFeature : IRequestsFeature
+    public class StudentRequestsFeatures : IStudentRequestsFeatures
     {
         private readonly IRepositoryManager _repositories;
 
-        public RequestsFeature(IRepositoryManager repositoryManager)
+        public StudentRequestsFeatures(IRepositoryManager repositoryManager)
         {
             _repositories = repositoryManager;
         }

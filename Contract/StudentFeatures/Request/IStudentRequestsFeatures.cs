@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Contract.StudentFeatures.Request
 {
-    public interface IRequestsFeature
+    public interface IStudentRequestsFeatures
     {
         Task<ApiResponse<string?>> Send(int studentId, int staffId, SendRequestDto sendRequestDto);
 

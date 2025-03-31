@@ -42,10 +42,8 @@ namespace CollegeUnity.Services
         {
             _repositoryManager = repositoryManager;
             _configuration = configuration;
-            _emailServices= emailServices;
+            _emailServices = emailServices;
         }
-
-        //public IAuthenticationService AuthenticationService => new AuthenticationService(_repositoryManager, _configuration,_emailServices);
 
         #region Get Posts Features
         public IGetPublicPostFeatures GetPublicPostFeatures => new GetPublicPostFeatures(_repositoryManager);
@@ -84,14 +82,12 @@ namespace CollegeUnity.Services
 
         public IAdminServices AdminServices => new AdminService(_repositoryManager);
 
-        //public IStudentServices StudentServices => new StudentService(_repositoryManager, _emailServices);
         public IStudentServices StudentServices => new StudentService(_repositoryManager);
 
         public IStaffServices StaffServices => new StaffService(_repositoryManager);
 
         public IPostFilesServices PostFilesServices => new PostFilesService(_repositoryManager);
 
-        //public ICommentService CommentService => new CommentService(_repositoryManager);
 
         public IVoteService VoteService => new VoteService(_repositoryManager);
 

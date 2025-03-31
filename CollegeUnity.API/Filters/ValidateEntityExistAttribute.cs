@@ -1,4 +1,5 @@
 ﻿using CollegeUnity.Contract.Services_Contract;
+using CollegeUnity.Contract.SharedFeatures;
 using CollegeUnity.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -24,14 +25,14 @@ namespace CollegeUnity.API.Filters
 
         private class ValidateExistActionFilter : ActionFilterAttribute
         {
-            private readonly IServiceManager _serviceManager;
+            private readonly IActionFilterHelpers _actionFilterHelpers;
             private readonly string[] _idNames;
 
             public ValidateExistActionFilter(
-                IServiceManager serviceManager,
-                params string[] idNames)
+                IActionFilterHelpers actionFilterHelpers,
+                params string[]? idNames)
             {
-                _serviceManager = serviceManager;
+                _actionFilterHelpers = actionFilterHelpers;
                 _idNames = idNames ?? [];
             }
 
@@ -96,7 +97,9 @@ namespace CollegeUnity.API.Filters
             private async Task<bool> CallIsExistGenericAsync(int id, string propertyName)
             {
                 // here add the condition to customize the type
-                GetEntityType(propertyName, out Type type);
+                GetEntityType(propertyName, out Type? type);
+
+                if (type is null) return false;
 
                 MethodInfo? method = typeof(ValidateExistActionFilter)
                     .GetMethod(nameof(IsExist), BindingFlags.NonPublic | BindingFlags.Instance)?
@@ -119,22 +122,23 @@ namespace CollegeUnity.API.Filters
             private async Task<bool> IsExist<T>(int id)
                where T : class
             {
-                var entity = await _serviceManager.IsExist<T>(id);
+                var entity = await _actionFilterHelpers.IsExist<T>(id);
 
                 return entity != null;
             }
 
-            private void GetEntityType(string propertyName, out Type type)
+            private void GetEntityType(string propertyName, out Type? type)
             {
                 string name = propertyName.ToLower();
                 type =
-                    name.Contains("postid") ? typeof(Post) :
-                    name.Contains("userid") ? typeof(User) :
-                    name.Contains("voteid") ? typeof(PostVote) :
-                    name.Contains("commentid") ? typeof(PostComment) :
-                    name.Contains("staffId") ? typeof(Staff) :
-                    name.Contains("studentId") ? typeof(Student) :
-                    typeof(User);
+                    name.Contains("userid", StringComparison.OrdinalIgnoreCase) ? typeof(User) :
+                    name.Contains("staffid", StringComparison.OrdinalIgnoreCase) ? typeof(Staff) :
+                    name.Contains("studentid", StringComparison.OrdinalIgnoreCase) ? typeof(Student) :
+                    name.Contains("postid", StringComparison.OrdinalIgnoreCase) ? typeof(Post) :
+                    name.Contains("voteid", StringComparison.OrdinalIgnoreCase) ? typeof(PostVote) :
+                    name.Contains("commentid", StringComparison.OrdinalIgnoreCase) ? typeof(PostComment) :
+                    name.Contains("courseId", StringComparison.OrdinalIgnoreCase) ? typeof(Course) :
+                    null;
             }
         }
     }

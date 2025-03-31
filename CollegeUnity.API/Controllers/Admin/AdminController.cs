@@ -324,6 +324,7 @@ namespace CollegeUnity.API.Controllers.Admin
         }
 
         [HttpPut("Course/{courseId}")]
+        [ValidateEntityExist(nameof(courseId))]
         public async Task<IActionResult> UpdateCourse(int courseId, [FromBody] CreateCourseDto dto)
         {
             var result = await _manageCoursesFeatures.Update(courseId, dto);

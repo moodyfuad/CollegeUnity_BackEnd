@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CollegeUnity.Core.Dtos.QueryStrings;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,14 @@ namespace CollegeUnity.Core.Helpers
             AddRange(items);
         }
 
+        public static async Task<PagedList<T>> ToPagedListAsync(IQueryable<T>? source, QueryStringParameters parameters)
+        {
+            return await ToPagedListAsync(
+                source?? new List<T>().AsQueryable(),
+                parameters.PageNumber,
+                parameters.PageSize,
+                parameters.DesOrder);
+        }
         public static async Task<PagedList<T>> ToPagedListAsync(IQueryable<T> source, int pageNumber = 1, int pageSize = 20, bool desOrder = false)
         {
             var count = source.Count();

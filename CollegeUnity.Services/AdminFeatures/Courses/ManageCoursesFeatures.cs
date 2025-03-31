@@ -30,7 +30,8 @@ namespace CollegeUnity.Services.AdminFeatures.Courses
                     c => c.Location.Contains(queryString.Location),
                     c => c.LecturerName.Contains(queryString.LecturerName),
                     ],
-                queryStringParameters: queryString);
+                queryStringParameters: queryString,
+                trackChanges: false);
 
             if (courses == null || !courses.Any())
             {
@@ -66,10 +67,8 @@ namespace CollegeUnity.Services.AdminFeatures.Courses
                 return ApiResponse<bool>.BadRequest("Failed Deleting the course", ["Course Not Found To Be Deleted"]);
             }
 
-             //#error the course can not be deleted due to the associated regiestered students //
-            if (course.RegisteredStudents.Any() && !ignoreRegisteredStudents)
+            if (course.RegisteredStudents?.Any() ?? false && !ignoreRegisteredStudents)
             {
-
                 return ApiResponse<bool>.BadRequest(
                     "Failed Deleting The Course",
                     [$"There Are [{course.RegisteredStudents.Count}] Student Registered For This Course"]);

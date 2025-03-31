@@ -27,14 +27,14 @@ namespace CollegeUnity.API.Controllers.Authentication
         private readonly IForgetPasswordFeatures _forgetPasswordFeatures;
         private readonly ISignUpFeatures _signUpFeatures;
 
-        private readonly IRequestsFeature _sendRequestFeature;
+        private readonly IStudentRequestsFeatures _sendRequestFeature;
 
         public AuthenticationController(
             IConfiguration configuration,
             ILoginFeatures loginFeature,
             IForgetPasswordFeatures forgetPasswordFeatures,
             ISignUpFeatures signUpFeatures,
-            IRequestsFeature sendRequestFeatures)
+            IStudentRequestsFeatures sendRequestFeatures)
         {
             _config = configuration;
             _loginFeature = loginFeature;

@@ -17,12 +17,12 @@ namespace CollegeUnity.EF.Migrations
                 nullable: false,
                 defaultValue: false);
 
-            migrationBuilder.AddColumn<int>(
-                name: "CommunityState",
-                table: "Communities",
-                type: "int",
-                nullable: false,
-                defaultValue: 0);
+            //migrationBuilder.AddColumn<int>(
+            //    name: "CommunityState",
+            //    table: "Communities",
+            //    type: "int",
+            //    nullable: false,
+            //    defaultValue: 0);
         }
 
         /// <inheritdoc />
@@ -32,9 +32,9 @@ namespace CollegeUnity.EF.Migrations
                 name: "IsDeleted",
                 table: "Courses");
 
-            migrationBuilder.DropColumn(
-                name: "CommunityState",
-                table: "Communities");
+            //migrationBuilder.DropColumn(
+            //    name: "CommunityState",
+            //    table: "Communities");
         }
     }
 }
