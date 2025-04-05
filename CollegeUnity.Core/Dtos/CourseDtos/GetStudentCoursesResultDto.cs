@@ -8,14 +8,16 @@ using System.Text;
 using System.Threading.Tasks;
 using CollegeUnity.Core.Enums;
 using CollegeUnity.Core.Helpers;
+using System.Reflection.Metadata;
 
 namespace CollegeUnity.Core.Dtos.CourseDtos
 {
     public class GetStudentCoursesResultDto
     {
-        public GetStudentCoursesResultDto(int id, string name, string description, string? lecturerName, DateTime? date, string? location, int? availableSeats, int? takenSeats, List<RegisteredStudentForCoursesResultDto>? registeredStudents)
+        public GetStudentCoursesResultDto(int id,bool isDeleted, string name, string description, string? lecturerName, DateTime? date, string? location, int? availableSeats, int? takenSeats, List<RegisteredStudentForCoursesResultDto>? registeredStudents)
         {
             Id = id;
+            IsDeleted = isDeleted;
             Name = name;
             Description = description;
             LecturerName = lecturerName;
@@ -27,6 +29,8 @@ namespace CollegeUnity.Core.Dtos.CourseDtos
         }
 
         public int Id { get; set; }
+
+        public bool IsDeleted { get; set; }
 
         public string Name { get; set; }
 
@@ -44,27 +48,32 @@ namespace CollegeUnity.Core.Dtos.CourseDtos
 
         public List<RegisteredStudentForCoursesResultDto>? RegisteredStudents { get; set; }
 
-        public static GetStudentCoursesResultDto MapFrom(Course course, bool includeStudents)
+        public static GetStudentCoursesResultDto MapFrom(Course course, bool includeStudents, bool hideDeletedDetails = true)
         {
             int takenSeats = course.RegisteredStudents?.Count ?? 0;
-            List<RegisteredStudentForCoursesResultDto>? students = includeStudents ?
-                course.RegisteredStudents?.Select(s => RegisteredStudentForCoursesResultDto.MapFrom(s)).ToList() ?? null : null;
+            List<RegisteredStudentForCoursesResultDto>? students =
+                includeStudents ?
+                course.RegisteredStudents?.Select(s => RegisteredStudentForCoursesResultDto.MapFrom(s))
+                    .ToList() ?? []
+                : null;
 
             GetStudentCoursesResultDto result =
                 course.IsDeleted ?
                 new GetStudentCoursesResultDto(
                     id: course.Id,
+                    isDeleted: course.IsDeleted,
                     name: course.Name,
-                    description: "This Course Is Deleted By The Publisher",
-                    lecturerName: null,
-                    date: null,
-                    location: null,
-                    availableSeats: null,
-                    takenSeats: null,
-                    registeredStudents: null) 
+                    description: hideDeletedDetails ? "This Course Is Deleted By The Publisher" : course.Description,
+                    lecturerName: hideDeletedDetails ? null : course.LecturerName ,
+                    date: hideDeletedDetails ? null : course.Date,
+                    location: hideDeletedDetails ? null : course.Location,
+                    availableSeats: hideDeletedDetails ? null : course.AvailableSeats,
+                    takenSeats: hideDeletedDetails ? null : takenSeats,
+                    registeredStudents: hideDeletedDetails ? null : students) 
                 :
                 new GetStudentCoursesResultDto(
                     id: course.Id,
+                    isDeleted: course.IsDeleted,
                     name: course.Name,
                     description: course.Description,
                     lecturerName: course.LecturerName,
@@ -77,15 +86,12 @@ namespace CollegeUnity.Core.Dtos.CourseDtos
             return result;
         }
 
-        public static PagedList<GetStudentCoursesResultDto> MapFrom(PagedList<Course> courses, bool includeStudents)
+        public static PagedList<GetStudentCoursesResultDto> MapFrom(PagedList<Course> courses, bool includeStudents = false, bool hideDeletedDetails = true)
         {
-            //courses ??= new PagedList<Course>([],0,1,10);
-            PagedList<GetStudentCoursesResultDto> result = new(
-                items: courses.Select(c => MapFrom(c,includeStudents))?.ToList(),
-                count: courses.TotalCount,
-                pageNumber: courses.CurrentPage,
-                pageSize: courses.PageSize);
-
+            
+            PagedList<GetStudentCoursesResultDto> result = courses.To(course =>
+                MapFrom(course, includeStudents, hideDeletedDetails));
+            
             return result;
         }
 

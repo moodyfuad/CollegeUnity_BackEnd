@@ -12,7 +12,7 @@ namespace CollegeUnity.Contract.AdminFeatures.Courses
 {
     public interface IManageCoursesFeatures
     {
-        Task<ApiResponse<PagedList<Course>>> Get(GetCoursesForAdminQS queryString);
+        Task<ApiResponse<PagedList<GetStudentCoursesResultDto>?>> Get(GetCoursesForAdminQS queryString);
 
         Task<ApiResponse<bool>> Create(CreateCourseDto dto);
 

@@ -24,29 +24,34 @@ namespace CollegeUnity.EF.Extensions
         public static IQueryable<T> OrderBy<T>(this IQueryable<T>? entity, QueryStringParameters queryString)
             where T : class
         {
-            if (entity == null)
+            if (entity is null)
             {
                 return entity;
             }
-            else if (!string.IsNullOrEmpty(queryString.ThenBy))
+
+            PropertyInfo[] properties = typeof(T).GetProperties(
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
+
+            if (!string.IsNullOrEmpty(queryString.OrderBy))
             {
-                return entity.OrderByWithThenBy(queryString);
+                var orderByProperty = properties.FirstOrDefault(
+                    p => p.Name.Contains(queryString.OrderBy, StringComparison.OrdinalIgnoreCase));
+
+                if (orderByProperty is not null)
+                {
+                    entity = queryString.DesOrder ?
+                        entity.OrderByDescending(x => EFC.Property<object>(x, orderByProperty.Name))
+                        :
+                        entity.OrderBy(x => EFC.Property<object>(x, orderByProperty.Name));
+                }
             }
-            else if (!string.IsNullOrEmpty(queryString.OrderBy))
+
+            if (!string.IsNullOrEmpty(queryString.ThenBy) && entity is IOrderedQueryable<T> orderedEntity)
             {
-                try
-                {
-                    var property = typeof(T).GetProperty(queryString.OrderBy, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
-                    if (property != null)
-                    {
-                        entity = queryString.DesOrder ?
-                            entity.OrderByDescending(x => EFC.Property<object>(x, property.Name)) :
-                            entity.OrderBy(x => EFC.Property<object>(x, property.Name));
-                    }
-                }
-                catch
-                {
-                }
+                var thenByProperty = properties.FirstOrDefault(
+                    p => p.Name.Contains(queryString.ThenBy, StringComparison.OrdinalIgnoreCase));
+
+                entity = orderedEntity.ApplyThenBy(thenByProperty);
             }
 
             return entity;
@@ -96,29 +101,20 @@ namespace CollegeUnity.EF.Extensions
             return source;
         }
 
-        private static IQueryable<T> OrderByWithThenBy<T>(this IQueryable<T>? entity, QueryStringParameters queryString)
+        private static IQueryable<T>? ApplyThenBy<T>(this IOrderedQueryable<T>? entity, PropertyInfo? thenByProperty)
         {
-            if (entity != null && !string.IsNullOrEmpty(queryString.OrderBy))
+            if (entity is not null && thenByProperty is not null)
             {
                 try
                 {
-                    var propertyOrder = typeof(T).GetProperty(queryString.OrderBy, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
-                    var propertyThen = typeof(T).GetProperty(queryString.ThenBy!, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
-                    if (propertyOrder != null && propertyThen != null)
-                    {
-                        entity = !queryString.DesOrder ?
-                            entity.OrderByDescending(x => EFC.Property<object>(x!, propertyOrder.Name))
-                            .ThenBy(x => EFC.Property<object>(x!, propertyThen.Name)) :
-                            entity.OrderBy(x => EFC.Property<object>(x!, propertyOrder.Name))
-                        .ThenBy(x => EFC.Property<object>(x!, propertyThen.Name));
-                    }
+                    entity = entity.ThenBy(x => EFC.Property<object>(x!, thenByProperty.Name));
                 }
                 catch
                 {
                 }
             }
 
-                return entity;
+            return entity;
         }
     }
 }

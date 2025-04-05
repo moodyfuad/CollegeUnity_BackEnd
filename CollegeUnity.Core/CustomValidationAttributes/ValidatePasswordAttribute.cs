@@ -10,10 +10,10 @@ namespace CollegeUnity.Core.CustomValidationAttributes
 {
     public class ValidatePasswordAttribute : ValidationAttribute
     {
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
         {
             string? displayName = validationContext.DisplayName ?? validationContext.MemberName;
-            string strValue = value.ToString()!;
+            string strValue = value?.ToString() ?? string.Empty;
 
             if (strValue.Length < 8)
             {
@@ -37,7 +37,7 @@ namespace CollegeUnity.Core.CustomValidationAttributes
             {
                 return new ValidationResult($"{displayName} must contains at least one lowercase character");
             }
-            return  ValidationResult.Success;
+            return  ValidationResult.Success!;
         }
     }
 }

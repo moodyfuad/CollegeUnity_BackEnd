@@ -30,8 +30,6 @@ namespace CollegeUnity.API.Controllers.Student
     [Route("api/Student")]
     [ApiController]
     [Authorize(Roles = nameof(Roles.Student))]
-    [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status500InternalServerError)]
     public class StudentController : ControllerBase
     {
         private readonly IServiceManager _serviceManager;
@@ -124,9 +122,6 @@ namespace CollegeUnity.API.Controllers.Student
             return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
         }
 
-
-
-
         [HttpPost("Search")]
         public async Task<IActionResult> StudentSearch([FromQuery] StudentSearchParameters searchParameters)
         {
@@ -160,8 +155,7 @@ namespace CollegeUnity.API.Controllers.Student
 
         [HttpPost("Request/{staffId}")]
         [ValidateEntityExist("staffId")]
-        [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> SendRequest(int staffId, SendRequestDto dto)
+        public async Task<ActionResult<ApiResponse<string>>> SendRequest(int staffId, SendRequestDto dto)
         {
             int _studentId = User.GetUserId();
             var response = new JsonResult(await _requestsFeature.Send(_studentId, staffId, dto));
@@ -170,8 +164,7 @@ namespace CollegeUnity.API.Controllers.Student
         }
 
         [HttpGet("Requests")]
-        [ProducesResponseType(typeof(ApiResponse<PagedList<GetStudentRequestsDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetRequests([FromQuery] GetStudentRequestsQueryString queryString)
+        public async Task<ActionResult<ApiResponse<PagedList<GetStudentRequestsDto>>>> GetRequests([FromQuery] GetStudentRequestsQueryString queryString)
         {
             int _studentId = User.GetUserId();
             var result = await _requestsFeature.Get(_studentId, queryString);

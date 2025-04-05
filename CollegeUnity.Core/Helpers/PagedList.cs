@@ -1,14 +1,18 @@
-﻿using CollegeUnity.Core.Dtos.QueryStrings;
+﻿using CollegeUnity.Core.Dtos.CourseDtos;
+using CollegeUnity.Core.Dtos.QueryStrings;
+using CollegeUnity.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace CollegeUnity.Core.Helpers
 {
-    public class PagedList<T> : List<T>
+    public class PagedList<T> : List<T>, IPagedListInfo
     {
         public int CurrentPage { get; private set; }
         public int TotalPages { get; private set; }
@@ -46,7 +50,19 @@ namespace CollegeUnity.Core.Helpers
                 .Take(pageSize)
                 .ToListAsync();
 
-            return new PagedList<T>(items, count, pageNumber, pageSize); 
+            return new PagedList<T>(items, count, pageNumber, pageSize);
         }
+        public PagedList<Tout> To<Tout>(Func<T, Tout> mapFunc)
+        {
+            PagedList<Tout> result = new(
+                items: this.Select(mapFunc).ToList(),
+                count: this.TotalCount,
+                pageNumber: this.CurrentPage,
+                pageSize: this.PageSize);
+
+            return result;
+        }
+            
+            
     }
 }

@@ -12,9 +12,7 @@ namespace CollegeUnity.Core.Dtos.CourseDtos
     {
         [DisplayName("Course Name")]
         public string Name { get; set; } = string.Empty;
-
+        [DisplayName("Get My Courses Only")]
         public bool IsMyCourses { get; set; } = false;
-
-        public bool IncludeStudents { get; set; } = false;
     }
 }

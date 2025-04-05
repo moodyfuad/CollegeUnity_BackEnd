@@ -81,8 +81,10 @@ namespace CollegeUnity.EF.Repositories
             return await entity.AsPagedListAsync(queryStringParameters);
         }
 
-        public async Task<T?> GetByConditionsAsync(Expression<Func<T, bool>> condition, bool trackChanges = true, params
-Expression<Func<T, object>>[] includes)
+        public async Task<T?> GetByConditionsAsync(
+            Expression<Func<T, bool>> condition,
+            bool trackChanges = true,
+            params Expression<Func<T, object>>[] includes)
         {
             var entity = _dbContext.Set<T>().IgnoreAutoIncludes();
 

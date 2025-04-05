@@ -18,7 +18,7 @@ using CollegeUnity.Contract.StudentFeatures.Request;
 
 namespace CollegeUnity.API.Controllers.Authentication
 {
-    //[Route("api")]
+    [Route("api")]
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
@@ -44,13 +44,13 @@ namespace CollegeUnity.API.Controllers.Authentication
         }
 
         [HttpPost("student/login")]
-        public async Task<IActionResult> StudentLogin([FromForm] StudentLoginDto student)
+        public async Task<ActionResult<ApiResponse<LoginResultDto>>> StudentLogin([FromForm] StudentLoginDto student)
         {
             var result = await _loginFeature.Login(student);
             if (result.IsSuccess)
             {
-                var response = ApiResponse<Dictionary<string, string>>.Success(
-                    data: new() { ["token"] = result.Token! });
+                var response = ApiResponse<LoginResultDto>.Success(
+                    data: result);
                 return new JsonResult(response);
             }
             else
@@ -61,7 +61,7 @@ namespace CollegeUnity.API.Controllers.Authentication
         }
 
         [HttpPost("student/SignUp")]
-        public async Task<IActionResult> StudentSignUp([FromForm] StudentSignUpDto student)
+        public async Task<ActionResult<ApiResponse<string?>>> StudentSignUp([FromForm] StudentSignUpDto student)
         {
             var result = await _signUpFeatures.SignUpStudent(student);
 
@@ -69,7 +69,7 @@ namespace CollegeUnity.API.Controllers.Authentication
         }
 
         [HttpPost("staff/login")]
-        public async Task<IActionResult> StaffLogin([FromForm] StaffLoginDto staff)
+        public async Task<ActionResult<ApiResponse<LoginResultDto>>> StaffLogin([FromForm] StaffLoginDto staff)
         {
             var result = await _loginFeature.Login(staff);
             if (result.IsSuccess)
@@ -85,7 +85,7 @@ namespace CollegeUnity.API.Controllers.Authentication
         }
 
         [HttpPost("ResetPassword/Code/{email}")]
-        public async Task<IActionResult> SendResetVerificationCode(string email)
+        public async Task<ActionResult<ApiResponse<Dictionary<string, string>>>> SendResetVerificationCode(string email)
         {
             var result = await _forgetPasswordFeatures.SendResetPasswordCode(email);
 
@@ -99,7 +99,7 @@ namespace CollegeUnity.API.Controllers.Authentication
 
         [HttpPost("ResetPassword/Code/Validate/{code}")]
         [Authorize(Roles = nameof(ForgetPasswordRoles.CodeSent))]
-        public async Task<IActionResult> ValidateVerificationCode(string code)
+        public async Task<ActionResult<ApiResponse<Dictionary<string, string>>>> ValidateVerificationCode(string code)
         {
             string email = this.HttpContext.User.FindFirst(CustomClaimTypes.Email)?.Value ?? string.Empty;
 
@@ -115,7 +115,7 @@ namespace CollegeUnity.API.Controllers.Authentication
 
         [Authorize(Roles = nameof(ForgetPasswordRoles.ResetAllowed))]
         [HttpPost("ResetPassword/{newPassword}")]
-        public async Task<IActionResult> ResetPassword(
+        public async Task<ActionResult<ApiResponse<string?>>> ResetPassword(
             [ContainsDigit(1)]
             [MinLength(8, ErrorMessage = "Password must be 8 characters minimum")]
             [ContainsLowerCase(1)]
@@ -149,7 +149,7 @@ namespace CollegeUnity.API.Controllers.Authentication
 
         [HttpPost("Request/{staffId}")]
         [ValidateEntityExist("staffId")]
-        public async Task<IActionResult> SendRequest(int staffId, SendRequestDto dto)
+        public async Task<ActionResult<ApiResponse<string?>>> SendRequest(int staffId, SendRequestDto dto)
         {
             int studentid = User.GetUserId();
 

@@ -1,4 +1,5 @@
-﻿using CollegeUnity.Core.Constants.AuthenticationConstants;
+﻿using CollegeUnity.API.Filters;
+using CollegeUnity.Core.Constants.AuthenticationConstants;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -97,6 +98,8 @@ namespace CollegeUnity.API
                         new List<string>()
                     }
                 });
+
+                s.OperationFilter<AddSwaggerDocOperationFilter>();
             });
         }
     }

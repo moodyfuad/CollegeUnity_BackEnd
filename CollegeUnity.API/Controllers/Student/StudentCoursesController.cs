@@ -2,7 +2,9 @@
 using CollegeUnity.API.Middlerware_Extentions;
 using CollegeUnity.Contract.StudentFeatures.Courses;
 using CollegeUnity.Core.Dtos.CourseDtos;
+using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Enums;
+using CollegeUnity.Core.Helpers;
 using CollegeUnity.Services.StudentFeatures.Courses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -23,7 +25,7 @@ namespace CollegeUnity.API.Controllers.Student
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] GetCoursesForStudentQS queryString)
+        public async Task<ActionResult<ApiResponse<PagedList<GetStudentCoursesResultDto>>>> Get([FromQuery] GetCoursesForStudentQS queryString)
         {
             int studentId = User.GetUserId();
 
@@ -34,7 +36,7 @@ namespace CollegeUnity.API.Controllers.Student
 
         [HttpPost("{courseId:int}/register")]
         [ValidateEntityExist(nameof(courseId))]
-        public async Task<IActionResult> Register(int courseId)
+        public async Task<ActionResult<ApiResponse<bool>>> Register(int courseId)
         {
             int studentId = User.GetUserId();
 
@@ -45,7 +47,7 @@ namespace CollegeUnity.API.Controllers.Student
 
         [HttpPost("{courseId:int}/unregister")]
         [ValidateEntityExist(nameof(courseId))]
-        public async Task<IActionResult> Unregister(int courseId)
+        public async Task<ActionResult<ApiResponse<bool>>> Unregister(int courseId)
         {
             int studentId = User.GetUserId();
 

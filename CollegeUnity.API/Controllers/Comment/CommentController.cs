@@ -21,7 +21,7 @@ namespace CollegeUnity.API.Controllers.Comment
     {
         [HttpPost("comment")]
         [ValidateEntityExist("postid")]
-        public async Task<IActionResult> PublishComment([FromBody] AddCommentDto dto)
+        public async Task<ActionResult<ApiResponse<AddCommentResultDto>>> PublishComment([FromBody] AddCommentDto dto)
         {
             var result = await _commentFeatures.AddComment(dto);
 
@@ -39,8 +39,7 @@ namespace CollegeUnity.API.Controllers.Comment
 
         [HttpGet("comments")]
         [ValidateEntityExist("postid")]
-
-        public async Task<IActionResult> GetPublishedPostComments([FromQuery] GetPostCommentsParameters parameters)
+        public async Task<ActionResult<ApiResponse<PagedList<GetPostCommentDto>>>> GetPublishedPostComments([FromQuery] GetPostCommentsParameters parameters)
         {
             if (!ModelState.IsValid)
 
@@ -56,7 +55,7 @@ namespace CollegeUnity.API.Controllers.Comment
         }
 
         [HttpPut("comment/{commentId}")]
-        public async Task<IActionResult> UpdateComment(int commentId, [FromBody] EditCommentDto dto)
+        public async Task<ActionResult<ApiResponse<EditCommentDto>>> UpdateComment(int commentId, [FromBody] EditCommentDto dto)
         {
             var result = await _commentFeatures.EditComment(dto);
 
@@ -75,7 +74,7 @@ namespace CollegeUnity.API.Controllers.Comment
         [HttpDelete("comment/{commentId}")]
         [ValidateEntityExist("commentid")]
         [ValidateEntityExist("postid")]
-        public async Task<IActionResult> DeleteComment(int commentId)
+        public async Task<ActionResult<ApiResponse<EditCommentDto>>> DeleteComment(int commentId)
         {
             var result = await _commentFeatures.DeleteComment(commentId);
 

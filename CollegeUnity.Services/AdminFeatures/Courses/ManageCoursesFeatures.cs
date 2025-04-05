@@ -21,7 +21,7 @@ namespace CollegeUnity.Services.AdminFeatures.Courses
             _repositories = repositories;
         }
 
-        public async Task<ApiResponse<PagedList<Course>>> Get(GetCoursesForAdminQS queryString)
+        public async Task<ApiResponse<PagedList<GetStudentCoursesResultDto>?>> Get(GetCoursesForAdminQS queryString)
         {
             var courses = await _repositories.CoursesRepository.GetRangeByConditionsAsync(
                 condition: [
@@ -29,16 +29,23 @@ namespace CollegeUnity.Services.AdminFeatures.Courses
                     c => c.Description.Contains(queryString.Description),
                     c => c.Location.Contains(queryString.Location),
                     c => c.LecturerName.Contains(queryString.LecturerName),
+                    c => c.IsDeleted == queryString.IncludeDeleted || c.IsDeleted == false
                     ],
                 queryStringParameters: queryString,
+                includes: c => c.RegisteredStudents,
                 trackChanges: false);
 
             if (courses == null || !courses.Any())
             {
-                return ApiResponse<PagedList<Course>>.NotFound();
+                return ApiResponse<PagedList<GetStudentCoursesResultDto>>.NotFound();
             }
 
-            return ApiResponse<PagedList<Course>>.Success(courses)!;
+            var result = GetStudentCoursesResultDto.MapFrom(
+                courses: courses,
+                includeStudents: queryString.IncludeStudents,
+                hideDeletedDetails: queryString.HideDeletedDetails);
+
+            return ApiResponse<PagedList<GetStudentCoursesResultDto>>.Success(result)!;
         }
 
         public async Task<ApiResponse<bool>> Create(CreateCourseDto dto)

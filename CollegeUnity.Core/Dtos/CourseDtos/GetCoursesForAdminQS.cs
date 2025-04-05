@@ -10,14 +10,21 @@ namespace CollegeUnity.Core.Dtos.CourseDtos
 {
     public class GetCoursesForAdminQS : QueryStringParameters
     {
-        public string Name { get; set; } = "";
+        public bool IncludeDeleted { get; set; } = false;
+        public bool HideDeletedDetails { get; set; } = true;
 
-        public string Description { get; set; } = "";
+        public bool IncludeStudents { get; set; } = false;
 
-        public string LecturerName { get; set; } = "";
+        public string Name { get; set; } = string.Empty;
+
+        public string Description { get; set; } = string.Empty;
+
+        public string LecturerName { get; set; } = string.Empty;
 
         public DateTime Date { get; set; }
 
-        public string Location { get; set; } = "";
+        public string Location { get; set; } = string.Empty;
+
+
     }
 }

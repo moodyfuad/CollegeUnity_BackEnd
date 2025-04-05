@@ -18,11 +18,11 @@ namespace CollegeUnity.Services.StudentFeatures.Courses
         {
             var courses = !queryString.IsMyCourses ?
                  await this.getAll(queryString) :
-                 await this.getRegisteredCourses(studentId, queryString); // Added null-forgiving operator
+                 await this.getRegisteredCourses(studentId, queryString);
 
-            var result = GetStudentCoursesResultDto.MapFrom(courses, includeStudents: queryString.IncludeStudents);
+            var result = GetStudentCoursesResultDto.MapFrom(courses);
 
-            if (result.Count == 0)
+            if (result.Count == 0 || result is null)
             {
                 return ApiResponse<PagedList<GetStudentCoursesResultDto>?>.NotFound("No Courses Found");
             }
@@ -36,7 +36,7 @@ namespace CollegeUnity.Services.StudentFeatures.Courses
         {
             var courses = await _repositories.CoursesRepository.GetRangeByConditionsAsync(
                     condition: c => c.Name.Contains(queryString.Name) && c.IsDeleted == false,
-                    includes : c => c.RegisteredStudents,
+                    includes: c => c.RegisteredStudents,
                     queryStringParameters: queryString);
             return courses;
         }
