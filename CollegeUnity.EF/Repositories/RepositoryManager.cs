@@ -29,6 +29,8 @@ namespace CollegeUnity.EF.Repositories
         private IRequestRepository _requestRepository;
         private ICoursesRepository _coursesRepository;
         private IScheduleFilesRepository _scheduleFilesRepository;
+        private IChatRepository _chatRepository;
+        private IChatMessageRepository _chatMessageRepository;
 
         public RepositoryManager(CollegeUnityDbContext dbContext)
         {
@@ -110,6 +112,18 @@ namespace CollegeUnity.EF.Repositories
         public IScheduleFilesRepository ScheduleFilesRepository
         {
             get => _scheduleFilesRepository ??= new ScheduleFilesRepository(_dbContext);
+            private set { }
+        }
+
+        public IChatMessageRepository ChatMessageRepository
+        {
+            get => _chatMessageRepository ??= new ChatMessageRepository(_dbContext);
+            private set { }
+        }
+
+        public IChatRepository ChatRepository
+        {
+            get => _chatRepository ??= new ChatRepository(_dbContext);
             private set { }
         }
 

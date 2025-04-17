@@ -53,7 +53,7 @@ namespace CollegeUnity.API.Controllers.Student
         }
 
         [HttpGet("InterestedSubjects")]
-        public async Task<IActionResult> GetStudentIntresetedSubject(GetInterestedSubjectParameters parameters)
+        public async Task<IActionResult> GetStudentIntresetedSubject([FromQuery] GetInterestedSubjectParameters parameters)
         {
             int _studentId = User.GetUserId();
             var interestesSubjects = await _studentSubjectFeatures.GetStudentIntrestedSubject(parameters, _studentId);
@@ -67,7 +67,7 @@ namespace CollegeUnity.API.Controllers.Student
         }
 
         [HttpGet("MyCommunites")]
-        public async Task<IActionResult> GetStudentCommunites(GetStudentCommunitesParameters parameters)
+        public async Task<IActionResult> GetStudentCommunites([FromQuery] GetStudentCommunitesParameters parameters)
         {
             int _studentId = User.GetUserId();
             var communites = await _studentCommunityFeatures.GetMyCommunites(_studentId, parameters);
@@ -92,6 +92,20 @@ namespace CollegeUnity.API.Controllers.Student
             }
 
             return new JsonResult(ApiResponse<PagedList<GStudentCommunitesDto>>.NotFound("No Resource yet."));
+        }
+
+        [HttpPost("Subject/MakeInterest/{subjectId}")]
+        public async Task<IActionResult> GetStudentIntresetedSubject(int subjectId)
+        {
+            int _studentId = User.GetUserId();
+            var isSuccess = await _studentSubjectFeatures.MakeSubjectInterest(_studentId, subjectId);
+
+            if (isSuccess.success)
+            {
+                return new JsonResult(ApiResponse<ResultDto>.Success(null));
+            }
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
         }
 
         [HttpPost("Community/Join/{communityId}")]

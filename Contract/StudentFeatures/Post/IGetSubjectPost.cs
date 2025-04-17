@@ -1,6 +1,7 @@
 ﻿using CollegeUnity.Core.Dtos.PostDtos.Get;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.SubjectDtos;
+using CollegeUnity.Core.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,6 @@ namespace CollegeUnity.Contract.StudentFeatures.Post
 {
     public interface IGetSubjectPostFeatures
     {
-        Task<IEnumerable<GSubjectPostDto>> GetSubjectPosts(GetSubjectPostParameters parameters);
+        Task<PagedList<GSubjectPostDto>> GetSubjectPosts(GetSubjectPostParameters parameters);
     }
 }

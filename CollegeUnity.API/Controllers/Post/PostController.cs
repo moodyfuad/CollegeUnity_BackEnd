@@ -4,6 +4,7 @@ using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
 using CollegeUnity.Contract.SharedFeatures.Posts;
 using CollegeUnity.Contract.StaffFeatures.Posts;
 using CollegeUnity.Contract.StaffFeatures.Subject;
+using CollegeUnity.Contract.StudentFeatures.Post;
 using CollegeUnity.Core.Constants.AuthenticationConstants;
 using CollegeUnity.Core.Dtos.PostDtos.Create;
 using CollegeUnity.Core.Dtos.PostDtos.Get;
@@ -11,6 +12,7 @@ using CollegeUnity.Core.Dtos.PostDtos.Update;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Helpers;
 using CollegeUnity.Core.MappingExtensions.PostExtensions.Get;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -187,35 +189,36 @@ namespace CollegeUnity.API.Controllers.Post
             var posts = await _getPublicPostFeatures.GetPublicPostAsync(postParameters);
             if (posts.Count() > 0)
             {
-                return new JsonResult(ApiResponse<IEnumerable<GPublicPostDto>>.Success(data: posts));
+                return new JsonResult(ApiResponse<PagedList<GPublicPostDto>>.Success(data: posts));
             }
 
-            return new JsonResult(ApiResponse<IEnumerable<GPublicPostDto>?>.NotFound("No Posts yet."));
+            return new JsonResult(ApiResponse<PagedList<GPublicPostDto>?>.NotFound("No Posts yet."));
         }
-
-        [HttpGet("PublicAndBatch")]
-        public async Task<IActionResult> GetBatchPost([FromQuery] PublicAndBatchPostParameters batchPostParameters)
-        {
-            var posts = await _getBatchPostFeatures.GetPublicAndBatchPostAsync(batchPostParameters);
-            if (posts.Count() > 0)
-            {
-                return new JsonResult(ApiResponse<IEnumerable<GBatchPostDto>>.Success(data: posts));
-            }
-
-            return new JsonResult(ApiResponse<IEnumerable<GBatchPostDto>?>.NotFound("No Posts yet."));
-        }
-
 
         [HttpGet("Batch")]
-        public async Task<IActionResult> GetStudentBatchPost([FromQuery] SubjectPostParameters postParameters)
+        public async Task<IActionResult> GetBatchPost([FromQuery] SubjectPostParameters postParameters)
         {
-            var posts = await _getSubjectPostFeatures.GetSubjectPosts(postParameters);
+            var studentId = User.GetUserId();
+            var posts = await _getBatchPostFeatures.GetBatchPost(studentId, postParameters);
             if (posts.Count() > 0)
             {
-                return new JsonResult(ApiResponse<IEnumerable<GStudentBatchPost>>.Success(data: posts));
+                return new JsonResult(ApiResponse<PagedList<GStudentBatchPost>>.Success(data: posts));
             }
 
-            return new JsonResult(ApiResponse<IEnumerable<GStudentBatchPost>?>.NotFound("No Posts yet."));
+            return new JsonResult(ApiResponse<PagedList<GStudentBatchPost>?>.NotFound("No Posts yet."));
+        }
+
+        [HttpGet("Subject")]
+        public async Task<IActionResult> GetSubjectPost([FromQuery] GetSubjectPostParameters Parameters)
+        {
+            var studentId = User.GetUserId();
+            var posts = await _getSubjectPostFeatures.GetSubjectPosts(Parameters);
+            if (posts.Count() > 0)
+            {
+                return new JsonResult(ApiResponse<PagedList<GSubjectPostDto>>.Success(data: posts));
+            }
+
+            return new JsonResult(ApiResponse<PagedList<GStudentBatchPost>?>.NotFound("No Posts yet."));
         }
         #endregion
 

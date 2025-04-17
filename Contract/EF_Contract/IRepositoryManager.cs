@@ -34,6 +34,8 @@ namespace CollegeUnity.Contract.EF_Contract
 
         ICoursesRepository CoursesRepository { get; }
         IScheduleFilesRepository ScheduleFilesRepository { get; }
+        IChatMessageRepository ChatMessageRepository { get; }
+        IChatRepository ChatRepository { get; }
 
         Task SaveChangesAsync();
 

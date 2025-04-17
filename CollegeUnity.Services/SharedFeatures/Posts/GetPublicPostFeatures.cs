@@ -4,6 +4,7 @@ using CollegeUnity.Contract.SharedFeatures.Posts;
 using CollegeUnity.Core.Dtos.PostDtos.Get;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Enums;
 using CollegeUnity.Core.Helpers;
 using CollegeUnity.Core.MappingExtensions.PostExtensions.Get;
 using System;
@@ -21,10 +22,12 @@ namespace CollegeUnity.Services.SharedFeatures.Posts
         {
             _repositoryManager = repositoryManager;
         }
-        public async Task<IEnumerable<GPublicPostDto>> GetPublicPostAsync(PublicPostParameters postParameters)
+        public async Task<PagedList<GPublicPostDto>> GetPublicPostAsync(PublicPostParameters postParameters)
         {
+            int filterNumber = (int)postParameters.FilterPost;
             PagedList<Post> posts = await _repositoryManager.PostRepository.GetRangeByConditionsAsync(
-                p => p.IsPublic == true,
+                p => p.IsPublic == true &&
+                filterNumber == 0 || p.Staff.Roles.Contains((Roles)filterNumber),
                 postParameters,
                 [
                     i => i.PostFiles,

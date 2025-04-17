@@ -3,6 +3,7 @@ using CollegeUnity.Contract.StudentFeatures.Post;
 using CollegeUnity.Core.Dtos.PostDtos.Get;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Helpers;
 using CollegeUnity.Core.MappingExtensions.PostExtensions.Get;
 using System;
 using System.Collections.Generic;
@@ -20,10 +21,10 @@ namespace CollegeUnity.Services.StudentFeatures.Posts
             _repositoryManager = repositoryManager;
         }
 
-        public async Task<IEnumerable<GSubjectPostDto>> GetSubjectPosts(GetSubjectPostParameters parameters)
+        public async Task<PagedList<GSubjectPostDto>> GetSubjectPosts(GetSubjectPostParameters parameters)
         {
-            IEnumerable<Post> posts = await _repositoryManager.PostRepository.GetRangeByConditionsAsync(
-                p => p.IsPublic == true,
+            PagedList<Post> posts = await _repositoryManager.PostRepository.GetRangeByConditionsAsync(
+                p => p.SubjectId == parameters.Id,
                 parameters,
                 [
                     i => i.PostFiles,
