@@ -1,6 +1,8 @@
 ﻿using CollegeUnity.Core.Dtos.PostDtos.Create;
 using CollegeUnity.Core.Dtos.PostDtos.Get;
+using CollegeUnity.Core.Dtos.ScheduleFilesDtos.Get;
 using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,9 +61,17 @@ namespace CollegeUnity.Core.MappingExtensions.PostExtensions.Get
 
             return dto;
         }
-        public static IEnumerable<T> ToGPostMappers<T>(this IEnumerable<Post> posts) where T : GPostDto, new()
+        public static PagedList<T> ToGPostMappers<T>(this PagedList<Post> posts) where T : GPostDto, new()
         {
-            return posts.Select(post => post.ToGPostDto<T>());
+            var results = posts.Select(post => post.ToGPostDto<T>()).ToList();
+            var pagedList = new PagedList<T>
+                (
+                    items: results,
+                    count: results.Count(),
+                    pageNumber: posts.CurrentPage,
+                    pageSize: posts.PageSize
+                );
+            return pagedList;
         }
         #endregion
 

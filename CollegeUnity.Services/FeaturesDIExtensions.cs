@@ -30,6 +30,7 @@ using CollegeUnity.Contract.AdminFeatures.ScheduleFiles;
 using CollegeUnity.Services.AdminFeatures.ScheduleFiles;
 using CollegeUnity.Contract.SharedFeatures.ScheduleFiles;
 using CollegeUnity.Services.SharedFeatures.ScheduleFiles;
+using CollegeUnity.Services.StudentFeatures.Communites;
 
 namespace CollegeUnity.Services
 {
@@ -81,6 +82,7 @@ namespace CollegeUnity.Services
             services.AddScoped<IStudentSubjectFeatures, StudentSubjectFeatures>();
             services.AddScoped<IStudentCoursesFeatures, StudentCoursesFeatures>();
             services.AddScoped<IManageStudentFeatures, ManageStudentFeatures>();
+            services.AddScoped<IStudentCommunityFeatures, StudentCommunityFeatures>();
 
             return services;
         }

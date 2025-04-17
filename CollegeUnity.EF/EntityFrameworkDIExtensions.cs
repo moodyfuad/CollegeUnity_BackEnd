@@ -20,8 +20,8 @@ namespace CollegeUnity.EF
             services.AddDbContext<CollegeUnityDbContext>(options =>
             {
                 //options.UseSqlServer(configuration.GetConnectionString("Default"));
-                //options.UseSqlServer(builder.Configuration.GetConnectionString("FaisalLocal"));
-                options.UseSqlServer(configuration.GetConnectionString("Local"));
+                options.UseSqlServer(configuration.GetConnectionString("FaisalLocal"));
+                //options.UseSqlServer(configuration.GetConnectionString("Local"));
             });
 
             return services;

@@ -1,5 +1,6 @@
 ﻿using CollegeUnity.Core.Dtos.PostDtos.Get;
 using CollegeUnity.Core.Dtos.QueryStrings;
+using CollegeUnity.Core.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Contract.SharedFeatures.Posts
 {
-    public interface IGetBatchPostFeatures
+     public interface IGetBatchPostFeatures
     {
-        // Get
-        public Task<IEnumerable<GBatchPostDto>> GetPublicAndBatchPostAsync(PublicAndBatchPostParameters batchPostParameters);
+        // get
+        public Task<PagedList<GStudentBatchPost>> GetBatchPost(int studentId, SubjectPostParameters parameters);
     }
 }

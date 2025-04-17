@@ -1,4 +1,5 @@
 ﻿using CollegeUnity.Contract.EF_Contract.IEntitiesRepository;
+using CollegeUnity.Core.Dtos.FailureResualtDtos;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Enums;
@@ -43,8 +44,34 @@ namespace CollegeUnity.EF.Repositories.EntitiesRepository
 
             return await GetRangeByConditionsAsync(
                 condition,
-                getInterestedSubjectParameters
+                getInterestedSubjectParameters,
+                false,
+                s => s.Teacher
             );
+        }
+
+        public async Task MakeSubjectInterest(int studentId, int subjectId)
+        {
+            var student = await _dbContext.Students
+                .Include(s => s.InterestedSubjects)
+                .FirstOrDefaultAsync(s => s.Id == studentId);
+
+            var subject = await _dbContext.Subjects.FirstOrDefaultAsync(s => s.Id == subjectId);
+
+            student!.InterestedSubjects!.Add(subject!);
+        }
+
+        public async Task<bool> IsInterestedSubjectExist(int studentId, int subjectId)
+        {
+            var subject = await _dbContext.Subjects.Include(i => i.InterestedStudents).FirstOrDefaultAsync(s => s.Id == subjectId);
+
+            var isAlreadyExist = subject.InterestedStudents.Any(s => s.Id == studentId);
+            if (isAlreadyExist)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public async Task<bool> IsExistById(int id)

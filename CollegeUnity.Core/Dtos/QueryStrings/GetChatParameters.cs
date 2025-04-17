@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Core.Dtos.QueryStrings
 {
-    public class GetSubjectPostParameters : QueryStringParameters
+    public class GetChatParameters : QueryStringParameters
     {
-        public int Id { get; set; }
+        public bool isEnabled { get; set; }
     }
 }

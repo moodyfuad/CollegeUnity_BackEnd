@@ -12,6 +12,6 @@ namespace CollegeUnity.Contract.SharedFeatures.Posts
     public interface IGetPublicPostFeatures
     {
         // get
-        public Task<IEnumerable<GPublicPostDto>> GetPublicPostAsync(PublicPostParameters postParameters);
+        public Task<PagedList<GPublicPostDto>> GetPublicPostAsync(PublicPostParameters postParameters);
     }
 }

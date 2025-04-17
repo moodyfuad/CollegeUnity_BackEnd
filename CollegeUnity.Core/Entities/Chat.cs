@@ -19,14 +19,14 @@ namespace CollegeUnity.Core.Entities
         public required int User1Id { get; set; }
 
         [ForeignKey(nameof(User1Id))]
-        public required virtual User User1 { get; set; }
+        public virtual User User1 { get; set; }
 
         [Required]
         [ForeignKey(nameof(User2))]
         public required int User2Id { get; set; }
 
         [ForeignKey(nameof(User2Id))]
-        public required virtual  User User2 { get; set; }
+        public virtual User User2 { get; set; }
 
         public DateTime CreateAt { get; set; } = DateTime.UtcNow;
 
