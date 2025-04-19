@@ -31,6 +31,9 @@ using CollegeUnity.Services.AdminFeatures.ScheduleFiles;
 using CollegeUnity.Contract.SharedFeatures.ScheduleFiles;
 using CollegeUnity.Services.SharedFeatures.ScheduleFiles;
 using CollegeUnity.Services.StudentFeatures.Communites;
+using CollegeUnity.Contract.SharedFeatures;
+using Microsoft.Extensions.Options;
+using CollegeUnity.Services.SharedFeatures;
 
 namespace CollegeUnity.Services
 {
@@ -52,6 +55,7 @@ namespace CollegeUnity.Services
         private static IServiceCollection AddSharedFeaturesDI(this IServiceCollection services)
         {
             // Shared Features
+            services.AddScoped<IActionFilterHelpers, ActionFilterHelpers>();
             services.AddScoped<ILoginFeatures, LoginFeatures>();
             services.AddScoped<IForgetPasswordFeatures, ForgetPasswordFeatures>();
             services.AddScoped<ICommentFeatures, CommentFeatures>();
