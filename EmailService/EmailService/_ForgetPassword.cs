@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using System;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
@@ -21,11 +22,20 @@ namespace EmailService.EmailService
                 var receiver = new ForgetPasswordDto(emailAddress, name);
 
                 string subject = receiver.Subject;
-                string body = receiver.htmlBody;
+                string body = EmailHelper.GetResetPasswordHtmlBody(receiver.ResetCode, receiver.RecieverName);
                 var client = new SendGridClient(configuration["SenderGridService:ApiKey"]);
                 var from = new EmailAddress(configuration["SenderGridService:SenderEmail"], configuration["SenderGridService:SenderName"]);
-                var toEmail = new EmailAddress(receiver.RecieverEmail,receiver.RecieverName);
-                var msg = MailHelper.CreateSingleEmail(from, toEmail, subject, receiver.ResetCode, body);
+                var msg = new SendGridMessage()
+                {
+                    From = from,
+                    Subject = subject,
+                    HtmlContent = body,
+                    PlainTextContent = $"Hi {receiver.RecieverName}, your reset code is: {receiver.ResetCode}"
+                };
+                var to = new EmailAddress(receiver.RecieverEmail, receiver.RecieverName);
+
+                msg.AddTo(to);
+
                 var response = await client.SendEmailAsync(msg);
 
                 bool result = response.StatusCode == System.Net.HttpStatusCode.Accepted;
