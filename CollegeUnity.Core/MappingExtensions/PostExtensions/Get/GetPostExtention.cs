@@ -2,6 +2,7 @@
 using CollegeUnity.Core.Dtos.PostDtos.Get;
 using CollegeUnity.Core.Dtos.ScheduleFilesDtos.Get;
 using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Enums;
 using CollegeUnity.Core.Helpers;
 using System;
 using System.Collections.Generic;
@@ -32,7 +33,9 @@ namespace CollegeUnity.Core.MappingExtensions.PostExtensions.Get
                 {
                     Id = post.StaffId,
                     Name = $"{post.Staff.FirstName} {post.Staff.MiddleName} {post.Staff.LastName}",
-                    EducationDegree = post.Staff.EducationDegree
+                    EducationDegree = post.Staff.EducationDegree,
+                    ProfilePicPath = post.Staff.ProfilePicturePath,
+                    TeachNames = post.Staff.Roles.Select(r => r.AsString())
                 },
                 PostFiles = post.PostFiles?.Select(p => p.Path).ToList(),
                 //Votes = post.Votes?.Select(p => p.Name).ToList()

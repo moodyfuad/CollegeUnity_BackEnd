@@ -27,7 +27,8 @@ namespace CollegeUnity.Core.Dtos.PostDtos.Get
             public int Id { get; set; }
             public string Name { get; set; }
             public EducationDegree EducationDegree { get; set; }
-
+            public IEnumerable<string> TeachNames { get; set; }
+            public string? ProfilePicPath { get; set; }
         }
     }
 }
