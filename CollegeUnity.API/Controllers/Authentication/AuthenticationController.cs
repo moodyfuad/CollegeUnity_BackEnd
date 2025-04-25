@@ -16,6 +16,8 @@ using CollegeUnity.API.Middlerware_Extentions;
 using CollegeUnity.Core.Dtos.StudentFeatures;
 using CollegeUnity.Contract.StudentFeatures.Request;
 
+// TODO: Implement refresh token
+// TODO: Implement cancelation token
 namespace CollegeUnity.API.Controllers.Authentication
 {
     [Route("api")]
@@ -156,6 +158,13 @@ namespace CollegeUnity.API.Controllers.Authentication
             var response = new JsonResult(await _sendRequestFeature.Send(studentid, staffId, dto));
 
             return response;
+        }
+
+        // ToDo: Delete this testing method
+        [HttpPost("Test/Student/{cardId}/Account/Accept")]
+        public async Task<ActionResult<ApiResponse<string>>> AcceptStudent(string cardId)
+        {
+            return new JsonResult(await _loginFeature.AcceptWaitingStudent(cardId));
         }
 
     }

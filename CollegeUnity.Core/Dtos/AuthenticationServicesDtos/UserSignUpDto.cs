@@ -38,6 +38,7 @@ namespace CollegeUnity.Core.Dtos.AuthenticationDtos
         [Compare(nameof(Password),ErrorMessage = "Password does not match")]
         public required string ConfirmPassword { get; set; }
         [Required(ErrorMessage = "Birth Date is required")]
+        //TODO: Create Birth Date Validation Attribute
         public required DateOnly BirthDate { get; set; }
 
         [Required(ErrorMessage = "Gender field is required")]

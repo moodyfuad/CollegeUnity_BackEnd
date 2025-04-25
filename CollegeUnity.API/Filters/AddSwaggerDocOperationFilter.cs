@@ -95,7 +95,7 @@ namespace CollegeUnity.API.Filters
                             ""statusCode"":{statusCode},
                             ""message"":""{defaultMessage}"",
                             ""data"":null,
-                            ""errors"":[""error1"", ""error2""]
+                            ""errors"":[""string1"",""string2""]
                             }}")
                 }
             };

@@ -1,4 +1,5 @@
 ﻿using CollegeUnity.Core.Dtos.AuthenticationDtos;
+using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Dtos.SharedFeatures.Authentication.LoginFeatures;
 using System;
 using System.Collections.Generic;
@@ -13,5 +14,7 @@ namespace CollegeUnity.Contract.SharedFeatures.Authentication
         Task<LoginResultDto> Login(
              UserLoginDto userLoginDto,
              DateTime? expireAt = null);
+
+        Task<ApiResponse<string?>> AcceptWaitingStudent(string cardId);
     }
 }

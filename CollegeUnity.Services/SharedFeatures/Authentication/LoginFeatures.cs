@@ -1,10 +1,13 @@
 ﻿using CollegeUnity.Contract.EF_Contract;
 using CollegeUnity.Contract.SharedFeatures.Authentication;
+using CollegeUnity.Core.CustomExceptions;
 using CollegeUnity.Core.Dtos.AuthenticationDtos;
+using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Dtos.SharedFeatures.Authentication.LoginFeatures;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Enums;
 using EmailService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -37,26 +40,26 @@ namespace CollegeUnity.Services.SharedFeatures.Authentication
                     Student? student = await _ValidateStudentCredentials(studentDto);
                     if (student == null)
                     {
-                        return LoginResultDto.Failed(["Your Id or Password is incorrect"]);
+                        throw new KeyNotFoundException("Your Id or Password is incorrect");
                     }
 
                     return student.AccountStatus switch
                     {
                         AccountStatus.Active => LoginResultDto.Success(JwtHelpers.CreateToken(student, _config, expireAt)),
 
-                        AccountStatus.Deactive => LoginResultDto.Failed(["Your Account is Deactivated.",
-                            $"Due to {student.AccountStatusReason}"]),
+                        AccountStatus.Deactive => throw new ForbiddenException(
+                            "Access Forbidden",
+                            [$"Your Account is Deactivated.\n Due to {student.AccountStatusReason}"]),
 
-                        AccountStatus.Denied => LoginResultDto.Failed(
-                            ["Your Account is not Rejected by the registration department.",
-                            $"Rejection Reason: {student.AccountStatusReason}",
-                            "Please Sign up again using your correct information or Visit the registration department for review."]),
+                        AccountStatus.Denied => throw new ForbiddenException(
+                             "Access Forbidden",
+                            [$"Your Account is Rejected by the registration department.",
+                                 "Rejection Reason: {student.AccountStatusReason}.",
+                                 "Please Sign up again using your correct information or Visit the registration department for review."]),
 
-                        AccountStatus.Waiting => LoginResultDto.Success(JwtHelpers.CreateToken(student, _config, expireAt)),
-                        //LoginResultDto.Failed(["Your Account is not Activated Yet.",
-                        //    "Waiting for the registration department to accept your sign up request."]),
+                        AccountStatus.Waiting => throw new UnauthorizedAccessException("Your Account is not Activated Yet, Waiting for the registration department to accept your sign up request."),
 
-                        _ => LoginResultDto.Failed("one or more errors please try again later"),
+                        _ => throw new Exception("one or more errors please try again later"),
                     };
 
                 // staff log in
@@ -64,27 +67,25 @@ namespace CollegeUnity.Services.SharedFeatures.Authentication
                     Staff? staff = await _ValidateStaffCredentials(staffDto);
                     if (staff == null)
                     {
-                        return LoginResultDto.Failed(["Your Email or Password is incorrect"]);
+                        throw new KeyNotFoundException("Your Id or Password is incorrect");
                     }
 
                     return staff.AccountStatus switch
                     {
                         AccountStatus.Active => LoginResultDto.Success(JwtHelpers.CreateToken(staff, _config, expireAt)),
 
-                        AccountStatus.Deactive => LoginResultDto.Failed(["Your Account is Deactivated.",
-                            $"Due to {staff.AccountStatusReason}"]),
+                        AccountStatus.Deactive => throw new ForbiddenException("Your Account is Deactivated.", [$"Due to {staff.AccountStatusReason}"]),
 
-                        AccountStatus.Denied => LoginResultDto.Failed(
-                            ["your account is denied which is not correct please contact the application Admin"]),
+                        AccountStatus.Denied => throw new ForbiddenException(
+                            "Account Is Denied",
+                        ["which is not correct please contact the application Admin"]),
 
-                        AccountStatus.Waiting => LoginResultDto.Success(JwtHelpers.CreateToken(staff, _config, expireAt)),
-                        //LoginResultDto.Failed(["your account is in waiting state which is not correct please contact the application Admin"]),
+                        AccountStatus.Waiting => throw new ForbiddenException("Account Is In Waiting State", ["which is not correct please contact the application Admin"]),
 
-                        _ => LoginResultDto.Failed("one or more errors please try again later"),
+                        _ => throw new Exception("one or more errors please try again later"),
                     };
 
-                //default
-                default: return LoginResultDto.Failed(["User Type Error"]);
+                default: throw new Exception("User Type Error");
             }
         }
 
@@ -107,6 +108,24 @@ namespace CollegeUnity.Services.SharedFeatures.Authentication
                     staff.Password == staffDto.Password);
 
             return staff;
+        }
+
+        public async Task<ApiResponse<string?>> AcceptWaitingStudent(string cardId)
+        {
+            var student = await _repositoryManager.StudentRepository.GetByConditionsAsync(
+                s =>
+                    s.CardId.Equals(cardId) &&
+                    s.AccountStatus == AccountStatus.Waiting);
+
+            if (student is null)
+            {
+                return ApiResponse<string>.NotFound();
+            }
+
+            student.AccountStatus = AccountStatus.Active;
+            await _repositoryManager.SaveChangesAsync();
+
+            return ApiResponse<string?>.Success(null, "Student Account Activated.");
         }
     }
 }
