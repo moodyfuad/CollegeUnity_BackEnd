@@ -1,4 +1,5 @@
-﻿using CollegeUnity.Core.Dtos.ResponseDto;
+﻿using CollegeUnity.Core.CustomExceptions;
+using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Entities.Errors;
 using Microsoft.AspNetCore.Http.HttpResults;
 using System.Text.Json;
@@ -46,6 +47,18 @@ namespace CollegeUnity.API.Middlerware_Extentions
                     break;
                 case KeyNotFoundException:
                     response = ApiResponse<object>.NotFound(exception.Message);
+                    httpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+
+                    break;
+                case BadRequestException ex:
+                    response = ApiResponse<object>.BadRequest(exception.Message, ex.Errors);
+                    httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+
+                    break;
+                case ForbiddenException:
+                    response = ApiResponse<object>.Forbidden(exception.Message);
+                    httpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
+
                     break;
                 default:
                     response = ApiResponse<object>.InternalServerError(exception.Message);

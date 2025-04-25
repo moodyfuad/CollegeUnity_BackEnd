@@ -44,7 +44,7 @@ namespace CollegeUnity.Services.SharedFeatures.Authentication
                 if (userResult == null)
                 {
                     return ForgetPasswordFeatureResultDto.
-                        Failed($"No User Found With [{email}] Email Address)");
+                        Failed($"Invalid Email Address)");
                 }
 
                 string fullName = $"{userResult.FirstName} {userResult.LastName}";
@@ -60,7 +60,7 @@ namespace CollegeUnity.Services.SharedFeatures.Authentication
                 {
                     userResult.VerificationCode = result.GetResetCode()!.ToLower();
 
-                    await _repositoryManager.UserRepository.Update(userResult);
+                    //await _repositoryManager.UserRepository.Update(userResult);
 
                     await _repositoryManager.SaveChangesAsync();
 
@@ -96,7 +96,7 @@ namespace CollegeUnity.Services.SharedFeatures.Authentication
             {
                 user.Password = newPassword;
                 user.ConfirmPassword = newPassword;
-                user = await _repositoryManager.UserRepository.Update(user);
+                //user = await _repositoryManager.UserRepository.Update(user);
                 await _repositoryManager.SaveChangesAsync();
 
                 return ForgetPasswordFeatureResultDto.Reset();
@@ -111,7 +111,7 @@ namespace CollegeUnity.Services.SharedFeatures.Authentication
         public async Task<ForgetPasswordFeatureResultDto> ValidateVerificationCode(string email, string code)
         {
             var user = await _GetUserByEmail(email);
-            if (user == null || code == null || user.VerificationCode == null)
+            if (user is null || string.IsNullOrWhiteSpace(code) || string.IsNullOrWhiteSpace(user.VerificationCode))
             {
                 return ForgetPasswordFeatureResultDto.Failed("Failed Verifying The Code");
             }
@@ -124,7 +124,7 @@ namespace CollegeUnity.Services.SharedFeatures.Authentication
             if (user.VerificationCode.ToLower().Equals(code.ToLower()))
             {
                 user.VerificationCode = string.Empty;
-                await _repositoryManager.UserRepository.Update(user);
+                //await _repositoryManager.UserRepository.Update(user);
                 await _repositoryManager.SaveChangesAsync();
 
                 var expiresAt = DateTime.Now.AddMinutes(5);

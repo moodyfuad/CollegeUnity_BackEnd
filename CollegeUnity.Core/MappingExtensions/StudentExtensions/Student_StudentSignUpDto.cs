@@ -12,12 +12,13 @@ namespace CollegeUnity.Core.MappingExtensions.StudentExtensions
     public static partial class StudentExtensions
     {
         public static Student MapFrom<T>(
-            this Student student,
+            this Student? student,
             StudentSignUpDto dto,
             string CardIdPicturePath,
             string? ProfilePicturePath)
             where T : StudentSignUpDto
         {
+
 
             return new()
             {
@@ -30,7 +31,7 @@ namespace CollegeUnity.Core.MappingExtensions.StudentExtensions
                 LastName = dto.LastName,
 
                 AccountStatus = Enums.AccountStatus.Waiting,
-                AccountStatusReason = null,
+                AccountStatusReason = student is null ? null : "Updated Student Sign Up Information",
 
                 BirthDate = dto.BirthDate,
 
@@ -46,8 +47,8 @@ namespace CollegeUnity.Core.MappingExtensions.StudentExtensions
                 AcceptanceType = dto.AcceptanceType,
                 Gender = dto.Gender,
 
-                EditedAt = null,
-                CreatedAt = DateTime.UtcNow,
+                EditedAt = student is null ? null : DateTime.UtcNow.ToLocalTime(),
+                CreatedAt = student is null ? DateTime.UtcNow.ToLocalTime(): student.CreatedAt,
 
                 IsLevelEditable = false,
 

@@ -1,4 +1,5 @@
 ﻿using CollegeUnity.Core.Dtos.AuthenticationDtos;
+using CollegeUnity.Core.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,21 +12,21 @@ namespace CollegeUnity.Core.Dtos.SharedFeatures.Authentication.LoginFeatures
     public class LoginResultDto
     {
         public string? Token { get; private set; }
+        [JsonIgnore]
         public string[]? ErrorMessages = [];
         [JsonIgnore]
         public bool IsSuccess { get; private set; }
 
-
-        private LoginResultDto(bool isSuccess,string? token = null,string[] errors = null)
+        private LoginResultDto(bool isSuccess, string? token = null, string[] errors = null)
         {
             IsSuccess = isSuccess;
             Token = token;
             ErrorMessages = errors;
         }
 
-        public static LoginResultDto Failed(params string[] errors)
+        public static LoginResultDto Failed( params string[] errors)
         {
-            return new(false,errors: errors);
+            return new(false ,errors: errors);
         }
         public static LoginResultDto Success(string token)
         {

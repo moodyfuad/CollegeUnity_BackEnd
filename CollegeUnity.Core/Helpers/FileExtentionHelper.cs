@@ -152,7 +152,7 @@ namespace CollegeUnity.Core.Helpers
                 {
                     ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".webp"
                 };
-            if (imageFile == null || imageFile.Length == 0)
+            if (imageFile is null || imageFile.Length == 0)
             {
                 return false;
             }

@@ -3,6 +3,7 @@ using CollegeUnity.Contract.StudentFeatures.Account;
 using CollegeUnity.Core.Dtos.AuthenticationDtos;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Enums;
 using CollegeUnity.Core.Helpers;
 using CollegeUnity.Core.MappingExtensions.StudentExtensions;
 using Microsoft.AspNetCore.Http;
@@ -31,14 +32,26 @@ namespace CollegeUnity.Services.StudentFeatures.Account
                 return ApiResponse<string>.BadRequest("Sign up failed", ["Invalid Registration Id Card Picture"]);
             }
 
-            Student student = await _repositoryManager
-                        .StudentRepository.
-                        GetByConditionsAsync(
-                        s => (s.Email.ToLower().Equals(studentDto.Email.ToLower())) ||
-                        s.CardId.Equals(studentDto.CardId) ||
-                        s.Phone.Equals(studentDto.Phone));
-            if (student != null)
+            var isMatched = (string string1, string string2) => string1.ToLower().Equals(string2.ToLower());
+            Student? student = await _repositoryManager.StudentRepository.GetByConditionsAsync(
+                s =>
+                    isMatched(s.Email, studentDto.Email) ||
+                    isMatched(s.CardId, studentDto.CardId) ||
+                    isMatched(s.Phone, studentDto.Phone),
+                trackChanges: true);
+
+            if (student is not null)
             {
+                if (student.AccountStatus is AccountStatus.Denied)
+                {
+                    string? cardIdPicturePath = await GetCardIdPicturePath(studentDto.CardIdPictureFile);
+                    string? profilePicturePath = await GetProfilePicturePath(studentDto.ProfilePictureFile);
+
+                    student = student!.MapFrom<StudentSignUpDto>(studentDto, cardIdPicturePath, profilePicturePath);
+
+                    return await CreateStudent(student, forCreate: false);
+                }
+
                 List<string> errors = [];
                 if (student.CardId == studentDto.CardId)
                 {
@@ -62,25 +75,36 @@ namespace CollegeUnity.Services.StudentFeatures.Account
                 string? cardIdPicturePath = await GetCardIdPicturePath(studentDto.CardIdPictureFile);
                 string? profilePicturePath = await GetProfilePicturePath(studentDto.ProfilePictureFile);
 
-                student = student!.MapFrom<StudentSignUpDto>(studentDto, cardIdPicturePath, profilePicturePath);
+                student = student.MapFrom<StudentSignUpDto>(studentDto, cardIdPicturePath, profilePicturePath);
+                return await CreateStudent(student);
+            }
+        }
+
+        private async Task<ApiResponse<string?>> CreateStudent(Student student, bool forCreate = true)
+        {
+            string msg = "Sign up Information Updated";
+            if (forCreate)
+            {
+                student = await _repositoryManager.StudentRepository.CreateAsync(student);
+                msg = "Sign up Success";
             }
 
-            student = await _repositoryManager.StudentRepository.CreateAsync(student);
             try
             {
                 await _repositoryManager.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                return ApiResponse<string>.InternalServerError("Sign up failed", [ex.Message]);
+                return ApiResponse<string?>.InternalServerError("Sign up failed", [ex.Message]);
             }
 
-            return ApiResponse<string>.Success(null, "Sign up Success");
+            return ApiResponse<string>.Success(null, msg);
         }
 
-        private async Task<string?> GetCardIdPicturePath(IFormFile imageFile)
+        private static async Task<string?> GetCardIdPicturePath(IFormFile imageFile)
         {
-            return FileExtentionhelper.IsValidImage(imageFile) ?
+            bool isImageValid = FileExtentionhelper.IsValidImage(imageFile);
+            return isImageValid ?
                 await FileExtentionhelper.SaveCardIdPictureFile(imageFile) :
                 null;
         }
