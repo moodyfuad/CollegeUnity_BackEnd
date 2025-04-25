@@ -34,6 +34,10 @@ using CollegeUnity.Services.StudentFeatures.Communites;
 using CollegeUnity.Contract.SharedFeatures;
 using Microsoft.Extensions.Options;
 using CollegeUnity.Services.SharedFeatures;
+using CollegeUnity.Contract.SharedFeatures.Chats;
+using CollegeUnity.Services.SharedFeatures.Chats;
+using CollegeUnity.Contract.StaffFeatures.Chats;
+using CollegeUnity.Services.StaffFeatures.Chat;
 
 namespace CollegeUnity.Services
 {
@@ -56,6 +60,7 @@ namespace CollegeUnity.Services
         {
             // Shared Features
             services.AddScoped<IActionFilterHelpers, ActionFilterHelpers>();
+            services.AddScoped<IGetChatList, GetChatList>();
             services.AddScoped<ILoginFeatures, LoginFeatures>();
             services.AddScoped<IForgetPasswordFeatures, ForgetPasswordFeatures>();
             services.AddScoped<ICommentFeatures, CommentFeatures>();
@@ -94,6 +99,7 @@ namespace CollegeUnity.Services
         private static IServiceCollection AddStaffFeaturesDI(this IServiceCollection services)
         {
             // Staff Features
+            services.AddScoped<IChatManagementFeatures, ChatManagementFeatures>();
             return services;
         }
     }

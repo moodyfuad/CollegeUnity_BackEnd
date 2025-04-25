@@ -1,11 +1,13 @@
 ﻿using CollegeUnity.API.Filters;
 using CollegeUnity.API.Middlerware_Extentions;
 using CollegeUnity.Contract.Services_Contract;
+using CollegeUnity.Contract.SharedFeatures.Chats;
 using CollegeUnity.Contract.StudentFeatures.Community;
 using CollegeUnity.Contract.StudentFeatures.Request;
 using CollegeUnity.Contract.StudentFeatures.Subjects;
 using CollegeUnity.Core.Dtos.AuthenticationDtos;
 using CollegeUnity.Core.Dtos.AuthenticationServicesDtos;
+using CollegeUnity.Core.Dtos.ChatDtos.Get;
 using CollegeUnity.Core.Dtos.CommunityDtos.Get;
 using CollegeUnity.Core.Dtos.FailureResualtDtos;
 using CollegeUnity.Core.Dtos.InterestedSubjectDtos;
@@ -37,19 +39,36 @@ namespace CollegeUnity.API.Controllers.Student
         private readonly IStudentRequestsFeatures _requestsFeature;
 # warning look at line 47
         private readonly IStudentCommunityFeatures _studentCommunityFeatures;
+        private readonly IGetChatList _getChatList;
 
         public StudentController(
             IServiceManager serviceManager,
             IStudentSubjectFeatures studentSubjectFeatures,
             IStudentRequestsFeatures requestsFeature,
             // this causes error the Interface must be implemented to be used [@faisal Fix it]
-            IStudentCommunityFeatures studentCommunityFeatures
+            IStudentCommunityFeatures studentCommunityFeatures,
+            IGetChatList getChatList
             )
         {
             _serviceManager = serviceManager;
             _studentSubjectFeatures = studentSubjectFeatures;
             _requestsFeature = requestsFeature;
             _studentCommunityFeatures = studentCommunityFeatures;
+            _getChatList = getChatList;
+        }
+
+        [HttpGet("List/Chat")]
+        public async Task<IActionResult> GetChatsList([FromQuery] GetChatParameters parameters)
+        {
+            int _studentId = User.GetUserId();
+            var list = await _getChatList.GetListOfChat(_studentId, parameters, false);
+            
+            if (list != null)
+            {
+                return new JsonResult(ApiResponse<PagedList<GChatsList>>.Success(list));
+            }
+
+            return new JsonResult(ApiResponse<PagedList<GChatsList>>.NotFound("No Resource yet."));
         }
 
         [HttpGet("InterestedSubjects")]
@@ -60,10 +79,10 @@ namespace CollegeUnity.API.Controllers.Student
 
             if (interestesSubjects != null)
             {
-                return new JsonResult(ApiResponse<IEnumerable<GInterestedSubjectDto>>.Success(interestesSubjects));
+                return new JsonResult(ApiResponse<PagedList<GInterestedSubjectDto>>.Success(interestesSubjects));
             }
 
-            return new JsonResult(ApiResponse<IEnumerable<GInterestedSubjectDto>>.NotFound("No Resource yet."));
+            return new JsonResult(ApiResponse<PagedList<GInterestedSubjectDto>>.NotFound("No Resource yet."));
         }
 
         [HttpGet("MyCommunites")]

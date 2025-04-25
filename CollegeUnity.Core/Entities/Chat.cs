@@ -17,10 +17,11 @@ namespace CollegeUnity.Core.Entities
         [Required]
         [ForeignKey(nameof(User1))]
         public required int User1Id { get; set; }
+        //The ones who will create the chat
 
         [ForeignKey(nameof(User1Id))]
         public virtual User User1 { get; set; }
-
+        //The Students
         [Required]
         [ForeignKey(nameof(User2))]
         public required int User2Id { get; set; }
@@ -34,7 +35,9 @@ namespace CollegeUnity.Core.Entities
         
         [Required]
         public required bool IsChattingEnabled { get; set; }
+        //The ones who will create the chat
         public bool IsHiddenForUser1 { get; set; } = false;
+        //The Students
         public bool IsHiddenForUser2 { get; set; } = false;
 
 

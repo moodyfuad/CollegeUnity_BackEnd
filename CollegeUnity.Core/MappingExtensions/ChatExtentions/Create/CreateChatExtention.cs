@@ -10,14 +10,14 @@ namespace CollegeUnity.Core.MappingExtensions.ChatExtentions.Create
 {
     public static class CreateChatExtention
     {
-        public static Chat ToChat(this CChatDto dto)
+        public static Chat ToChat(this CChatDto dto, int staffId)
         {
             return new()
             {
-                User1Id = dto.StaffId,
+                User1Id = staffId,
                 User2Id = dto.StudentId,
                 IsChattingEnabled = true,
-                CreateAt = DateTime.Now
+                CreateAt = DateTime.Now,
             };
         }
     }

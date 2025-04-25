@@ -8,6 +8,8 @@ namespace CollegeUnity.Core.Dtos.QueryStrings
 {
     public class GetChatParameters : QueryStringParameters
     {
+        public string? SearchName { get; set; }
         public bool isEnabled { get; set; }
+        public bool isHidden { get; set; }
     }
 }

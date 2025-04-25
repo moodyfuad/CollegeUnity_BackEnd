@@ -12,7 +12,7 @@ namespace CollegeUnity.Contract.StaffFeatures.Chats
 {
     public interface IChatManagementFeatures
     {
-        Task<ResultDto> CreateChatRoom(CChatDto dto);
+        Task<ResultDto> CreateChatRoom(int staffId, CChatDto dto);
         Task<ResultDto> ManageStatusChatRoom(int chatRoomId, int staffId, UChatDto dto);
     }
 }

@@ -1,13 +1,16 @@
 ﻿using CollegeUnity.API.Middlerware_Extentions;
 using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
+using CollegeUnity.Contract.SharedFeatures.Chats;
 using CollegeUnity.Contract.StaffFeatures.Chats;
 using CollegeUnity.Core.Dtos.AdminServiceDtos;
 using CollegeUnity.Core.Dtos.ChatDtos.Create;
+using CollegeUnity.Core.Dtos.ChatDtos.Get;
 using CollegeUnity.Core.Dtos.ChatDtos.Update;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Enums;
+using CollegeUnity.Core.Helpers;
 using CollegeUnity.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -23,11 +26,13 @@ namespace CollegeUnity.API.Controllers.Staff
     {
         private readonly IAdminServices _adminServices;
         private readonly IChatManagementFeatures _chatManagementFeatures;
+        private readonly IGetChatList _getChatList;
 
-        public StaffController(IServiceManager serviceManager, IChatManagementFeatures chatManagementFeatures)
+        public StaffController(IServiceManager serviceManager, IChatManagementFeatures chatManagementFeatures, IGetChatList getChatList)
         {
             _adminServices = serviceManager.AdminServices;
             _chatManagementFeatures = chatManagementFeatures;
+            _getChatList = getChatList;
         }
 
         //[HttpGet]
@@ -53,7 +58,8 @@ namespace CollegeUnity.API.Controllers.Staff
         [HttpPost("Create/ChatRoom")]
         public async Task<IActionResult> CreateChatRoom(CChatDto dto)
         {
-            var isSuccess = await _chatManagementFeatures.CreateChatRoom(dto);
+            int _staffId = User.GetUserId();
+            var isSuccess = await _chatManagementFeatures.CreateChatRoom(_staffId, dto);
 
             if (isSuccess.success)
             {
@@ -69,7 +75,7 @@ namespace CollegeUnity.API.Controllers.Staff
             $"{nameof(Roles.HeadOfITDepartment)}," +
             $"{nameof(Roles.Teacher)}," +
             $"{nameof(Roles.RegistrationAdmissionEmployee)}")]
-        [HttpPost("Update/ChatRoom/{ChatRoomId}")]
+        [HttpPost("Update/ChatRoom/{chatRoomId}")]
         public async Task<IActionResult> UpdateChatRoom(int chatRoomId, UChatDto dto)
         {
             var staffId = User.GetUserId();
@@ -81,6 +87,20 @@ namespace CollegeUnity.API.Controllers.Staff
             }
 
             return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
+        }
+
+        [HttpGet("List/Chat")]
+        public async Task<IActionResult> GetChatsList([FromQuery] GetChatParameters parameters)
+        {
+            int _staffId = User.GetUserId();
+            var list = await _getChatList.GetListOfChat(_staffId, parameters);
+
+            if (list != null)
+            {
+                return new JsonResult(ApiResponse<PagedList<GChatsList>>.Success(list));
+            }
+
+            return new JsonResult(ApiResponse<PagedList<GChatsList>>.NotFound("No Resource yet."));
         }
 
         //[HttpPost("Create")]

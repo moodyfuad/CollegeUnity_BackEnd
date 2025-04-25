@@ -35,6 +35,7 @@ namespace CollegeUnity.Core.Entities
         public required MessageStatus Status { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime EditedAt { get; set; }
+        public bool ReadReceipts { get; set; }
 
     }
 }

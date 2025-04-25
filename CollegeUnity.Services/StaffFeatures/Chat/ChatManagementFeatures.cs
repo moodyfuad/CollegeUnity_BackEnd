@@ -22,25 +22,26 @@ namespace CollegeUnity.Services.StaffFeatures.Chat
             _repository = repository;
         }
 
-        public async Task<ResultDto> CreateChatRoom(CChatDto dto)
+        public async Task<ResultDto> CreateChatRoom(int staffId, CChatDto dto)
         {
-            var staff = await _repository.StaffRepository.ExistsAsync(dto.StaffId);
-            var student = await _repository.StudentRepository.ExistsAsync(dto.StaffId);
+            var staff = await _repository.StaffRepository.ExistsAsync(staffId);
+            var student = await _repository.StudentRepository.ExistsAsync(dto.StudentId);
 
             if (student == false || staff == false)
             {
                 return new(false, "Can't create chat with this user");
             }
 
-            var isExist = await _repository.ChatRepository.GetByConditionsAsync(c => c.User1Id == dto.StaffId && c.User2Id == dto.StudentId);
+            var isExist = await _repository.ChatRepository.GetByConditionsAsync(c => c.User1Id == staffId && c.User2Id == dto.StudentId);
 
             if (isExist != null)
             {
                 return new(false, "Chat room already exist.");
             }
 
-            var chat = dto.ToChat();
+            var chat = dto.ToChat(staffId);
             await _repository.ChatRepository.CreateAsync(chat);
+            await _repository.SaveChangesAsync();
 
             return new(true, null);
         }
@@ -54,7 +55,7 @@ namespace CollegeUnity.Services.StaffFeatures.Chat
                 return new(false, "No chat room with this student");
             }
 
-            if (chatRoom.User1Id == staffId)
+            if (chatRoom.User1Id != staffId)
             {
                 return new(false, "Not your chat room");
             }

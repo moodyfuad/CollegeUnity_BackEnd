@@ -8,7 +8,6 @@ namespace CollegeUnity.Core.Dtos.ChatDtos.Create
 {
     public class CChatDto
     {
-        public int StaffId { get; set; }
         public int StudentId { get; set; }
     }
 }
