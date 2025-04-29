@@ -89,6 +89,12 @@ namespace CollegeUnity.API.Controllers.Staff
             return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
         }
 
+        [Authorize(Roles = $"{nameof(Roles.Dean)}," +
+            $"{nameof(Roles.StudentAffairsViceDeanShip)}," +
+            $"{nameof(Roles.HeadOfCSDepartment)}," +
+            $"{nameof(Roles.HeadOfITDepartment)}," +
+            $"{nameof(Roles.Teacher)}," +
+            $"{nameof(Roles.RegistrationAdmissionEmployee)}")]
         [HttpGet("List/Chat")]
         public async Task<IActionResult> GetChatsList([FromQuery] GetChatParameters parameters)
         {

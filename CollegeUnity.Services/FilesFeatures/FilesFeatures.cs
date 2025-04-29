@@ -10,22 +10,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CollegeUnity.Contract.SharedFeatures.Posts.PostFiles
+namespace CollegeUnity.Services.PostFilesFeatures
 {
-    public class PostFilesFeatures : IPostFilesFeatures
+    public class FilesFeatures : IFilesFeatures
     {
         private readonly IRepositoryManager _repositoryManager;
-        public PostFilesFeatures(IRepositoryManager repositoryManager)
+        public FilesFeatures(IRepositoryManager repositoryManager)
         {
             _repositoryManager = repositoryManager;
         }
 
-        private async Task<string> MappingFormToProfilePicture(IFormFile profilePicture, int postId)
+        public async Task<string> MappingFormToProfilePicture(IFormFile profilePicture, int postId)
         {
             var path = FileExtentionhelper.GetPostPicturePath(postId, profilePicture);
             await FileExtentionhelper.SaveFileAsync(path, profilePicture);
-            //return FileExtentionhelper.ConvertBaseDirctoryToBaseUrl(path);
-            return path;
+            return FileExtentionhelper.ConvertBaseDirctoryToBaseUrl(path);
         }
 
         //Check on it

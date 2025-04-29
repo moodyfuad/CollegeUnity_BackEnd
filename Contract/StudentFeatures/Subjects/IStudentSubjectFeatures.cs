@@ -1,6 +1,7 @@
 ﻿using CollegeUnity.Core.Dtos.FailureResualtDtos;
 using CollegeUnity.Core.Dtos.InterestedSubjectDtos;
 using CollegeUnity.Core.Dtos.QueryStrings;
+using CollegeUnity.Core.Dtos.StudentFeatures;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Enums;
 using CollegeUnity.Core.Helpers;
@@ -17,5 +18,7 @@ namespace CollegeUnity.Contract.StudentFeatures.Subjects
         Task<List<int>> GetStudentSubject(Level level, Major major, AcceptanceType acceptanceType);
         Task<PagedList<GInterestedSubjectDto>?> GetStudentIntrestedSubject(GetInterestedSubjectParameters parameters, int studentId);
         Task<ResultDto> MakeSubjectInterest(int studentId, int subjectId);
+        Task<ResultDto> MakeSubjectUnInterested(int studentId, int subjectId);
+        Task<PagedList<GStudentSubjectsDto>> GetStudentSubjectWithNames(GetFilterBatchPostParameters parameters);
     }
 }

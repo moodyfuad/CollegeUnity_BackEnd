@@ -99,6 +99,19 @@ namespace CollegeUnity.API.Controllers.Student
             return new JsonResult(ApiResponse<PagedList<GStudentCommunitesDto>>.NotFound("No Resource yet."));
         }
 
+        [HttpGet("Batch/Subject/Filter")]
+        public async Task<IActionResult> GetStudentSubjectsFilters([FromQuery] GetFilterBatchPostParameters parameters)
+        {
+            var communites = await _studentSubjectFeatures.GetStudentSubjectWithNames(parameters);
+
+            if (communites != null)
+            {
+                return new JsonResult(ApiResponse<PagedList<GStudentSubjectsDto>>.Success(communites));
+            }
+
+            return new JsonResult(ApiResponse<PagedList<GStudentCommunitesDto>>.NotFound("No Resource yet."));
+        }
+
         [HttpGet("Communites")]
         public async Task<IActionResult> GetNotJoindCommunites(GetStudentCommunitesParameters parameters)
         {
@@ -114,10 +127,24 @@ namespace CollegeUnity.API.Controllers.Student
         }
 
         [HttpPost("Subject/MakeInterest/{subjectId}")]
-        public async Task<IActionResult> GetStudentIntresetedSubject(int subjectId)
+        public async Task<IActionResult> MakeIntresetedSubject(int subjectId)
         {
             int _studentId = User.GetUserId();
             var isSuccess = await _studentSubjectFeatures.MakeSubjectInterest(_studentId, subjectId);
+
+            if (isSuccess.success)
+            {
+                return new JsonResult(ApiResponse<ResultDto>.Success(null));
+            }
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
+        }
+
+        [HttpDelete("Subject/MakeUnInterest/{subjectId}")]
+        public async Task<IActionResult> MakeUnIntresetedSubject(int subjectId)
+        {
+            int _studentId = User.GetUserId();
+            var isSuccess = await _studentSubjectFeatures.MakeSubjectUnInterested(_studentId, subjectId);
 
             if (isSuccess.success)
             {

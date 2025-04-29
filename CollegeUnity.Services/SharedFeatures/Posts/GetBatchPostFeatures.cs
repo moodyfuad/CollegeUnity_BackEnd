@@ -24,6 +24,7 @@ namespace CollegeUnity.Services.SharedFeatures.Posts
             _repositoryManager = repositoryManager;
             _studentSubjectFeatures = studentSubjectFeatures;
         }
+
         public async Task<PagedList<GStudentBatchPost>> GetBatchPost(int studentId, SubjectPostParameters parameters)
         {
             Student student = await _repositoryManager.StudentRepository.GetByIdAsync(studentId);

@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Contract.SharedFeatures.Chats
 {
-    public interface IChatHubFeatures
+    public interface IConnectionManager
     {
-        Task SendMessageToUser(int chatId, int senderId, int receiverId, string message);
+        void AddConnection(int userId, string connectionId);
+        void RemoveConnection(int userId);
+        string GetConnection(int userId);
     }
 }

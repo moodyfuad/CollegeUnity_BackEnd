@@ -20,13 +20,13 @@ namespace CollegeUnity.Core.Entities
         [Required]
 
         [ForeignKey(nameof(ChatId))]
-        public required virtual Chat Chat { get; set; }
+        public virtual Chat Chat { get; set; }
 
         public required int SenderId {  get; set; }
 
         [Required]
         [ForeignKey(nameof(SenderId))]
-        public required virtual User Sender { get; set; }
+        public virtual User Sender { get; set; }
 
         [Required]
         public required string Content { get; set; }

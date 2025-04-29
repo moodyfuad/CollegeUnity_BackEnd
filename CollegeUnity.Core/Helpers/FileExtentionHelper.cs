@@ -22,7 +22,7 @@ namespace CollegeUnity.Core.Helpers
 
         public static string ConvertBaseDirctoryToBaseUrl(string path)
         {
-            return path.Replace("D:/Sites/site16780/", "http://collageunity.runasp.net/");
+            return path.Replace("D:/Sites/site22988/", "http://collageunity.runasp.net/");
         }
 
         public static string ConvertToUrlPath(string filePath)

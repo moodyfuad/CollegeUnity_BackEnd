@@ -38,6 +38,8 @@ using CollegeUnity.Contract.SharedFeatures.Chats;
 using CollegeUnity.Services.SharedFeatures.Chats;
 using CollegeUnity.Contract.StaffFeatures.Chats;
 using CollegeUnity.Services.StaffFeatures.Chat;
+using CollegeUnity.Contract.StaffFeatures.Posts.PostFiles;
+using CollegeUnity.Services.PostFilesFeatures;
 
 namespace CollegeUnity.Services
 {
@@ -67,6 +69,8 @@ namespace CollegeUnity.Services
             services.AddScoped<IVoteFeatures, VoteFeatures>();
             services.AddScoped<IGetScheduleFilesFeatures, GetScheduleFilesFeatures>();
             services.AddScoped<IEmailServices, EmailServices>();
+            services.AddScoped<IFilesFeatures, FilesFeatures>();
+            
 
             return services;
         }

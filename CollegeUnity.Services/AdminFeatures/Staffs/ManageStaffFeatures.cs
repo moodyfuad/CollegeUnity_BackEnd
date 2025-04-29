@@ -1,5 +1,6 @@
 ﻿using CollegeUnity.Contract.AdminFeatures.Staffs;
 using CollegeUnity.Contract.EF_Contract;
+using CollegeUnity.Contract.StaffFeatures.Posts.PostFiles;
 using CollegeUnity.Core.Dtos.AdminServiceDtos;
 using CollegeUnity.Core.Dtos.FailureResualtDtos;
 using CollegeUnity.Core.Dtos.QueryStrings;
@@ -22,17 +23,11 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
     public class ManageStaffFeatures : IManageStaffFeatures
     {
         private readonly IRepositoryManager _repositoryManager;
-
-        public ManageStaffFeatures(IRepositoryManager repositoryManager)
+        private readonly IFilesFeatures _postFilesFeatures;
+        public ManageStaffFeatures(IRepositoryManager repositoryManager, IFilesFeatures postFilesFeatures)
         {
             _repositoryManager = repositoryManager;
-        }
-
-        private async Task<string> MappingFormToProfilePicture(IFormFile profilePicture, int staffId)
-        {
-            var path = FileExtentionhelper.GetProfilePicturePath(staffId, profilePicture);
-            await FileExtentionhelper.SaveFileAsync(path, profilePicture);
-            return FileExtentionhelper.ConvertBaseDirctoryToBaseUrl(path);
+            _postFilesFeatures = postFilesFeatures;
         }
 
         public async Task<ResultDto> CreateStaffAccount(CreateStaffDto dto)
@@ -56,7 +51,7 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
                 {
                     if (FileExtentionhelper.IsValidImage(dto.ProfilePictureFile))
                     {
-                        string picturePath = await MappingFormToProfilePicture(dto.ProfilePictureFile, staff.Id);
+                        string picturePath = await _postFilesFeatures.MappingFormToProfilePicture(dto.ProfilePictureFile, staff.Id);
                         staff.ProfilePicturePath = picturePath;
 
                         await _repositoryManager.StaffRepository.Update(staff);
@@ -105,7 +100,7 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
                 {
                     if (FileExtentionhelper.IsValidImage(dto.ProfilePicturePath))
                     {
-                        string picturePath = await MappingFormToProfilePicture(dto.ProfilePicturePath, newStaffInfo.Id);
+                        string picturePath = await _postFilesFeatures.MappingFormToProfilePicture(dto.ProfilePicturePath, newStaffInfo.Id);
                         newStaffInfo.ProfilePicturePath = picturePath;
 
                         await _repositoryManager.StaffRepository.Update(newStaffInfo);

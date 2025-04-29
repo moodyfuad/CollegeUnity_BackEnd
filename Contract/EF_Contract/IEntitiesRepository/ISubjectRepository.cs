@@ -16,6 +16,7 @@ namespace CollegeUnity.Contract.EF_Contract.IEntitiesRepository
         Task<List<int>> GetDistinctSubjects(Level level, Major major, AcceptanceType acceptanceType);
         Task<PagedList<Subject>?> GetIntresetedSubject(int studentId, GetInterestedSubjectParameters getInterestedSubjectParameters);
         Task MakeSubjectInterest(int studentId, int subjectId);
+        Task MakeSubjectUnInterested(int studentId, int subjectId);
         Task<bool> IsInterestedSubjectExist(int studentId, int subjectId);
     }
 }

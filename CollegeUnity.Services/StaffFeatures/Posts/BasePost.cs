@@ -17,11 +17,11 @@ namespace CollegeUnity.Services.StaffFeatures.Posts
 {
     public class BasePost : IBasePost
     {
-        private readonly IPostFilesFeatures _postFilesFeatures;
+        private readonly IFilesFeatures _postFilesFeatures;
         private readonly IPostVoteFeatures _postVoteFeatures;
         protected readonly IRepositoryManager _repositoryManager;
 
-        public BasePost(IRepositoryManager repositoryManager, IPostFilesFeatures postFilesFeatures, IPostVoteFeatures postVoteFeatures)
+        public BasePost(IRepositoryManager repositoryManager, IFilesFeatures postFilesFeatures, IPostVoteFeatures postVoteFeatures)
         {
             _repositoryManager = repositoryManager;
             _postFilesFeatures = postFilesFeatures;

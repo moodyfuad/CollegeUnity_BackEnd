@@ -17,7 +17,7 @@ namespace CollegeUnity.Contract.StaffFeatures.Posts
     {
         public ManageSubjectPostsFeatures(
             IRepositoryManager repositoryManager, 
-            IPostFilesFeatures postFilesFeatures,
+            IFilesFeatures postFilesFeatures,
             IPostVoteFeatures postVoteFeatures) : base(repositoryManager, postFilesFeatures, postVoteFeatures)
         {
         }

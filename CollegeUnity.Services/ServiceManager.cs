@@ -3,7 +3,6 @@ using CollegeUnity.Contract.EF_Contract;
 using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
 using CollegeUnity.Contract.SharedFeatures.Posts;
-using CollegeUnity.Contract.SharedFeatures.Posts.PostFiles;
 using CollegeUnity.Contract.StaffFeatures.Posts;
 using CollegeUnity.Contract.StaffFeatures.Posts.PostFiles;
 using CollegeUnity.Contract.StaffFeatures.Posts.PostsVotes;
@@ -14,6 +13,7 @@ using CollegeUnity.Services.AdminFeatures.Staffs;
 using CollegeUnity.Services.AdminFeatures.Subjects;
 using CollegeUnity.Services.AdminServices;
 using CollegeUnity.Services.CommentServices;
+using CollegeUnity.Services.PostFilesFeatures;
 using CollegeUnity.Services.PostFilesServices;
 using CollegeUnity.Services.SharedFeatures.Posts;
 using CollegeUnity.Services.StaffFeatures.Posts;
@@ -55,19 +55,19 @@ namespace CollegeUnity.Services
         #endregion
 
         #region Manage Posts Features
-        public IManagePublicPostsFeatures managePublicPostsFeatures => new ManagePublicPostsFeatures(_repositoryManager, postFilesFeatures, postVoteFeatures);
-        
-        public IManageBatchPostsFeatures manageBatchPostsFeatures => new ManageBatchPostsFeatures(_repositoryManager, postFilesFeatures, postVoteFeatures);
+        public IManagePublicPostsFeatures managePublicPostsFeatures => new ManagePublicPostsFeatures(_repositoryManager, filesFeatures, postVoteFeatures);
 
-        public IManageSubjectPostsFeatures manageSubjectPostsFeatures => new ManageSubjectPostsFeatures(_repositoryManager, postFilesFeatures, postVoteFeatures);
+        public IManageBatchPostsFeatures manageBatchPostsFeatures => new ManageBatchPostsFeatures(_repositoryManager, filesFeatures, postVoteFeatures);
+
+        public IManageSubjectPostsFeatures manageSubjectPostsFeatures => new ManageSubjectPostsFeatures(_repositoryManager, filesFeatures, postVoteFeatures);
         #endregion
 
         #region Base Posts Features
-        public IBasePost basePost => new BasePost(_repositoryManager, postFilesFeatures, postVoteFeatures);
+        public IBasePost basePost => new BasePost(_repositoryManager, filesFeatures, postVoteFeatures);
         #endregion
 
         #region PostFiles Features
-        public IPostFilesFeatures postFilesFeatures => new PostFilesFeatures(_repositoryManager);
+        public IFilesFeatures filesFeatures => new FilesFeatures(_repositoryManager);
         #endregion
 
         #region PostVotes Features
@@ -79,7 +79,7 @@ namespace CollegeUnity.Services
         #endregion
 
         #region Manage Staff Features
-        public IManageStaffFeatures manageStaffFeatures => new ManageStaffFeatures(_repositoryManager);
+        public IManageStaffFeatures manageStaffFeatures => new ManageStaffFeatures(_repositoryManager, filesFeatures);
         #endregion
 
         public IAdminServices AdminServices => new AdminService(_repositoryManager);

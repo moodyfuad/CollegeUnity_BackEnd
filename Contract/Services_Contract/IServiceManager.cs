@@ -42,9 +42,9 @@ namespace CollegeUnity.Contract.Services_Contract
         #region Base Post Features
         IBasePost basePost { get; }
         #endregion
-        
+
         #region PostFiles Features
-        IPostFilesFeatures postFilesFeatures { get; }
+        IFilesFeatures filesFeatures { get; }
         #endregion
 
         #region Manage Subject Features

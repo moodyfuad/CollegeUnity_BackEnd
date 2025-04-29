@@ -61,6 +61,17 @@ namespace CollegeUnity.EF.Repositories.EntitiesRepository
             student!.InterestedSubjects!.Add(subject!);
         }
 
+        public async Task MakeSubjectUnInterested(int studentId, int subjectId)
+        {
+            var student = await _dbContext.Students
+                .Include(s => s.InterestedSubjects)
+                .FirstOrDefaultAsync(s => s.Id == studentId);
+
+            var subject = await _dbContext.Subjects.FirstOrDefaultAsync(s => s.Id == subjectId);
+
+            student!.InterestedSubjects!.Remove(subject!);
+        }
+
         public async Task<bool> IsInterestedSubjectExist(int studentId, int subjectId)
         {
             var subject = await _dbContext.Subjects.Include(i => i.InterestedStudents).FirstOrDefaultAsync(s => s.Id == subjectId);
@@ -68,10 +79,10 @@ namespace CollegeUnity.EF.Repositories.EntitiesRepository
             var isAlreadyExist = subject.InterestedStudents.Any(s => s.Id == studentId);
             if (isAlreadyExist)
             {
-                return false;
+                return true;
             }
 
-            return true;
+            return false;
         }
 
         public async Task<bool> IsExistById(int id)
