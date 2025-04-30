@@ -102,7 +102,8 @@ namespace CollegeUnity.API.Controllers.Student
         [HttpGet("Batch/Subject/Filter")]
         public async Task<IActionResult> GetStudentSubjectsFilters([FromQuery] GetFilterBatchPostParameters parameters)
         {
-            var communites = await _studentSubjectFeatures.GetStudentSubjectWithNames(parameters);
+            int _studentId = User.GetUserId();
+            var communites = await _studentSubjectFeatures.GetStudentSubjectWithNames(_studentId, parameters);
 
             if (communites != null)
             {

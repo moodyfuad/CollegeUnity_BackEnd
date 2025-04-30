@@ -19,6 +19,6 @@ namespace CollegeUnity.Contract.StudentFeatures.Subjects
         Task<PagedList<GInterestedSubjectDto>?> GetStudentIntrestedSubject(GetInterestedSubjectParameters parameters, int studentId);
         Task<ResultDto> MakeSubjectInterest(int studentId, int subjectId);
         Task<ResultDto> MakeSubjectUnInterested(int studentId, int subjectId);
-        Task<PagedList<GStudentSubjectsDto>> GetStudentSubjectWithNames(GetFilterBatchPostParameters parameters);
+        Task<PagedList<GStudentSubjectsDto>> GetStudentSubjectWithNames(int studentId, GetFilterBatchPostParameters parameters);
     }
 }

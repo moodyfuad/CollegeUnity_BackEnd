@@ -2,6 +2,7 @@
 using CollegeUnity.API.Filters;
 using CollegeUnity.Contract.AdminFeatures.Communites;
 using CollegeUnity.Contract.AdminFeatures.Courses;
+using CollegeUnity.Contract.AdminFeatures.FeedBacks;
 using CollegeUnity.Contract.AdminFeatures.ScheduleFiles;
 using CollegeUnity.Contract.AdminFeatures.Staffs;
 using CollegeUnity.Contract.AdminFeatures.Student;
@@ -13,6 +14,8 @@ using CollegeUnity.Core.Dtos.CommunityDtos.Create;
 using CollegeUnity.Core.Dtos.CommunityDtos.Get;
 using CollegeUnity.Core.Dtos.CommunityDtos.Update;
 using CollegeUnity.Core.Dtos.CourseDtos;
+using CollegeUnity.Core.Dtos.FeedBackDtos.Create;
+using CollegeUnity.Core.Dtos.FeedBackDtos.Get;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Dtos.ScheduleFilesDtos.Create;
@@ -46,10 +49,12 @@ namespace CollegeUnity.API.Controllers.Admin
         private readonly IManageStudentFeatures _manageStudentFeatures;
         private readonly IManageScheduleFilesFeatures _manageScheduleFilesFeatures;
         private readonly IGetScheduleFilesFeatures _getScheduleFilesFeatures;
+        private readonly IManageFeedBackFeatures _manageFeedBackFeatures;
 
         public AdminController(IServiceManager serviceManager, IManageStaffFeatures manageStaffFeatures, IManageCommunityFeatures manageCommunityFeatures,
             IManageCoursesFeatures manageCoursesFeatures, IManageStudentFeatures manageStudentFeatures, IManageScheduleFilesFeatures manageScheduleFilesFeatures,
-            IGetScheduleFilesFeatures getScheduleFilesFeatures
+            IGetScheduleFilesFeatures getScheduleFilesFeatures,
+            IManageFeedBackFeatures manageFeedBackFeatures
             )
         {
             _serviceManager = serviceManager;
@@ -59,6 +64,7 @@ namespace CollegeUnity.API.Controllers.Admin
             _manageStudentFeatures = manageStudentFeatures;
             _manageScheduleFilesFeatures = manageScheduleFilesFeatures;
             _getScheduleFilesFeatures = getScheduleFilesFeatures;
+            _manageFeedBackFeatures = manageFeedBackFeatures;
         }
 
         [HttpPost("Staff/Create")]
@@ -220,10 +226,36 @@ namespace CollegeUnity.API.Controllers.Admin
 
             if (isSuccess.success)
             {
-                return new JsonResult(ApiResponse<bool?>.Created(null));
+                return new JsonResult(ApiResponse<bool?>.Success(null));
             }
 
             return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
+        }
+
+        [HttpPut("FeedBack/Update/{feedbackId}")]
+        public async Task<IActionResult> UpdateFeedBackResponse(int feedbackId, UFeedBackResponseDto dto)
+        {
+            var isSuccess = await _manageFeedBackFeatures.FinalizeFeedback(feedbackId, dto);
+
+            if (isSuccess.success)
+            {
+                return new JsonResult(ApiResponse<bool?>.Success(null));
+            }
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
+        }
+
+        [HttpGet("FeedBacks")]
+        public async Task<IActionResult> GetFeedBacks([FromQuery] GetFeedBackParameters parameters)
+        {
+            var resualts = await _manageFeedBackFeatures.GetFeedBacks(parameters);
+
+            if (resualts != null)
+            {
+                return new JsonResult(ApiResponse<PagedList<GFeedBackDto>?>.Success(resualts));
+            }
+
+            return new JsonResult(ApiResponse<PagedList<GFeedBackDto>>.NotFound("No Resource yet."));
         }
 
         [HttpGet("Staffs")]

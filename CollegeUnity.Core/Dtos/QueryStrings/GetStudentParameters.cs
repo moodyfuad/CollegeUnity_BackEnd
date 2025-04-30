@@ -12,5 +12,6 @@ namespace CollegeUnity.Core.Dtos.QueryStrings
         public string? CardId { get; set; }
         public string? Name { get; set; }
         public Level? Level { get; set; }
+        public AccountStatus? AccountStatus { get; set; }
     }
 }

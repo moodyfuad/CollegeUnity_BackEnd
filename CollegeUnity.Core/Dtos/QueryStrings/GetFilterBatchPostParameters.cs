@@ -9,8 +9,5 @@ namespace CollegeUnity.Core.Dtos.QueryStrings
 {
     public class GetFilterBatchPostParameters : QueryStringParameters
     {
-        public Level Level { get; set; }
-        public Major Major { get; set; }
-        public AcceptanceType AcceptanceType { get; set; }
     }
 }

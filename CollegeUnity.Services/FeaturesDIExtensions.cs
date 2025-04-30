@@ -40,6 +40,8 @@ using CollegeUnity.Contract.StaffFeatures.Chats;
 using CollegeUnity.Services.StaffFeatures.Chat;
 using CollegeUnity.Contract.StaffFeatures.Posts.PostFiles;
 using CollegeUnity.Services.PostFilesFeatures;
+using CollegeUnity.Contract.AdminFeatures.FeedBacks;
+using CollegeUnity.Services.AdminFeatures.FeedBacks;
 
 namespace CollegeUnity.Services
 {
@@ -83,6 +85,8 @@ namespace CollegeUnity.Services
             services.AddScoped<IManageSubjectFeatures, ManageSubjectFeatures>();
             services.AddScoped<IManageCoursesFeatures, ManageCoursesFeatures>();
             services.AddScoped<IManageScheduleFilesFeatures, ManageScheduleFilesFeatures>();
+            services.AddScoped<IManageFeedBackFeatures, ManageFeedBackFeatures>();
+
 
             return services;
         }

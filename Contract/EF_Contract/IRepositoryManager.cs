@@ -13,6 +13,7 @@ namespace CollegeUnity.Contract.EF_Contract
         IUserRepository UserRepository { get; }
 
         IStudentRepository StudentRepository { get; }
+        IFeedBackRepository FeedBackRepository { get; }
 
         IStaffRepository StaffRepository { get; }
 

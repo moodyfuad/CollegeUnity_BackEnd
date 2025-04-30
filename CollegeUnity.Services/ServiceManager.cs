@@ -1,4 +1,5 @@
-﻿using CollegeUnity.Contract.AdminFeatures.Staffs;
+﻿using CollegeUnity.Contract.AdminFeatures.FeedBacks;
+using CollegeUnity.Contract.AdminFeatures.Staffs;
 using CollegeUnity.Contract.EF_Contract;
 using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
@@ -9,6 +10,7 @@ using CollegeUnity.Contract.StaffFeatures.Posts.PostsVotes;
 using CollegeUnity.Contract.StaffFeatures.Subject;
 using CollegeUnity.Contract.StudentFeatures.Post;
 using CollegeUnity.Contract.StudentFeatures.Subjects;
+using CollegeUnity.Services.AdminFeatures.FeedBacks;
 using CollegeUnity.Services.AdminFeatures.Staffs;
 using CollegeUnity.Services.AdminFeatures.Subjects;
 using CollegeUnity.Services.AdminServices;
@@ -89,6 +91,7 @@ namespace CollegeUnity.Services
         public IStaffServices StaffServices => new StaffService(_repositoryManager);
 
         public IPostFilesServices PostFilesServices => new PostFilesService(_repositoryManager);
+        public IManageFeedBackFeatures ManageFeedBackFeatures => new ManageFeedBackFeatures(_repositoryManager);
 
 
         public IVoteService VoteService => new VoteService(_repositoryManager);

@@ -31,6 +31,7 @@ namespace CollegeUnity.EF.Repositories
         private IScheduleFilesRepository _scheduleFilesRepository;
         private IChatRepository _chatRepository;
         private IChatMessageRepository _chatMessageRepository;
+        private IFeedBackRepository _feedBackRepository;
 
         public RepositoryManager(CollegeUnityDbContext dbContext)
         {
@@ -40,6 +41,12 @@ namespace CollegeUnity.EF.Repositories
         public IUserRepository UserRepository
         {
             get => _userRepository ??= new UserRepository(_dbContext);
+            private set { }
+        }
+
+        public IFeedBackRepository FeedBackRepository
+        {
+            get => _feedBackRepository ??= new FeedBackRepository(_dbContext);
             private set { }
         }
 

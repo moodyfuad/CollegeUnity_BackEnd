@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CollegeUnity.Core.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -17,6 +18,9 @@ namespace CollegeUnity.Core.Entities
         public required string Description { get; set; }
         [Required]
         public required string Location { get; set; }
+        [Required]
+        public enFeedBackStatus FeedBackStatus { get; set; } = enFeedBackStatus.New;
+        public string? Response { get; set; }
         [Required]
         [ForeignKey(nameof(FromUser))]
         public int UserId { get; set; }

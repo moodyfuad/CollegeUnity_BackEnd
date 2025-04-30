@@ -1,4 +1,4 @@
-﻿using CollegeUnity.Contract.AdminFeatures.Student;
+﻿ using CollegeUnity.Contract.AdminFeatures.Student;
 using CollegeUnity.Contract.EF_Contract;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.StudentFeatures;
@@ -26,6 +26,7 @@ namespace CollegeUnity.Services.AdminFeatures.Students
         {
             Expression<Func<Student, bool>> conditions = s =>
                 (parameters.Level == default || s.Level == parameters.Level) &&
+                (parameters.AccountStatus == null || s.AccountStatus == parameters.AccountStatus) &&
                 (string.IsNullOrEmpty(parameters.CardId) || s.CardId == parameters.CardId) &&
                 (string.IsNullOrEmpty(parameters.Name) || (s.FirstName + " " + s.LastName).StartsWith(parameters.Name));
 

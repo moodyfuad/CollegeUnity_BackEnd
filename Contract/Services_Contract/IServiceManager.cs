@@ -1,4 +1,5 @@
-﻿using CollegeUnity.Contract.AdminFeatures.Staffs;
+﻿using CollegeUnity.Contract.AdminFeatures.FeedBacks;
+using CollegeUnity.Contract.AdminFeatures.Staffs;
 using CollegeUnity.Contract.EF_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
 using CollegeUnity.Contract.SharedFeatures.Posts;
@@ -54,6 +55,8 @@ namespace CollegeUnity.Contract.Services_Contract
         #region Manage staff Features
         IManageStaffFeatures manageStaffFeatures { get; }
         #endregion
+
+        IManageFeedBackFeatures ManageFeedBackFeatures { get; }
 
         Task<T?> IsExist<T>(int id)
             where T : class;

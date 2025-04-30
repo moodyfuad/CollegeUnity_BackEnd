@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CollegeUnity.Contract.SharedFeatures.Feedback
+namespace CollegeUnity.Core.Dtos.QueryStrings
 {
-    public interface IFeedbackFeatures
+    public class GetFeedBackParameters : QueryStringParameters
     {
     }
 }

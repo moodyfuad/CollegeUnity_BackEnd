@@ -38,9 +38,10 @@ namespace CollegeUnity.Services.StudentFeatures.Subjects
             return await _repositoryManager.SubjectRepository.GetDistinctSubjects(level, major, acceptanceType);
         }
 
-        public async Task<PagedList<GStudentSubjectsDto>> GetStudentSubjectWithNames(GetFilterBatchPostParameters parameters)
+        public async Task<PagedList<GStudentSubjectsDto>> GetStudentSubjectWithNames(int studentId, GetFilterBatchPostParameters parameters)
         {
-            var studentSubjectsId = await GetStudentSubject(parameters.Level, parameters.Major, parameters.AcceptanceType);
+            var student = await _repositoryManager.StudentRepository.GetByIdAsync(studentId);
+            var studentSubjectsId = await GetStudentSubject(student.Level, student.Major, student.AcceptanceType);
             var subjects = await _repositoryManager.SubjectRepository.GetRangeByConditionsAsync(c => studentSubjectsId.Contains(c.Id), parameters);
             return subjects.GetStudentSubjectsNames();
         }
