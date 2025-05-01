@@ -42,6 +42,9 @@ using CollegeUnity.Contract.StaffFeatures.Posts.PostFiles;
 using CollegeUnity.Services.PostFilesFeatures;
 using CollegeUnity.Contract.AdminFeatures.FeedBacks;
 using CollegeUnity.Services.AdminFeatures.FeedBacks;
+using CollegeUnity.Contract;
+using CollegeUnity.Contract.StaffFeatures.Request;
+using CollegeUnity.Services.StaffFeatures.Requests;
 
 namespace CollegeUnity.Services
 {
@@ -56,6 +59,9 @@ namespace CollegeUnity.Services
             services.AddStudentFeaturesDI();
 
             services.AddStaffFeaturesDI();
+
+            // todo: delete this testing DI
+            services.AddScoped<ITesting, Testing>();
 
             return services;
         }
@@ -108,6 +114,7 @@ namespace CollegeUnity.Services
         {
             // Staff Features
             services.AddScoped<IChatManagementFeatures, ChatManagementFeatures>();
+            services.AddScoped<IStaffRequestsFeatures, StaffRequestsFeatures>();
             return services;
         }
     }

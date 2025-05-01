@@ -26,7 +26,7 @@ namespace CollegeUnity.Core.MappingExtensions.Requests
                 request.MapTo(out GetUserRequestsDto item);
                 items.Add(item);
             }
-
+            
             var pagedList = new PagedList<GetUserRequestsDto>(
                 items: items,
                 count: requests.TotalCount,
@@ -39,7 +39,7 @@ namespace CollegeUnity.Core.MappingExtensions.Requests
         public static void MapTo(this Request request, out GetUserRequestsDto result)
         {
             string eduDegree = request.Staff.EducationDegree.ToString();
-             result = new()
+            result = new()
             {
                 RequestId = request.Id,
                 StudentId = request.StudentId,
@@ -47,6 +47,24 @@ namespace CollegeUnity.Core.MappingExtensions.Requests
                 StaffFullName = request.Staff != null ? $"{eduDegree}. {request.Staff.FirstName} {request.Staff.MiddleName} {request.Staff.LastName}" : "staff is null",
 
                 StudentFullName = request.Student != null ? $"{request.Student.FirstName} {request.Student.MiddleName} {request.Student.LastName}" : "Student is null",
+
+                Title = request.Title,
+                Content = request.Content,
+                Date = request.Date,
+                RequestStatus = request.RequestStatus
+            };
+        }
+        public static GetUserRequestsDto MappingFun(Request request)
+        {
+            string eduDegree = request.Staff.EducationDegree.ToString();
+             return new()
+            {
+                RequestId = request.Id,
+                StudentId = request.StudentId,
+                StaffId = request.StaffId,
+                StaffFullName = request.Staff != null ? $"{eduDegree}. {request.Staff.FirstName} {request.Staff.MiddleName} {request.Staff.LastName}" : "null",
+
+                StudentFullName = request.Student != null ? $"{request.Student.FirstName} {request.Student.MiddleName} {request.Student.LastName}" : "null",
 
                 Title = request.Title,
                 Content = request.Content,

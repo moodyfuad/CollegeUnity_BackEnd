@@ -15,6 +15,10 @@ using CollegeUnity.API.Filters;
 using CollegeUnity.API.Middlerware_Extentions;
 using CollegeUnity.Core.Dtos.StudentFeatures;
 using CollegeUnity.Contract.StudentFeatures.Request;
+using CollegeUnity.Contract;
+using CollegeUnity.Core.Dtos.QueryStrings;
+using CollegeUnity.Core.Helpers;
+using CollegeUnity.Core.Entities;
 
 // TODO: Implement refresh token
 // TODO: Implement cancelation token
@@ -24,6 +28,7 @@ namespace CollegeUnity.API.Controllers.Authentication
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
+        private readonly ITesting _testing;
         private readonly IConfiguration _config;
         private readonly ILoginFeatures _loginFeature;
         private readonly IForgetPasswordFeatures _forgetPasswordFeatures;
@@ -32,12 +37,14 @@ namespace CollegeUnity.API.Controllers.Authentication
         private readonly IStudentRequestsFeatures _sendRequestFeature;
 
         public AuthenticationController(
+            ITesting testing,
             IConfiguration configuration,
             ILoginFeatures loginFeature,
             IForgetPasswordFeatures forgetPasswordFeatures,
             ISignUpFeatures signUpFeatures,
             IStudentRequestsFeatures sendRequestFeatures)
         {
+            _testing = testing;
             _config = configuration;
             _loginFeature = loginFeature;
             _forgetPasswordFeatures = forgetPasswordFeatures;
@@ -135,6 +142,8 @@ namespace CollegeUnity.API.Controllers.Authentication
             return new JsonResult(response);
         }
 
+        // todo: delete testing section
+        #region This section for testing and will be deleted
         [HttpGet("Test/Student/IsAuthenticated")]
         [Authorize(Roles = nameof(Roles.Student))]
         public IActionResult Test()
@@ -149,23 +158,27 @@ namespace CollegeUnity.API.Controllers.Authentication
             return Ok(JwtHelpers.GetUserClaims(HttpContext));
         }
 
-        [HttpPost("Request/{staffId}")]
-        [ValidateEntityExist("staffId")]
-        public async Task<ActionResult<ApiResponse<string?>>> SendRequest(int staffId, SendRequestDto dto)
-        {
-            int studentid = User.GetUserId();
-
-            var response = new JsonResult(await _sendRequestFeature.Send(studentid, staffId, dto));
-
-            return response;
-        }
-
-        // ToDo: Delete this testing method
         [HttpPost("Test/Student/{cardId}/Account/Accept")]
         public async Task<ActionResult<ApiResponse<string>>> AcceptStudent(string cardId)
         {
             return new JsonResult(await _loginFeature.AcceptWaitingStudent(cardId));
         }
+
+        [HttpGet("Test/Students")]
+        public async Task<ActionResult<ApiResponse<PagedList<Core.Entities.Student>>>> GetAllStudents(
+            [FromQuery]TestingQS queryString)
+        {
+            return new JsonResult(ApiResponse<PagedList<Core.Entities.Student>>.Success(await _testing.GetAllStudents(queryString)));
+        }
+        
+        [HttpGet("Test/Staff")]
+        public async Task<ActionResult<ApiResponse<PagedList<Core.Entities.Staff>>>> GetAllStaff(
+            [FromQuery]TestingQS queryString)
+        {
+            return new JsonResult(ApiResponse<PagedList<Core.Entities.Staff>>.Success(await _testing.GetStaffMembers(queryString)));
+        }
+
+        #endregion
 
     }
 }

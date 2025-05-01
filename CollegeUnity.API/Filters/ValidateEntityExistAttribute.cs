@@ -138,6 +138,7 @@ namespace CollegeUnity.API.Filters
                     name.Contains("voteid", StringComparison.OrdinalIgnoreCase) ? typeof(PostVote) :
                     name.Contains("commentid", StringComparison.OrdinalIgnoreCase) ? typeof(PostComment) :
                     name.Contains("courseId", StringComparison.OrdinalIgnoreCase) ? typeof(Course) :
+                    name.Contains("requestId", StringComparison.OrdinalIgnoreCase) ? typeof(Request) :
                     null;
             }
         }

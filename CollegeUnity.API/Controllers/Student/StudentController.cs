@@ -37,7 +37,6 @@ namespace CollegeUnity.API.Controllers.Student
         private readonly IServiceManager _serviceManager;
         private readonly IStudentSubjectFeatures _studentSubjectFeatures;
         private readonly IStudentRequestsFeatures _requestsFeature;
-# warning look at line 47
         private readonly IStudentCommunityFeatures _studentCommunityFeatures;
         private readonly IGetChatList _getChatList;
 
@@ -45,7 +44,6 @@ namespace CollegeUnity.API.Controllers.Student
             IServiceManager serviceManager,
             IStudentSubjectFeatures studentSubjectFeatures,
             IStudentRequestsFeatures requestsFeature,
-            // this causes error the Interface must be implemented to be used [@faisal Fix it]
             IStudentCommunityFeatures studentCommunityFeatures,
             IGetChatList getChatList
             )
@@ -214,23 +212,24 @@ namespace CollegeUnity.API.Controllers.Student
             }
         }
 
-        [HttpPost("Request/{staffId}")]
-        [ValidateEntityExist("staffId")]
-        public async Task<ActionResult<ApiResponse<string>>> SendRequest(int staffId, SendRequestDto dto)
+        [HttpGet("Requests")]
+        public async Task<ActionResult<ApiResponse<PagedList<GetStudentRequestsDto>>>> GetRequests([FromQuery] GetStudentRequestsQueryString queryString)
         {
-            int _studentId = User.GetUserId();
-            var response = new JsonResult(await _requestsFeature.Send(_studentId, staffId, dto));
+            int studentId = User.GetUserId();
+            var result = await _requestsFeature.Get(studentId, queryString);
+
+            var response = new JsonResult(result);
 
             return response;
         }
 
-        [HttpGet("Requests")]
-        public async Task<ActionResult<ApiResponse<PagedList<GetStudentRequestsDto>>>> GetRequests([FromQuery] GetStudentRequestsQueryString queryString)
+        [HttpPost("Request/{staffId}")]
+        [ValidateEntityExist("staffId")]
+        public async Task<ActionResult<ApiResponse<string?>>> SendRequest(int staffId, SendRequestDto dto)
         {
-            int _studentId = User.GetUserId();
-            var result = await _requestsFeature.Get(_studentId, queryString);
+            int studentid = User.GetUserId();
 
-            var response = new JsonResult(result);
+            var response = new JsonResult(await _requestsFeature.Send(studentid, staffId, dto));
 
             return response;
         }
