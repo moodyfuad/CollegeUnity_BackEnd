@@ -1,5 +1,6 @@
 ﻿using CollegeUnity.Contract.EF_Contract;
 using CollegeUnity.Contract.SharedFeatures.Posts.Comments;
+using CollegeUnity.Core.CustomExceptions;
 using CollegeUnity.Core.Dtos.CommentDtos;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Entities;
@@ -15,10 +16,10 @@ namespace CollegeUnity.Services.SharedFeatures.Posts.Comments
 {
     public class CommentFeatures(IRepositoryManager _repositories) : ICommentFeatures
     {
-        public async Task<AddCommentResultDto> AddComment(AddCommentDto dto)
+        public async Task<AddCommentResultDto> AddComment(int userId, int postId, AddCommentDto dto)
         {
-            var post = await _repositories.PostRepository.GetByIdAsync(dto.PostId);
-            var user = await _repositories.UserRepository.GetByIdAsync(dto.UserId);
+            var post = await _repositories.PostRepository.GetByIdAsync(postId);
+            var user = await _repositories.UserRepository.GetByIdAsync(userId);
             if (post == null)
             {
                 string errorMessage = "NO Post Found";
@@ -37,7 +38,15 @@ namespace CollegeUnity.Services.SharedFeatures.Posts.Comments
                 return AddCommentResultDto.Failed(errorMessage);
             }
 
-            var comment = dto.To<PostComment>();
+            PostComment comment = new()
+            {
+                Content = dto.Comment,
+                Post = default,
+                PostId = postId,
+                User = default,
+                UserId = userId,
+                CreatedAt = DateTime.Now.ToLocalTime(),
+            };
             comment = await _repositories.CommentRepository.CreateAsync(comment);
             await _repositories.SaveChangesAsync();
 
@@ -49,15 +58,29 @@ namespace CollegeUnity.Services.SharedFeatures.Posts.Comments
             return result;
         }
 
-        public async Task<DeleteCommentResultDto> DeleteComment(int commentId)
+        public async Task<DeleteCommentResultDto> DeleteComment(int userId, int commentId)
         {
+            var user = await _repositories.UserRepository.GetByIdAsync(userId);
+            if (user is null)
+            {
+                throw new UnauthorizedAccessException($"User with given Not Found");
+            }
+
             bool isExist = await IsExist(commentId);
             if (!isExist)
             {
                 return DeleteCommentResultDto.Failed($"No Comment With [id = {commentId}]");
             }
 
-            PostComment? comment = await _repositories.CommentRepository.GetByIdAsync(commentId);
+            PostComment? comment = await _repositories.CommentRepository.GetByConditionsAsync(
+                condition: c => c.Id.Equals(commentId),
+                includes: c => c.Post);
+
+            // not the comment owner or post owner
+            if (comment.UserId != userId && comment.Post.StaffId != userId)
+            {
+                throw new ForbiddenException("Action Blocked", ["The Given user is not the comment publisher"]);
+            }
 
             if (comment.Status == CommentStatus.Deleted)
             {
@@ -65,18 +88,18 @@ namespace CollegeUnity.Services.SharedFeatures.Posts.Comments
             }
 
             comment.Status = CommentStatus.Deleted;
-            comment = await _repositories.CommentRepository.Update(comment);
-            await _repositories.SaveChangesAsync();
-
-            if (comment != null)
+            try
             {
+                await _repositories.SaveChangesAsync();
                 return DeleteCommentResultDto.Success();
             }
-
-            return DeleteCommentResultDto.Failed("An Error occurs while deleting, please try again");
+            catch (Exception e)
+            {
+                throw new InternalServerException("An Error occurs while deleting, please try again", [e.Message]);
+            }
         }
 
-        public async Task<EditCommentDto> EditComment(EditCommentDto dto)
+        public async Task<EditCommentDto> EditComment(int userId, EditCommentDto dto)
         {
             if (string.IsNullOrWhiteSpace(dto.newComment))
             {
@@ -90,25 +113,32 @@ namespace CollegeUnity.Services.SharedFeatures.Posts.Comments
                 return EditCommentDto.Failed(dto.id, "can not find this comment, it may be deleted");
             }
 
-            comment!.Content = dto.newComment;
-            comment.EditedAt = DateTime.UtcNow.ToLocalTime();
-            comment = await _repositories.CommentRepository.Update(comment);
-
-            await _repositories.SaveChangesAsync();
-            if (comment is null)
+            if (comment.UserId != userId)
             {
-                return EditCommentDto.Failed(dto.id, "can not update your comment right now, please try again later");
+                throw new ForbiddenException("Action Blocked", ["The Given user is not the comment publisher"]);
             }
 
-            return EditCommentDto.Success(dto.id, "updated");
+            comment!.Content = dto.newComment;
+            comment.EditedAt = DateTime.UtcNow.ToLocalTime();
+            //comment = await _repositories.CommentRepository.Update(comment);
+
+            try
+            {
+                await _repositories.SaveChangesAsync();
+                return EditCommentDto.Success(dto.id, "updated");
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerException("can not update your comment right now, please try again later", [e.Message]);
+            }
         }
 
-        public async Task<PagedList<GetPostCommentDto>> GetPostComments(GetPostCommentsParameters param)
+        public async Task<PagedList<GetPostCommentDto>> GetPostComments(int postId ,GetPostCommentsParameters param)
         {
             PagedList<PostComment> comments = await _repositories.CommentRepository.GetRangeByConditionsAsync(
                 condition: c =>
-                    c.PostId.Equals(param.PostId) &&
-                    c.Status == CommentStatus.Published,
+                    c.PostId.Equals(postId) &&
+                    c.Status != CommentStatus.Deleted,
                 queryStringParameters: param,
                 includes: c => c.User);
 

@@ -14,7 +14,6 @@ using CollegeUnity.Services.AdminFeatures.FeedBacks;
 using CollegeUnity.Services.AdminFeatures.Staffs;
 using CollegeUnity.Services.AdminFeatures.Subjects;
 using CollegeUnity.Services.AdminServices;
-using CollegeUnity.Services.CommentServices;
 using CollegeUnity.Services.PostFilesFeatures;
 using CollegeUnity.Services.PostFilesServices;
 using CollegeUnity.Services.SharedFeatures.Posts;

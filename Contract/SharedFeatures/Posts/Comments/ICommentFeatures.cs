@@ -11,12 +11,12 @@ namespace CollegeUnity.Contract.SharedFeatures.Posts.Comments
 {
      public interface ICommentFeatures
     {
-        Task<AddCommentResultDto> AddComment(AddCommentDto addCommentDto);
+        Task<AddCommentResultDto> AddComment(int userId, int postId, AddCommentDto addCommentDto);
 
-        Task<PagedList<GetPostCommentDto>> GetPostComments(GetPostCommentsParameters param);
+        Task<PagedList<GetPostCommentDto>> GetPostComments(int postId, GetPostCommentsParameters param);
 
-        Task<EditCommentDto> EditComment(EditCommentDto editCommentDto);
+        Task<EditCommentDto> EditComment(int userId, EditCommentDto editCommentDto);
 
-        Task<DeleteCommentResultDto> DeleteComment(int commentId);
+        Task<DeleteCommentResultDto> DeleteComment(int userId, int commentId);
     }
 }

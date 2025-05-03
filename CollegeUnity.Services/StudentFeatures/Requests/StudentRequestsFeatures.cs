@@ -75,15 +75,6 @@ namespace CollegeUnity.Services.StudentFeatures.Requests
             var student = await _repositories.StudentRepository.GetByIdAsync(studentId) ??
                 throw new BadRequestException("Failed Retrieving The Requests", ["Student Not Found"]);
 
-            var nameContains = new Func<string, string, bool>((name, searchValue) =>
-            {
-                if (string.IsNullOrEmpty(searchValue) || string.IsNullOrWhiteSpace(searchValue))
-                {
-                    return true;
-                }
-
-                return name.ToLower().Contains(searchValue.ToLower());
-            });
             List<string> fullName = queryString.StaffName.Split(' ').ToList();
             string firstName = fullName.Count > 0 ? fullName[0] : string.Empty;
             string middleName = fullName.Count > 1 ? fullName[1] : string.Empty;

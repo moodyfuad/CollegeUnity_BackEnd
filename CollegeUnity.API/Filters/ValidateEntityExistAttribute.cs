@@ -1,5 +1,6 @@
 ﻿using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.SharedFeatures;
+using CollegeUnity.Core.CustomExceptions;
 using CollegeUnity.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -140,6 +141,13 @@ namespace CollegeUnity.API.Filters
                     name.Contains("courseId", StringComparison.OrdinalIgnoreCase) ? typeof(Course) :
                     name.Contains("requestId", StringComparison.OrdinalIgnoreCase) ? typeof(Request) :
                     null;
+                if (type is null)
+                {
+                    List<string> errors = [];
+                    errors.Add($"Property Id Name ['{propertyName}'] Not Found");
+                    errors.Add($"Error thrown from namespace : CollegeUnity.API.Filters | class ValidateEntityExistAttribute | method : GetEntityType");
+                    throw new InternalServerException($"Invalid Parameter name", errors);
+                }
             }
         }
     }

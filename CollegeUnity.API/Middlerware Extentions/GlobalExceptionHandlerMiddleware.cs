@@ -65,6 +65,11 @@ namespace CollegeUnity.API.Middlerware_Extentions
                     httpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
 
                     break;
+                case InternalServerException:
+                    response = ApiResponse<object>.InternalServerError(exception.Message);
+                    httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
+
+                    break;
                 default:
                     response = ApiResponse<object>.InternalServerError(exception.Message);
                     httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;

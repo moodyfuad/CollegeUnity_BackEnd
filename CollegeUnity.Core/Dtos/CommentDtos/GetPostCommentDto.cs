@@ -18,13 +18,16 @@ namespace CollegeUnity.Core.Dtos.CommentDtos
         public string UserName { get; set; }
 
 
-        public string DisplayedDateTime
+        //public string DisplayedDateTime
+        public DateTime DisplayedDateTime
         {
             get
             {
-                string datetimeFormat = "dd/MM/yyyy h:mm tt";
+                //string datetimeFormat = "dd/MM/yyyy h:mm tt";
+                //DateTime dateTime = EditedAt ?? CreatedAt;
+                //return dateTime.ToString(datetimeFormat);
                 DateTime dateTime = EditedAt ?? CreatedAt;
-                return dateTime.ToString(datetimeFormat);
+                return dateTime;
             }
         }
 
