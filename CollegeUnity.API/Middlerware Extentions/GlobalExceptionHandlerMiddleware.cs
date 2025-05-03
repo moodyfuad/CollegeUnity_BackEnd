@@ -8,9 +8,14 @@ namespace CollegeUnity.API.Middlerware_Extentions
 {
     public class GlobalExceptionHandlerMiddleware
     {
+        private static readonly JsonSerializerOptions JsonOptions = new()
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+
         private readonly RequestDelegate _next;
 
-        public GlobalExceptionHandlerMiddleware(RequestDelegate next)
+    public GlobalExceptionHandlerMiddleware(RequestDelegate next)
         {
             _next = next;
         }
@@ -66,9 +71,9 @@ namespace CollegeUnity.API.Middlerware_Extentions
                     break;
             }
 
+
             httpContext.Response.ContentType = "application/json";
-            await httpContext.Response.WriteAsync(JsonSerializer.Serialize(response));
+            await httpContext.Response.WriteAsync(JsonSerializer.Serialize(response, JsonOptions));
         }
     }
-
 }
