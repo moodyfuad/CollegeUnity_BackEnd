@@ -10,6 +10,8 @@ namespace CollegeUnity.Core.Enums
     {
         Sent,
         Delivered,
-        Read
+        Read,
+        Accepted,
+        Denied,
     }
 }

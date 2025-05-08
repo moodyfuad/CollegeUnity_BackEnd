@@ -1,5 +1,6 @@
 ﻿using CollegeUnity.Contract.EF_Contract;
 using CollegeUnity.Contract.StudentFeatures.Request;
+using CollegeUnity.Core.CustomExceptions;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Dtos.SharedFeatures.Requests;
@@ -30,17 +31,11 @@ namespace CollegeUnity.Services.StudentFeatures.Requests
         public async Task<ApiResponse<string?>> Send(int studentId, int staffId, SendRequestDto sendRequestDto)
         {
             string failedMsg = "Failed Sending The Request";
-            var staff = await _repositories.StaffRepository.GetByIdAsync(staffId);
-            if (staff == null)
-            {
-                return ApiResponse<string?>.BadRequest(failedMsg, ["Staff Member Not Found"]);
-            }
+            var staff = await _repositories.StaffRepository.GetByIdAsync(staffId) ??
+                throw new BadRequestException(failedMsg, ["Staff Member Not Found"]);
 
-            var student = await _repositories.StudentRepository.GetByIdAsync(studentId);
-            if (student == null)
-            {
-                return ApiResponse<string?>.BadRequest(failedMsg, ["Student Not Found"]);
-            }
+            var student = await _repositories.StudentRepository.GetByIdAsync(studentId) ??
+                throw new BadRequestException(failedMsg, ["Student Not Found"]);
 
             var request = CreateRequestObj(student, staff, sendRequestDto);
 
@@ -54,7 +49,7 @@ namespace CollegeUnity.Services.StudentFeatures.Requests
 
                 await _repositories.SaveChangesAsync();
 
-                return ApiResponse<string>.Success(null, message: "Request Send Successfully");
+                return ApiResponse<string>.Success(null, message: "Request Sent Successfully");
             }
             catch (Exception ex)
             {
@@ -64,36 +59,22 @@ namespace CollegeUnity.Services.StudentFeatures.Requests
 
         private static Request CreateRequestObj(Student student, Staff staff, SendRequestDto dto)
         {
-            var request = new Request()
+            return new Request()
             {
                 Title = dto.Title,
                 Content = dto.Content,
                 Staff = staff,
                 Student = student
             };
-
-            return request;
         }
 
         public async Task<ApiResponse<PagedList<GetUserRequestsDto>?>> Get(
             int studentId,
             GetStudentRequestsQueryString queryString)
         {
-            var student = await _repositories.StudentRepository.GetByIdAsync(studentId);
-            if (student == null)
-            {
-                return ApiResponse<PagedList<GetUserRequestsDto>>.BadRequest("Failed Retrieving The Requests", ["Student Not Found"]);
-            }
+            var student = await _repositories.StudentRepository.GetByIdAsync(studentId) ??
+                throw new BadRequestException("Failed Retrieving The Requests", ["Student Not Found"]);
 
-            var nameContains = new Func<string, string, bool>((name, searchValue) =>
-            {
-                if (string.IsNullOrEmpty(searchValue) || string.IsNullOrWhiteSpace(searchValue))
-                {
-                    return true;
-                }
-
-                return name.ToLower().Contains(searchValue.ToLower());
-            });
             List<string> fullName = queryString.StaffName.Split(' ').ToList();
             string firstName = fullName.Count > 0 ? fullName[0] : string.Empty;
             string middleName = fullName.Count > 1 ? fullName[1] : string.Empty;
@@ -106,18 +87,19 @@ namespace CollegeUnity.Services.StudentFeatures.Requests
                     request.Staff.MiddleName.Contains(middleName) &&
                     request.Staff.LastName.Contains(lastName),
                 queryStringParameters: queryString,
-                includes:
-                    request => request.Staff);
+                includes: request => request.Staff);
 
-            requests.MapTo(out var result);
 
-            if (requests != null && requests.Count == 0)
+            if (requests is null || requests.Count == 0)
             {
-                return ApiResponse<PagedList<GetUserRequestsDto>>.Success(result, "No Requests To Retrieve");
+                return ApiResponse<PagedList<GetUserRequestsDto>?>.Success(null, "No Requests To Retrieve");
             }
 
+            // todo: delete all its implementation
+            #warning requests.MapTo(out var result);
+            var result = requests.To<GetUserRequestsDto>(RequestExtensions.MappingFun);
 
-            return ApiResponse<PagedList<GetUserRequestsDto>>.Success(result, $"[{result.Count}] records retrieved.");
+            return ApiResponse<PagedList<GetUserRequestsDto>?>.Success(result, $"[{result.Count}] records retrieved.");
         }
     }
 }

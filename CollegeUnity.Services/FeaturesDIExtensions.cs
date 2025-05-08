@@ -46,6 +46,9 @@ using Microsoft.AspNetCore.SignalR;
 using CollegeUnity.Services.Hubs;
 using CollegeUnity.Services.Hubs.Connection;
 using CollegeUnity.Services.Hubs.HubFeatures;
+using CollegeUnity.Contract;
+using CollegeUnity.Contract.StaffFeatures.Request;
+using CollegeUnity.Services.StaffFeatures.Requests;
 
 namespace CollegeUnity.Services
 {
@@ -60,6 +63,9 @@ namespace CollegeUnity.Services
             services.AddStudentFeaturesDI();
 
             services.AddStaffFeaturesDI();
+
+            // todo: delete this testing DI
+            services.AddScoped<ITesting, Testing>();
 
             return services;
         }
@@ -116,6 +122,7 @@ namespace CollegeUnity.Services
         {
             // Staff Features
             services.AddScoped<IChatManagementFeatures, ChatManagementFeatures>();
+            services.AddScoped<IStaffRequestsFeatures, StaffRequestsFeatures>();
             return services;
         }
     }

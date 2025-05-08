@@ -32,25 +32,19 @@ namespace CollegeUnity.Services.StudentFeatures.Account
                 return ApiResponse<string>.BadRequest("Sign up failed", ["Invalid Registration Id Card Picture"]);
             }
 
-            var isMatched = (string string1, string string2) => string1.ToLower().Equals(string2.ToLower());
+            Func<string, string, bool> isMatched =
+                (string string1, string string2)
+                => string1.ToLower() == string2.ToLower();
+
             Student? student = await _repositoryManager.StudentRepository.GetByConditionsAsync(
                 s =>
-                    isMatched(s.Email, studentDto.Email) ||
-                    isMatched(s.CardId, studentDto.CardId) ||
-                    isMatched(s.Phone, studentDto.Phone),
+                    s.Email.ToLower().Equals(studentDto.Email.ToLower()) ||
+                    s.CardId.Equals(studentDto.CardId) ||
+                    s.Phone.Equals(studentDto.Phone),
                 trackChanges: true);
 
             if (student is not null)
             {
-                if (student.AccountStatus is AccountStatus.Denied)
-                {
-                    string? cardIdPicturePath = await GetCardIdPicturePath(studentDto.CardIdPictureFile);
-                    string? profilePicturePath = await GetProfilePicturePath(studentDto.ProfilePictureFile);
-
-                    student = student!.MapFrom<StudentSignUpDto>(studentDto, cardIdPicturePath, profilePicturePath);
-
-                    return await CreateStudent(student, forCreate: false);
-                }
 
                 List<string> errors = [];
                 if (student.CardId == studentDto.CardId)
@@ -68,7 +62,20 @@ namespace CollegeUnity.Services.StudentFeatures.Account
                     errors.Add("The Phone number Already in use");
                 }
 
-                return ApiResponse<string>.BadRequest("Sign up failed", errors);
+                if (student.AccountStatus is AccountStatus.Denied)
+                {
+                    string? cardIdPicturePath = await GetCardIdPicturePath(studentDto.CardIdPictureFile);
+                    string? profilePicturePath = await GetProfilePicturePath(studentDto.ProfilePictureFile);
+
+                    student = student!.MapFrom<StudentSignUpDto>(studentDto, cardIdPicturePath, profilePicturePath);
+
+                    return await CreateStudent(student, forCreate: false);
+                }
+                else
+                {
+                    return ApiResponse<string>.BadRequest("Sign up failed", errors);
+                }
+
             }
             else
             {
@@ -76,7 +83,7 @@ namespace CollegeUnity.Services.StudentFeatures.Account
                 string? profilePicturePath = await GetProfilePicturePath(studentDto.ProfilePictureFile);
 
                 student = student.MapFrom<StudentSignUpDto>(studentDto, cardIdPicturePath, profilePicturePath);
-                return await CreateStudent(student);
+                return await CreateStudent(student, forCreate: true);
             }
         }
 

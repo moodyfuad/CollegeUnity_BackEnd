@@ -10,13 +10,13 @@ namespace CollegeUnity.Core.MappingExtensions.CommentExtensions
 {
     public static class Comment_AddComment
     {
-        public static PostComment To<T>(this AddCommentDto dto) where T : PostComment
+        public static PostComment To<T>(this AddCommentDto dto, int postId) where T : PostComment
         {
             return new PostComment()
             {
                 Content = dto.Comment,
                 Post = default,
-                PostId = dto.PostId,
+                PostId = postId,
                 User = default,
                 UserId = dto.UserId,
                 CreatedAt = DateTime.UtcNow.ToLocalTime()

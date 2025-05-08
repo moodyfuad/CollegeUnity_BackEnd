@@ -23,7 +23,7 @@ namespace CollegeUnity.Core.Dtos.CommentDtos
 
         public int UserId{ get; }
 
-        public User? User { get; }
+        private User? User { get; }
 
         private AddCommentResultDto(string comment, int postId, int userId)
         {

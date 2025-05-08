@@ -1,11 +1,14 @@
 ﻿using CollegeUnity.API.Filters;
+using CollegeUnity.API.Middlerware_Extentions;
 using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.SharedFeatures.Posts.Comments;
 using CollegeUnity.Core.Dtos.CommentDtos;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
+using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Helpers;
 using CollegeUnity.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -15,15 +18,20 @@ using System.Text.Json.Serialization;
 
 namespace CollegeUnity.API.Controllers.Comment
 {
-    [Route("api/post/{postId}/")]
+    [Route("api/post/{postId:int}/")]
     [ApiController]
+    [Authorize]
     public class CommentController(ICommentFeatures _commentFeatures) : ControllerBase
     {
         [HttpPost("comment")]
         [ValidateEntityExist("postid")]
-        public async Task<ActionResult<ApiResponse<AddCommentResultDto>>> PublishComment([FromBody] AddCommentDto dto)
+
+        // TODO : edit the response to be just ApiResponse<bool>
+        public async Task<ActionResult<ApiResponse<AddCommentResultDto>>> PublishComment([FromRoute] int postId, [FromBody] AddCommentDto dto)
         {
-            var result = await _commentFeatures.AddComment(dto);
+            int userId = User.GetUserId();
+
+            var result = await _commentFeatures.AddComment(userId ,postId, dto);
 
             if (result.IsSuccess)
             {
@@ -39,25 +47,25 @@ namespace CollegeUnity.API.Controllers.Comment
 
         [HttpGet("comments")]
         [ValidateEntityExist("postid")]
-        public async Task<ActionResult<ApiResponse<PagedList<GetPostCommentDto>>>> GetPublishedPostComments([FromQuery] GetPostCommentsParameters parameters)
+        public async Task<ActionResult<ApiResponse<PagedList<GetPostCommentDto>>>>
+            GetPublishedPostComments([FromRoute] int postId, [FromQuery] GetPostCommentsParameters parameters)
         {
-            if (!ModelState.IsValid)
-
-                return BadRequest("post id is required");
-
-            PagedList<GetPostCommentDto> result = await _commentFeatures.GetPostComments(parameters);
-
-            Response.AddPagination(result);
+            PagedList<GetPostCommentDto> result = await _commentFeatures.GetPostComments(postId, parameters);
 
             string meg = $"[{result.Count}] records fetched";
             var response = ApiResponse<PagedList<GetPostCommentDto>>.Success(result, meg);
                 return new JsonResult(response);
         }
 
+        [ValidateEntityExist("postid")]
+        [ValidateEntityExist("commentid")]
         [HttpPut("comment/{commentId}")]
         public async Task<ActionResult<ApiResponse<EditCommentDto>>> UpdateComment(int commentId, [FromBody] EditCommentDto dto)
         {
-            var result = await _commentFeatures.EditComment(dto);
+            int userId = User.GetUserId();
+            dto.id = commentId;
+
+            var result = await _commentFeatures.EditComment(userId, dto);
 
             if (result.IsSuccess.HasValue && result.IsSuccess.Value)
             {
@@ -76,7 +84,9 @@ namespace CollegeUnity.API.Controllers.Comment
         [ValidateEntityExist("postid")]
         public async Task<ActionResult<ApiResponse<EditCommentDto>>> DeleteComment(int commentId)
         {
-            var result = await _commentFeatures.DeleteComment(commentId);
+            int userId = User.GetUserId();
+
+            var result = await _commentFeatures.DeleteComment(userId, commentId);
 
             if (result.IsSuccess)
             {
