@@ -27,6 +27,13 @@ namespace CollegeUnity.Services.PostFilesFeatures
             return FileExtentionhelper.ConvertBaseDirctoryToBaseUrl(path);
         }
 
+        public async Task<string> MappingFormToScheduleFiles(IFormFile scheduleFiles)
+        {
+            var path = FileExtentionhelper.GetScheduleFilesPath(scheduleFiles);
+            await FileExtentionhelper.SaveFileAsync(path, scheduleFiles);
+            return FileExtentionhelper.ConvertBaseDirctoryToBaseUrl(path);
+        }
+
         //Check on it
         public async Task CreatePostFiles(IEnumerable<IFormFile> files, int postId)
         {

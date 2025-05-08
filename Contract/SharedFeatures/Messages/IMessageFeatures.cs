@@ -9,6 +9,6 @@ namespace CollegeUnity.Contract.SharedFeatures.Messages
 {
     public interface IMessageFeatures
     {
-        public Task SendMessageAsync(CMessageDto dto);
+        public Task SendMessageAsync(SendMessageDto dto);
     }
 }

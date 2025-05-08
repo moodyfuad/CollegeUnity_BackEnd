@@ -14,7 +14,6 @@ namespace CollegeUnity.Core.Dtos.ChatDtos.Get
         public string? LastMessageSent { get; set; }
         public DateTime? Time { get; set; }
         public int UnreadCounter { get; set; }
-        public bool EnableSending { get; set; }
         public bool IsNew { get; set; }
     }
 }

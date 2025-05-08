@@ -9,8 +9,7 @@ namespace CollegeUnity.Core.Dtos.QueryStrings
 {
     public class GetStudentParameters : QueryStringParameters
     {
-        public string? CardId { get; set; }
-        public string? Name { get; set; }
+        public string? NameOrCardId { get; set; }
         public Level? Level { get; set; }
         public AccountStatus? AccountStatus { get; set; }
     }

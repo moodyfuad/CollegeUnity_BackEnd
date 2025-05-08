@@ -26,12 +26,8 @@ namespace CollegeUnity.Services.AdminFeatures.FeedBacks
 
         public async Task<PagedList<GFeedBackDto>> GetFeedBacks(GetFeedBackParameters parameters)
         {
-            var feedbacks = await _repositoryManager.FeedBackRepository.GetRangeAsync(parameters, i => new
-            {
-                i.FromUser.Id,
-                i.FromUser.FirstName,
-                i.FromUser.LastName,
-            });
+            var feedbacks = await _repositoryManager.FeedBackRepository.GetRangeByConditionsAsync(
+            i => i.FeedBackStatus == parameters.enFeedBackStatus, parameters, i => i.FromUser);
             return feedbacks.GetFeedBacks();
         }
 
@@ -44,8 +40,10 @@ namespace CollegeUnity.Services.AdminFeatures.FeedBacks
                 return new(false, "No Feedback found.");
             }
 
-            var updatedFeedBack = feedback.ToFeedBack(dto);
-            await _repositoryManager.FeedBackRepository.Update(updatedFeedBack);
+            feedback.Response = dto.Response;
+            feedback.FeedBackStatus = dto.Status;
+
+            await _repositoryManager.FeedBackRepository.Update(feedback);
             await _repositoryManager.SaveChangesAsync();
             
             return new(true);

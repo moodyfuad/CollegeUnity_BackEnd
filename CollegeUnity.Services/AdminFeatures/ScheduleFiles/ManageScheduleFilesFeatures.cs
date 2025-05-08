@@ -1,5 +1,7 @@
 ﻿using CollegeUnity.Contract.AdminFeatures.ScheduleFiles;
 using CollegeUnity.Contract.EF_Contract;
+using CollegeUnity.Contract.EF_Contract.IEntitiesRepository;
+using CollegeUnity.Contract.StaffFeatures.Posts.PostFiles;
 using CollegeUnity.Core.Dtos.FailureResualtDtos;
 using CollegeUnity.Core.Dtos.ScheduleFilesDtos.Create;
 using CollegeUnity.Core.Dtos.ScheduleFilesDtos.Update;
@@ -17,16 +19,11 @@ namespace CollegeUnity.Services.AdminFeatures.ScheduleFiles
     public class ManageScheduleFilesFeatures : IManageScheduleFilesFeatures
     {
         private readonly IRepositoryManager _repositoryManager;
-        public ManageScheduleFilesFeatures(IRepositoryManager repositoryManager)
+        private readonly IFilesFeatures _filesFeature;
+        public ManageScheduleFilesFeatures(IRepositoryManager repositoryManager, IFilesFeatures filesFeatures)
         {
             _repositoryManager = repositoryManager;
-        }
-
-        private async Task<string> MappingFormToscheduleFilePicture(IFormFile scheduleFilePicture)
-        {
-            var path = FileExtentionhelper.GetscheduleFilePicturePath(scheduleFilePicture);
-            await FileExtentionhelper.SaveFileAsync(path, scheduleFilePicture);
-            return FileExtentionhelper.ConvertBaseDirctoryToBaseUrl(path);
+            _filesFeature = filesFeatures;
         }
 
         public async Task<ResultDto> AddSchedule(CScheduleFilesDto dto)
@@ -43,7 +40,7 @@ namespace CollegeUnity.Services.AdminFeatures.ScheduleFiles
                 return new(false, "There is already Schedule added with these information.");
             }
 
-            string path = await MappingFormToscheduleFilePicture(dto.SchedulePicture);
+            string path = await _filesFeature.MappingFormToScheduleFiles(dto.SchedulePicture);
             var scheduleFile = dto.ToScheduleFile(path);
             await _repositoryManager.ScheduleFilesRepository.CreateAsync(scheduleFile);
             await _repositoryManager.SaveChangesAsync();
@@ -60,7 +57,7 @@ namespace CollegeUnity.Services.AdminFeatures.ScheduleFiles
                 return new(false, "Schedule not found.");
             }
 
-            string path = await MappingFormToscheduleFilePicture(scheduleFilePicture);
+            string path = await _filesFeature.MappingFormToScheduleFiles(scheduleFilePicture);
             scheduleFile.Path = path;
             await _repositoryManager.ScheduleFilesRepository.Update(scheduleFile);
             await _repositoryManager.SaveChangesAsync();

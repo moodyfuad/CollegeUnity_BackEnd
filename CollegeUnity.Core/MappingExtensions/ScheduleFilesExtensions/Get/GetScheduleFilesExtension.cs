@@ -16,6 +16,7 @@ namespace CollegeUnity.Core.MappingExtensions.ScheduleFilesExtensions.Get
         {
             return new()
             {
+                Id = file.Id,
                 AcceptanceType = file.AcceptanceType,
                 Major = file.Major,
                 Path = file.Path,

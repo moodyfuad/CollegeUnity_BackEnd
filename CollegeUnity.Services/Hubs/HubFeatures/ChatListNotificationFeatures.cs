@@ -11,36 +11,37 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace CollegeUnity.Services.Hubs.HubFeatures
 {
-    //public class ChatListNotificationFeatures : IChatListNotificationFeatures
-    //{
-    //    private readonly IHubContext<BaseChatHub, IChatListNotificationFeatures> _hubContext;
-    //    private readonly IConnectionManager _connectionManager;
+    public class ChatListNotificationFeatures : IChatListNotificationFeatures
+    {
+        private readonly IHubContext<BaseChatHub> _hubContext;
+        private readonly IConnectionManager _connectionManager;
 
-    //    public ChatListNotificationFeatures(
-    //        IHubContext<BaseChatHub, IChatListNotificationFeatures> hubContext,
-    //        IConnectionManager connectionManager)
-    //    {
-    //        _hubContext = hubContext;
-    //        _connectionManager = connectionManager;
-    //    }
+        public ChatListNotificationFeatures(
+            IHubContext<BaseChatHub> hubContext,
+            IConnectionManager connectionManager)
+        {
+            _hubContext = hubContext;
+            _connectionManager = connectionManager;
+        }
 
-    //    public async Task NotifyNewChat(int recipientUserId, GChatsList chat)
-    //    {
-    //        chat.IsNew = true;
-    //        // 1. PRIMARY: Group notification (all devices)
-    //        var groupTask = _hubContext.Clients
-    //            .Group($"user-{recipientUserId}")
-    //            .NotifyNewChat(recipientUserId, chat);
+        public async Task NotifyNewChat(int recipientUserId, GChatsList chat)
+        {
+            chat.IsNew = true;
+            // 1. PRIMARY: Group notification (all devices)
+            var groupTask = _hubContext.Clients
+                .Group($"user-{recipientUserId}")
+                .SendAsync("ReceiveNewChat", chat);
 
-    //        // 2. FALLBACK: Direct connection (single device)
-    //        var connectionId = _connectionManager.GetConnection(recipientUserId);
-    //        var directTask = connectionId != null
-    //            ? _hubContext.Clients
-    //                .Client(connectionId)
-    //                .NotifyNewChat(recipientUserId, chat)
-    //            : Task.CompletedTask;
+            // 2. FALLBACK: Direct connection (single device)
+            var connectionId = _connectionManager.GetConnection(recipientUserId);
+            var directTask = connectionId != null
+                ? _hubContext.Clients
+                    .Client(connectionId)
+                    .SendAsync("ReceiveNewChat", chat)
 
-    //        await Task.WhenAll(groupTask, directTask);
-    //    }
-    //}
+                : Task.CompletedTask;
+
+            await Task.WhenAll(groupTask, directTask);
+        }
+    }
 }

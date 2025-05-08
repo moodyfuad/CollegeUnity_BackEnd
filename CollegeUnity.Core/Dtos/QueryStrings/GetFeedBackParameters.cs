@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CollegeUnity.Core.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,6 @@ namespace CollegeUnity.Core.Dtos.QueryStrings
 {
     public class GetFeedBackParameters : QueryStringParameters
     {
+        public enFeedBackStatus enFeedBackStatus { get; set; } = enFeedBackStatus.New;
     }
 }

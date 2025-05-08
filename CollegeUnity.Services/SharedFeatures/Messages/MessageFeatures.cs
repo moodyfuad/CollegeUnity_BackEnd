@@ -14,7 +14,7 @@ namespace CollegeUnity.Services.SharedFeatures.Messages
     public class MessageFeatures : IMessageFeatures
     {
         private readonly IRepositoryManager _repositoryManager;
-        public async Task SendMessageAsync(CMessageDto dto)
+        public async Task SendMessageAsync(SendMessageDto dto)
         {
             var message = dto.GetChatMessage();
             await _repositoryManager.ChatMessageRepository.CreateAsync(message);

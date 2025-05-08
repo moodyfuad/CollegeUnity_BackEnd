@@ -11,5 +11,6 @@ namespace CollegeUnity.Contract.StaffFeatures.Posts.PostFiles
     {
         public Task CreatePostFiles(IEnumerable<IFormFile> files, int postId);
         Task<string> MappingFormToProfilePicture(IFormFile profilePicture, int postId);
+        Task<string> MappingFormToScheduleFiles(IFormFile scheduleFiles);
     }
 }

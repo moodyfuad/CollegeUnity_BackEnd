@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CollegeUnity.Core.Dtos.MessagesDto.Create;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace CollegeUnity.Contract.SharedFeatures.Chats
 {
     public interface IChatHubFeatures
     {
-        Task SendMessageToUser(int chatId, int senderId, int receiverId, string message);
+        Task SendMessageToUser(SendMessageDto dto);
     }
 }

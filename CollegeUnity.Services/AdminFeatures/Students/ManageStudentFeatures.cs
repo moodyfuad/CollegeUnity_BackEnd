@@ -24,11 +24,14 @@ namespace CollegeUnity.Services.AdminFeatures.Students
 
         public async Task<PagedList<GStudentDto>> GetStudents(GetStudentParameters parameters)
         {
+            bool isNumber = double.TryParse(parameters.NameOrCardId, out _);
+
             Expression<Func<Student, bool>> conditions = s =>
                 (parameters.Level == default || s.Level == parameters.Level) &&
                 (parameters.AccountStatus == null || s.AccountStatus == parameters.AccountStatus) &&
-                (string.IsNullOrEmpty(parameters.CardId) || s.CardId == parameters.CardId) &&
-                (string.IsNullOrEmpty(parameters.Name) || (s.FirstName + " " + s.LastName).StartsWith(parameters.Name));
+                (string.IsNullOrEmpty(parameters.NameOrCardId) ||
+                    (isNumber ? s.CardId.StartsWith(parameters.NameOrCardId)
+                              : string.Concat(s.FirstName.ToLower(), " ", s.LastName.ToLower()).StartsWith(parameters.NameOrCardId)));
 
             var students = await _repositoryManager.StudentRepository.GetRangeByConditionsAsync(conditions, parameters);
 

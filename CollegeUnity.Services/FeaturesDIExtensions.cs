@@ -42,6 +42,10 @@ using CollegeUnity.Contract.StaffFeatures.Posts.PostFiles;
 using CollegeUnity.Services.PostFilesFeatures;
 using CollegeUnity.Contract.AdminFeatures.FeedBacks;
 using CollegeUnity.Services.AdminFeatures.FeedBacks;
+using Microsoft.AspNetCore.SignalR;
+using CollegeUnity.Services.Hubs;
+using CollegeUnity.Services.Hubs.Connection;
+using CollegeUnity.Services.Hubs.HubFeatures;
 
 namespace CollegeUnity.Services
 {
@@ -63,6 +67,10 @@ namespace CollegeUnity.Services
         private static IServiceCollection AddSharedFeaturesDI(this IServiceCollection services)
         {
             // Shared Features
+            services.AddSignalR();
+            services.AddScoped<IConnectionManager, ConnectionManager>();
+            services.AddScoped<IChatListNotificationFeatures, ChatListNotificationFeatures>();
+            services.AddScoped<IChatHubFeatures, ChatHubFeatures>();
             services.AddScoped<IActionFilterHelpers, ActionFilterHelpers>();
             services.AddScoped<IGetChatList, GetChatList>();
             services.AddScoped<ILoginFeatures, LoginFeatures>();
