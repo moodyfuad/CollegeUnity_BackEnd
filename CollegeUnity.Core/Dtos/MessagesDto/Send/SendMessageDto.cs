@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Core.Dtos.MessagesDto.Create
 {
-    public class CMessageDto
+    public class SendMessageDto
     {
         public int ChatId {  get; set; }
         public int SenderId { get; set; }
         public int RecipientId {  get; set; }
-        public string Message { get; set; }
+        public string Content { get; set; }
 
     }
 }

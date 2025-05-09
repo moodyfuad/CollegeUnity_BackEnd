@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using CollegeUnity.Core.Entities;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,10 +43,36 @@ namespace CollegeUnity.Core.Helpers
             return ConvertToUrlPath(fullFilePath);
         }
 
-        public static string GetProfilePicturePath(int accountId, IFormFile file)
+        public static string GetCardPicturePath(IFormFile file)
+        {
+            string cardPicturePath = Path.Combine(RootPath, "Card-Pictures");
+
+            Directory.CreateDirectory(cardPicturePath);
+
+            var fileName = Guid.NewGuid().ToString() + file.FileName;
+
+            string fullPath = Path.Combine(cardPicturePath, fileName);
+
+            return ConvertToUrlPath(fullPath);
+        }
+
+        public static string GetScheduleFilesPath(IFormFile scheduleFiles)
+        {
+            string scheduleFilePath = Path.Combine(RootPath, "Schedule");
+
+            Directory.CreateDirectory(scheduleFilePath);
+
+            var fileName = Guid.NewGuid().ToString() + scheduleFiles.FileName;
+
+            string fullFilePath = Path.Combine(scheduleFilePath, fileName);
+
+            return ConvertToUrlPath(fullFilePath);
+        }
+
+        public static string GetProfilePicturePath(IFormFile file)
         {
             string baseDirectory = Path.Combine(RootPath, "accounts", "profile-pictures");
-            string accountPath = Path.Combine(baseDirectory, accountId.ToString());
+            string accountPath = Path.Combine(baseDirectory);
 
             Directory.CreateDirectory(accountPath);
 

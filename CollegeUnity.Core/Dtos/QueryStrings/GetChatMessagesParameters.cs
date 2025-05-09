@@ -4,13 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CollegeUnity.Core.Enums
+namespace CollegeUnity.Core.Dtos.QueryStrings
 {
-    public enum enFeedBackStatus
+    public class GetChatMessagesParameters : QueryStringParameters
     {
-        New,
-        Resolved,
-        Closed,
-        Rejected
     }
 }

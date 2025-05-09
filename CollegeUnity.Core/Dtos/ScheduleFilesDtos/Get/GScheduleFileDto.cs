@@ -10,6 +10,7 @@ namespace CollegeUnity.Core.Dtos.ScheduleFilesDtos.Get
 {
     public class GScheduleFileDto
     {
+        public required int Id { get; set; }
         public required string Path { get; set; }
         public required ScheduleTypes ScheduleType { get; set; }
         public required Major Major { get; set; }

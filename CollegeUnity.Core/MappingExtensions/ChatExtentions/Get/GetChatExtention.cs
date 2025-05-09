@@ -22,15 +22,14 @@ namespace CollegeUnity.Core.MappingExtensions.ChatExtentions.Get
             return new()
             {
                 ChatRoomId = chat.Id,
-                EnableSending = chat.IsChattingEnabled,
                 Sender = isStaff ? chat.User2.FirstName + " " + chat.User2.LastName : chat.User1.FirstName + " " + chat.User1.LastName,
                 LastMessageSent = lastMessage?.Content.TruncateContent(100),
                 PicturePath = isStaff ? chat.User2.ProfilePicturePath : chat.User1.ProfilePicturePath,
                 UnreadCounter = chat.Messages?
                     .Count(m => m.Status == MessageStatus.Sent &&
-                               m.SenderId != lastMessage?.SenderId // Use the lastMessage we already fetched
-                               ) ?? 0, // Proper collection check
-                Time = lastMessage?.CreatedAt ?? DateTime.UtcNow // Fallback to current time if no messages
+                               m.SenderId != lastMessage?.SenderId
+                               ) ?? 0, 
+                Time = lastMessage?.CreatedAt ?? DateTime.UtcNow
             };
         }
 

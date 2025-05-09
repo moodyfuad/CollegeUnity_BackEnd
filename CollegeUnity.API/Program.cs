@@ -20,6 +20,8 @@ using CollegeUnity.Contract.StudentFeatures.Account;
 using CollegeUnity.Services.StudentFeatures.Account;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
+using CollegeUnity.Services.Hubs;
+using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -84,6 +86,8 @@ app.UseStaticFiles(new StaticFileOptions
     FileProvider = new PhysicalFileProvider(filesPath),
     RequestPath = "/Files"
 });
+
+app.MapHub<BaseChatHub>("/chatHub");
 
 app.UseHttpsRedirection();
 

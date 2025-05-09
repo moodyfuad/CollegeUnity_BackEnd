@@ -29,7 +29,7 @@ namespace CollegeUnity.Core.Entities
         [ForeignKey(nameof(User2Id))]
         public virtual User User2 { get; set; }
 
-        public DateTime CreateAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreateAt { get; set; } = DateTime.Now;
 
         public DateTime LastMessageAt { get; set; }
         

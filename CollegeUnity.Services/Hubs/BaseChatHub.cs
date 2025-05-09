@@ -18,7 +18,7 @@ namespace CollegeUnity.Services.Hubs
             _connectionManager = connectionManager;
         }
 
-        private int? GetUserIdFromClaims()
+        public int? GetUserIdFromClaims()
         {
             var userIdClaim = Context.User?.FindFirst(CustomClaimTypes.Id);
             if (userIdClaim != null && int.TryParse(userIdClaim.Value, out var userId))
@@ -34,6 +34,7 @@ namespace CollegeUnity.Services.Hubs
             if (userId != null)
             {
                 _connectionManager.AddConnection(userId.Value, Context.ConnectionId);
+                await Groups.AddToGroupAsync(Context.ConnectionId, $"user-{userId.Value}");
             }
             await base.OnConnectedAsync();
         }
@@ -45,6 +46,7 @@ namespace CollegeUnity.Services.Hubs
             if (userId != null)
             {
                 _connectionManager.RemoveConnection(userId.Value);
+                await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"user-{userId.Value}");
             }
             await base.OnDisconnectedAsync(exception);
         }
