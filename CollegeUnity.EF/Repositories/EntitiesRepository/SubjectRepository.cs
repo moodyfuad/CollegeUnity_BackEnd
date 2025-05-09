@@ -1,6 +1,7 @@
 ﻿using CollegeUnity.Contract.EF_Contract.IEntitiesRepository;
 using CollegeUnity.Core.Dtos.FailureResualtDtos;
 using CollegeUnity.Core.Dtos.QueryStrings;
+using CollegeUnity.Core.Dtos.SubjectDtos;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Enums;
 using CollegeUnity.Core.Helpers;
@@ -30,6 +31,20 @@ namespace CollegeUnity.EF.Repositories.EntitiesRepository
             .Select(s => s.Id)
             .Distinct()
             .ToList();
+        }
+
+        public async Task<List<DistinctSubjectDto>> GetStaffDistinctSubjects(int staffId)
+        {
+            return await _dbContext.Subjects
+            .Where(s => s.TeacherId == staffId)
+            .Select(s => new DistinctSubjectDto
+            {
+                Major = s.Major,
+                Level = s.Level,
+                AcceptanceType = s.AcceptanceType
+            })
+            .Distinct()
+            .ToListAsync();
         }
 
         public async Task<PagedList<Subject>?> GetIntresetedSubject(int studentId, GetInterestedSubjectParameters getInterestedSubjectParameters)

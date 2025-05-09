@@ -1,4 +1,5 @@
 ﻿using CollegeUnity.Core.Dtos.QueryStrings;
+using CollegeUnity.Core.Dtos.SubjectDtos;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Enums;
 using CollegeUnity.Core.Helpers;
@@ -18,5 +19,6 @@ namespace CollegeUnity.Contract.EF_Contract.IEntitiesRepository
         Task MakeSubjectInterest(int studentId, int subjectId);
         Task MakeSubjectUnInterested(int studentId, int subjectId);
         Task<bool> IsInterestedSubjectExist(int studentId, int subjectId);
+        Task<List<DistinctSubjectDto>> GetStaffDistinctSubjects(int staffId);
     }
 }

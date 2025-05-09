@@ -32,7 +32,7 @@ namespace CollegeUnity.Core.MappingExtensions.StaffExtensions
 
             if (staffId != null)
             {
-                staff.ProfilePicturePath = FileExtentionhelper.GetProfilePicturePath((int)staffId, dto.ProfilePictureFile);
+                staff.ProfilePicturePath = FileExtentionhelper.GetProfilePicturePath(dto.ProfilePictureFile);
             }
 
             return staff;

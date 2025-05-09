@@ -1,5 +1,6 @@
 ﻿using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Enums;
 using CollegeUnity.Core.Helpers;
 using Microsoft.AspNetCore.Http;
 using System;

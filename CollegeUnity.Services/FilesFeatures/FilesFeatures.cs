@@ -20,10 +20,17 @@ namespace CollegeUnity.Services.PostFilesFeatures
             _repositoryManager = repositoryManager;
         }
 
-        public async Task<string> MappingFormToProfilePicture(IFormFile profilePicture, int postId)
+        public async Task<string> MappingFormToProfilePicture(IFormFile profilePicture)
         {
-            var path = FileExtentionhelper.GetPostPicturePath(postId, profilePicture);
+            var path = FileExtentionhelper.GetProfilePicturePath(profilePicture);
             await FileExtentionhelper.SaveFileAsync(path, profilePicture);
+            return FileExtentionhelper.ConvertBaseDirctoryToBaseUrl(path);
+        }
+
+        public async Task<string> MappingFormToCardPicture(IFormFile cardPicture)
+        {
+            var path = FileExtentionhelper.GetCardPicturePath(cardPicture);
+            await FileExtentionhelper.SaveFileAsync(path, cardPicture);
             return FileExtentionhelper.ConvertBaseDirctoryToBaseUrl(path);
         }
 

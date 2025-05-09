@@ -25,7 +25,10 @@ namespace CollegeUnity.Services.SharedFeatures.ScheduleFiles
 
         public async Task<PagedList<GScheduleFileDto>> GetSchedule(GetScheduleFileParameters parameters)
         {
-            Expression<Func<ScheduleFile, bool>> condition = s => s.Major == parameters.Major && s.AcceptanceType == parameters.AcceptanceType;
+            Expression<Func<ScheduleFile, bool>> condition =
+                s => s.Major == parameters.Major &&
+                s.AcceptanceType == parameters.AcceptanceType &&
+                (parameters.ScheduleTypes == null || s.ScheduleType == parameters.ScheduleTypes);
 
             var scheduleFile = await _repositoryManager.ScheduleFilesRepository.GetRangeByConditionsAsync(condition, parameters);
 

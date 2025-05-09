@@ -14,5 +14,6 @@ namespace CollegeUnity.Core.Dtos.QueryStrings
         public required Major Major { get; set; }
         [Required]
         public required AcceptanceType AcceptanceType { get; set; }
+        public ScheduleTypes? ScheduleTypes { get; set; }
     }
 }

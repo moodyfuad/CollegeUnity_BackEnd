@@ -49,6 +49,12 @@ using CollegeUnity.Services.Hubs.HubFeatures;
 using CollegeUnity.Contract;
 using CollegeUnity.Contract.StaffFeatures.Request;
 using CollegeUnity.Services.StaffFeatures.Requests;
+using CollegeUnity.Contract.SharedFeatures.Messages;
+using CollegeUnity.Services.SharedFeatures.Messages;
+using CollegeUnity.Contract.StaffFeatures.Students;
+using CollegeUnity.Services.StaffFeatures;
+using CollegeUnity.Contract.AdminFeatures.Subjects;
+using CollegeUnity.Services.StaffFeatures.Subjects;
 
 namespace CollegeUnity.Services
 {
@@ -75,6 +81,7 @@ namespace CollegeUnity.Services
             // Shared Features
             services.AddSignalR();
             services.AddScoped<IConnectionManager, ConnectionManager>();
+            services.AddScoped<IMessageFeatures, MessageFeatures>();
             services.AddScoped<IChatListNotificationFeatures, ChatListNotificationFeatures>();
             services.AddScoped<IChatHubFeatures, ChatHubFeatures>();
             services.AddScoped<IActionFilterHelpers, ActionFilterHelpers>();
@@ -122,6 +129,8 @@ namespace CollegeUnity.Services
         {
             // Staff Features
             services.AddScoped<IChatManagementFeatures, ChatManagementFeatures>();
+            services.AddScoped<IGetMyStudents, GetMyStudents>();
+            services.AddScoped<IGetMySubjects, GetMySubjects>();
             services.AddScoped<IStaffRequestsFeatures, StaffRequestsFeatures>();
             return services;
         }

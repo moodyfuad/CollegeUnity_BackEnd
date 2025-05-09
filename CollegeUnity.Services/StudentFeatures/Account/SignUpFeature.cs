@@ -1,4 +1,5 @@
 ﻿using CollegeUnity.Contract.EF_Contract;
+using CollegeUnity.Contract.StaffFeatures.Posts.PostFiles;
 using CollegeUnity.Contract.StudentFeatures.Account;
 using CollegeUnity.Core.Dtos.AuthenticationDtos;
 using CollegeUnity.Core.Dtos.ResponseDto;
@@ -18,10 +19,15 @@ namespace CollegeUnity.Services.StudentFeatures.Account
     public class SignUpFeature : ISignUpFeatures
     {
         private readonly IRepositoryManager _repositoryManager;
+        private readonly IFilesFeatures _filesFeatures;
 
-        public SignUpFeature(IRepositoryManager repositoryManager)
+        public SignUpFeature(
+            IRepositoryManager repositoryManager,
+            IFilesFeatures filesFeatures
+        )
         {
             _repositoryManager = repositoryManager;
+            _filesFeatures = filesFeatures;
         }
 
         public async Task<ApiResponse<string?>> SignUpStudent(StudentSignUpDto studentDto)
@@ -108,18 +114,18 @@ namespace CollegeUnity.Services.StudentFeatures.Account
             return ApiResponse<string>.Success(null, msg);
         }
 
-        private static async Task<string?> GetCardIdPicturePath(IFormFile imageFile)
+        private async Task<string?> GetCardIdPicturePath(IFormFile imageFile)
         {
             bool isImageValid = FileExtentionhelper.IsValidImage(imageFile);
             return isImageValid ?
-                await FileExtentionhelper.SaveCardIdPictureFile(imageFile) :
+                await _filesFeatures.MappingFormToCardPicture(imageFile) :
                 null;
         }
 
         private async Task<string?> GetProfilePicturePath(IFormFile imageFile)
         {
             return FileExtentionhelper.IsValidImage(imageFile) ?
-                await FileExtentionhelper.SaveProfilePictureFile(imageFile) :
+                await _filesFeatures.MappingFormToProfilePicture(imageFile) :
                 null;
         }
     }

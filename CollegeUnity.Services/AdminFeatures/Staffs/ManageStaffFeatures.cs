@@ -23,11 +23,11 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
     public class ManageStaffFeatures : IManageStaffFeatures
     {
         private readonly IRepositoryManager _repositoryManager;
-        private readonly IFilesFeatures _postFilesFeatures;
+        private readonly IFilesFeatures _filesFeatures;
         public ManageStaffFeatures(IRepositoryManager repositoryManager, IFilesFeatures postFilesFeatures)
         {
             _repositoryManager = repositoryManager;
-            _postFilesFeatures = postFilesFeatures;
+            _filesFeatures = postFilesFeatures;
         }
 
         public async Task<ResultDto> CreateStaffAccount(CreateStaffDto dto)
@@ -51,7 +51,7 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
                 {
                     if (FileExtentionhelper.IsValidImage(dto.ProfilePictureFile))
                     {
-                        string picturePath = await _postFilesFeatures.MappingFormToProfilePicture(dto.ProfilePictureFile, staff.Id);
+                        string picturePath = await _filesFeatures.MappingFormToProfilePicture(dto.ProfilePictureFile);
                         staff.ProfilePicturePath = picturePath;
 
                         await _repositoryManager.StaffRepository.Update(staff);
@@ -100,7 +100,7 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
                 {
                     if (FileExtentionhelper.IsValidImage(dto.ProfilePicturePath))
                     {
-                        string picturePath = await _postFilesFeatures.MappingFormToProfilePicture(dto.ProfilePicturePath, newStaffInfo.Id);
+                        string picturePath = await _filesFeatures.MappingFormToProfilePicture(dto.ProfilePicturePath);
                         newStaffInfo.ProfilePicturePath = picturePath;
 
                         await _repositoryManager.StaffRepository.Update(newStaffInfo);

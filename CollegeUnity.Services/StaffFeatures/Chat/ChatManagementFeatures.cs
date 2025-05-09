@@ -22,24 +22,31 @@ namespace CollegeUnity.Services.StaffFeatures.Chat
             _repository = repository;
         }
 
-        public async Task<ResultDto> CreateChatRoom(int staffId, CChatDto dto)
+        public async Task<ResultDto> CreateChatRoom(int staffId, int studentId)
         {
             var staff = await _repository.StaffRepository.ExistsAsync(staffId);
-            var student = await _repository.StudentRepository.ExistsAsync(dto.StudentId);
+            var student = await _repository.StudentRepository.ExistsAsync(studentId);
 
             if (student == false || staff == false)
             {
                 return new(false, "Can't create chat with this user");
             }
 
-            var isExist = await _repository.ChatRepository.GetByConditionsAsync(c => c.User1Id == staffId && c.User2Id == dto.StudentId);
+            var isExist = await _repository.ChatRepository.GetByConditionsAsync(c => c.User1Id == staffId && c.User2Id == studentId);
 
             if (isExist != null)
             {
                 return new(false, "Chat room already exist.");
             }
 
-            var chat = dto.ToChat(staffId);
+            var chat = new Core.Entities.Chat()
+            {
+                User1Id = staffId,
+                User2Id = studentId,
+                IsChattingEnabled = true,
+                CreateAt = DateTime.Now,
+            };
+
             await _repository.ChatRepository.CreateAsync(chat);
             await _repository.SaveChangesAsync();
 
