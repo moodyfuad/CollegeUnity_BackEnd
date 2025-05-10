@@ -17,6 +17,7 @@ namespace CollegeUnity.Core.Dtos.CommentDtos
 
         public string UserName { get; set; }
 
+        public string? ProfilePicturePath { get; set; }
 
         //public string DisplayedDateTime
         public DateTime DisplayedDateTime
@@ -39,29 +40,33 @@ namespace CollegeUnity.Core.Dtos.CommentDtos
 
         public string Content { get; set; }
 
-        public GetPostCommentDto(int id, int userId, string userName, DateTime createdAt, DateTime? editedAt, string content)
+        public GetPostCommentDto(int id, int userId, string? profilePicturePath, string userName, DateTime createdAt, DateTime? editedAt, string content)
         {
            
             Id = id;
             UserId = userId;
+            ProfilePicturePath = profilePicturePath;
             UserName = userName;
             CreatedAt = createdAt;
             EditedAt = editedAt;
             Content = content;
         }
 
-        public static async Task<PagedList<GetPostCommentDto>> From<T>(PagedList<PostComment> comments)where T : PagedList<PostComment>
+        public static GetPostCommentDto MapFrom(PostComment comment)
         {
-            List<GetPostCommentDto> mappedComments =[];
-            foreach (var comment in comments)
-            {
-                string username = $"{comment.User.FirstName} {comment.User.LastName}";
+            string userDegree = comment.User is Staff staff ?
+                staff.EducationDegree.ToString() :
+                string.Empty;
 
-                mappedComments.Add(new GetPostCommentDto(comment.Id, comment.UserId, username, comment.CreatedAt, comment.EditedAt, comment.Content));
-            }
-
-
-            return new PagedList<GetPostCommentDto>(mappedComments,comments.TotalCount, comments.CurrentPage,comments.PageSize);
+            return new GetPostCommentDto(
+                id: comment.Id,
+                userId: comment.UserId,
+                profilePicturePath: comment.User.ProfilePicturePath,
+                userName: $"{userDegree}{comment.User.FirstName} {comment.User.LastName}",
+                createdAt: comment.CreatedAt,
+                editedAt: comment.EditedAt,
+                content: comment.Content
+                );
         }
     }
 }

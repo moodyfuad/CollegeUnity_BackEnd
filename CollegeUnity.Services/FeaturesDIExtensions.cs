@@ -55,6 +55,8 @@ using CollegeUnity.Contract.StaffFeatures.Students;
 using CollegeUnity.Services.StaffFeatures;
 using CollegeUnity.Contract.AdminFeatures.Subjects;
 using CollegeUnity.Services.StaffFeatures.Subjects;
+using CollegeUnity.Contract.SharedFeatures.Helpers;
+using CollegeUnity.Services.SharedFeatures.Helpers;
 
 namespace CollegeUnity.Services
 {
@@ -93,7 +95,7 @@ namespace CollegeUnity.Services
             services.AddScoped<IGetScheduleFilesFeatures, GetScheduleFilesFeatures>();
             services.AddScoped<IEmailServices, EmailServices>();
             services.AddScoped<IFilesFeatures, FilesFeatures>();
-            
+            services.AddScoped<ISearchUsersFeature, SearchUsersFeature>();
 
             return services;
         }

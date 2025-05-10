@@ -2,6 +2,7 @@
 using CollegeUnity.API.Middlerware_Extentions;
 using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.SharedFeatures.Chats;
+using CollegeUnity.Contract.SharedFeatures.Helpers;
 using CollegeUnity.Contract.StudentFeatures.Community;
 using CollegeUnity.Contract.StudentFeatures.Request;
 using CollegeUnity.Contract.StudentFeatures.Subjects;
@@ -13,6 +14,7 @@ using CollegeUnity.Core.Dtos.FailureResualtDtos;
 using CollegeUnity.Core.Dtos.InterestedSubjectDtos;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
+using CollegeUnity.Core.Dtos.SharedFeatures.Helpers;
 using CollegeUnity.Core.Dtos.SharedFeatures.Requests;
 using CollegeUnity.Core.Dtos.StudentFeatures;
 using CollegeUnity.Core.Dtos.StudentServiceDtos;
@@ -39,13 +41,15 @@ namespace CollegeUnity.API.Controllers.Student
         private readonly IStudentRequestsFeatures _requestsFeature;
         private readonly IStudentCommunityFeatures _studentCommunityFeatures;
         private readonly IGetChatList _getChatList;
+        private readonly ISearchUsersFeature _searchUsers;
 
         public StudentController(
             IServiceManager serviceManager,
             IStudentSubjectFeatures studentSubjectFeatures,
             IStudentRequestsFeatures requestsFeature,
             IStudentCommunityFeatures studentCommunityFeatures,
-            IGetChatList getChatList
+            IGetChatList getChatList,
+            ISearchUsersFeature searchUsers
             )
         {
             _serviceManager = serviceManager;
@@ -53,6 +57,7 @@ namespace CollegeUnity.API.Controllers.Student
             _requestsFeature = requestsFeature;
             _studentCommunityFeatures = studentCommunityFeatures;
             _getChatList = getChatList;
+            _searchUsers = searchUsers;
         }
 
         [HttpGet("List/Chat")]
@@ -221,6 +226,16 @@ namespace CollegeUnity.API.Controllers.Student
             var response = new JsonResult(result);
 
             return response;
+        }
+
+        [HttpGet("Search/Staff")]
+        public async Task<ActionResult<ApiResponse<PagedList<GetStudentSearchUsersResultDto>>>> SearchStaff([FromQuery] StudentSearchUsersQS queryString)
+        {
+            int studentId = User.GetUserId();
+            var result = await _searchUsers.SearchStaff(queryString);
+
+
+            return new JsonResult(result);
         }
 
         [HttpPost("Request/{staffId}")]
