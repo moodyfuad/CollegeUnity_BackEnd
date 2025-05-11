@@ -35,7 +35,7 @@ namespace CollegeUnity.Services.AdminFeatures.Courses
                 includes: c => c.RegisteredStudents,
                 trackChanges: false);
 
-            if (courses == null || !courses.Any())
+            if (courses == null)
             {
                 return ApiResponse<PagedList<GetStudentCoursesResultDto>>.NotFound();
             }

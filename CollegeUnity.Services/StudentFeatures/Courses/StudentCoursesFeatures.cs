@@ -21,10 +21,13 @@ namespace CollegeUnity.Services.StudentFeatures.Courses
                  await this.getRegisteredCourses(studentId, queryString);
 
             var result = GetStudentCoursesResultDto.MapFrom(courses);
-
-            if (result.Count == 0 || result is null)
+            if (result is null)
             {
                 return ApiResponse<PagedList<GetStudentCoursesResultDto>?>.NotFound("No Courses Found");
+            }
+            else if (result.Count == 0 )
+            {
+                return ApiResponse<PagedList<GetStudentCoursesResultDto>>.Success(result, $"[{result.Count}] Courses retrieved")!;
             }
             else
             {
