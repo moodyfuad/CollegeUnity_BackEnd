@@ -3,6 +3,7 @@ using CollegeUnity.API.Middlerware_Extentions;
 using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.SharedFeatures.Chats;
 using CollegeUnity.Contract.SharedFeatures.Helpers;
+using CollegeUnity.Contract.StudentFeatures.Account;
 using CollegeUnity.Contract.StudentFeatures.Community;
 using CollegeUnity.Contract.StudentFeatures.Request;
 using CollegeUnity.Contract.StudentFeatures.Subjects;
@@ -14,6 +15,7 @@ using CollegeUnity.Core.Dtos.FailureResualtDtos;
 using CollegeUnity.Core.Dtos.InterestedSubjectDtos;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
+using CollegeUnity.Core.Dtos.SharedFeatures.Authentication;
 using CollegeUnity.Core.Dtos.SharedFeatures.Helpers;
 using CollegeUnity.Core.Dtos.SharedFeatures.Requests;
 using CollegeUnity.Core.Dtos.StudentFeatures;
@@ -42,6 +44,7 @@ namespace CollegeUnity.API.Controllers.Student
         private readonly IStudentCommunityFeatures _studentCommunityFeatures;
         private readonly IGetChatList _getChatList;
         private readonly ISearchUsersFeature _searchUsers;
+        private readonly IStudentProfileFeatures _studentProfileFeatures;
 
         public StudentController(
             IServiceManager serviceManager,
@@ -49,7 +52,8 @@ namespace CollegeUnity.API.Controllers.Student
             IStudentRequestsFeatures requestsFeature,
             IStudentCommunityFeatures studentCommunityFeatures,
             IGetChatList getChatList,
-            ISearchUsersFeature searchUsers
+            ISearchUsersFeature searchUsers,
+            IStudentProfileFeatures studentProfileFeatures
             )
         {
             _serviceManager = serviceManager;
@@ -58,6 +62,7 @@ namespace CollegeUnity.API.Controllers.Student
             _studentCommunityFeatures = studentCommunityFeatures;
             _getChatList = getChatList;
             _searchUsers = searchUsers;
+            _studentProfileFeatures = studentProfileFeatures;
         }
 
         [HttpGet("List/Chat")]
@@ -247,6 +252,36 @@ namespace CollegeUnity.API.Controllers.Student
             var response = new JsonResult(await _requestsFeature.Send(studentid, staffId, dto));
 
             return response;
+        }
+
+        [HttpGet("profile")]
+        public async Task<ActionResult<ApiResponse<GetStudentProfileDto>>> GetStudentInfo()
+        {
+            int studentIdFromToken = User.GetUserId();
+
+            var result = await _studentProfileFeatures.GetInfo(studentIdFromToken);
+
+            return new JsonResult(result);
+        }
+
+        [HttpPut("profile")]
+        public async Task<ActionResult<ApiResponse<bool>>> EditStudentInfo(UpdateUserProfileDto dto)
+        {
+            int studentId = User.GetUserId();
+
+            var result = await _studentProfileFeatures.Update(studentId, dto);
+
+            return new JsonResult(result);
+        }
+
+        [HttpPut("profile/password")]
+        public async Task<ActionResult<ApiResponse<bool>>> EditStudentPassword(UpdateUserPasswordDto dto)
+        {
+            int studentId = User.GetUserId();
+
+            var result = await _studentProfileFeatures.UpdatePassword(studentId, dto);
+
+            return new JsonResult(result);
         }
     }
 }
