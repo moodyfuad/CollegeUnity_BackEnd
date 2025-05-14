@@ -35,7 +35,7 @@ namespace CollegeUnity.Services.AdminFeatures.Courses
                 includes: c => c.RegisteredStudents,
                 trackChanges: false);
 
-            if (courses == null || !courses.Any())
+            if (courses == null)
             {
                 return ApiResponse<PagedList<GetStudentCoursesResultDto>>.NotFound();
             }
@@ -74,7 +74,7 @@ namespace CollegeUnity.Services.AdminFeatures.Courses
                 return ApiResponse<bool>.BadRequest("Failed Deleting the course", ["Course Not Found To Be Deleted"]);
             }
 
-            if (course.RegisteredStudents?.Any() ?? false && !ignoreRegisteredStudents)
+            if ((course.RegisteredStudents?.Any() ?? false) == true && ignoreRegisteredStudents == false)
             {
                 return ApiResponse<bool>.BadRequest(
                     "Failed Deleting The Course",

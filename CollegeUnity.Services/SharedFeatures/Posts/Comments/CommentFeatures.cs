@@ -142,8 +142,8 @@ namespace CollegeUnity.Services.SharedFeatures.Posts.Comments
                 queryStringParameters: param,
                 includes: c => c.User);
 
-            var result = await GetPostCommentDto.From<PagedList<PostComment>>(comments);
-            return result;
+            return comments.To(mapFunc: GetPostCommentDto.MapFrom);
+
         }
 
         private async Task<bool> IsExist(int id)
