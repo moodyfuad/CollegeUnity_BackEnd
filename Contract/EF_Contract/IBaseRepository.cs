@@ -17,6 +17,12 @@ namespace CollegeUnity.Contract.EF_Contract
 
         Task<bool> ExistsAsync(int id);
 
+        Task<PagedList<T>> GetRangeByConditionsAsyncDes(
+            Expression<Func<T, bool>> condition,
+            QueryStringParameters queryStringParameters,
+            bool trackChanges = false,
+            params Expression<Func<T, object>>[] includes);
+
         Task<T?> GetByConditionsAsync(Expression<Func<T, bool>> condition, bool trackChanges = true, params Expression<Func<T, object>>[] includes);
 
         Task<T?> GetByConditionsAsync(Expression<Func<T, bool>> condition, params Expression<Func<T, object>>[] includes) => GetByConditionsAsync(condition, true, includes);

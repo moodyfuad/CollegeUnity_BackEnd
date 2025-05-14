@@ -9,6 +9,6 @@ namespace CollegeUnity.Contract.SharedFeatures.Chats
 {
     public interface IChatHubFeatures
     {
-        Task SendMessageToUser(SendMessageDto dto);
+        Task SendMessageToUser(int senderId, SendMessageDto dto);
     }
 }

@@ -15,6 +15,7 @@ using CollegeUnity.Core.MappingExtensions.CommunityExtensions.Update;
 using CollegeUnity.Core.MappingExtensions.StudentCommunityExtensions.Create;
 using CollegeUnity.Core.MappingExtensions.StudentCommunityExtensions.Delete;
 using CollegeUnity.Core.MappingExtensions.StudentCommunityExtensions.Get;
+using LinqKit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -124,31 +125,19 @@ namespace CollegeUnity.Services.AdminFeatures.Communites
 
         public async Task<PagedList<GCommunitesDto>> GetCommunites(GetCommunitesParameters parameters)
         {
-            var communites = await _repositoryManager.CommunityRepository.GetRangeAsync(parameters);
-            return communites.ToGetCommunites();
-        }
+            Expression<Func<Community, bool>> conditions = c => true;
 
-        public async Task<PagedList<GCommunitesDto>> GetCommunitesByName(GetCommunitesParameters parameters)
-        {
-            Expression<Func<Community, bool>> conditions = cm => cm.Name.StartsWith(parameters.Name);
-            var communites = await _repositoryManager.CommunityRepository.GetRangeByConditionsAsync(conditions, parameters);
-            return communites.ToGetCommunites();
-        }
+            if (!string.IsNullOrWhiteSpace(parameters.Name))
+                conditions = conditions.And(c => c.Name.StartsWith(parameters.Name));
 
-        public async Task<PagedList<GCommunitesDto>> GetCommunitesByState(GetCommunitesParameters parameters)
-        {
-            Expression<Func<Community, bool>> conditions = cm => cm.CommunityState == parameters.CommunityState;
+            if (parameters.CommunityState != null)
+                conditions = conditions.And(c => c.CommunityState == parameters.CommunityState);
 
-            var communites = await _repositoryManager.CommunityRepository.GetRangeByConditionsAsync(conditions, parameters);
-            return communites.ToGetCommunites();
-        }
+            if (parameters.CommunityType != null)
+                conditions = conditions.And(c => c.CommunityType == parameters.CommunityType);
 
-        public async Task<PagedList<GCommunitesDto>> GetCommunitesByType(GetCommunitesParameters parameters)
-        {
-            Expression<Func<Community, bool>> conditions = cm => cm.CommunityType == parameters.CommunityType;
-
-            var communites = await _repositoryManager.CommunityRepository.GetRangeByConditionsAsync(conditions, parameters);
-            return communites.ToGetCommunites();
+            var communities = await _repositoryManager.CommunityRepository.GetRangeByConditionsAsync(conditions, parameters);
+            return communities.ToGetCommunites();
         }
 
         public async Task<ResultDto> RemoveAdminFromCommunites(int studentId, int communityId)

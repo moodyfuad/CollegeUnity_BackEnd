@@ -10,16 +10,16 @@ namespace CollegeUnity.Core.MappingExtensions.ChatMessageExtentions.Create
 {
     public static class CreateChatMessageExtention
     {
-        public static ChatMessage GetChatMessage(this SendMessageDto dto)
+        public static ChatMessage GetChatMessage(this SendMessageDto dto, int senderId, int recipientId)
         {
             return new()
             {
                 ChatId = dto.ChatId,
                 Content = dto.Content,
-                SenderId = dto.SenderId,
+                SenderId = senderId,
+                RecipientId = recipientId,
                 Status = Enums.MessageStatus.Sent,
                 CreatedAt = DateTime.Now,
-                ReadReceipts = false
             };
         }
     }

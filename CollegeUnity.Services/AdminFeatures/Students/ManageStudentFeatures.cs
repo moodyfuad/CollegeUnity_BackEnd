@@ -5,6 +5,7 @@ using CollegeUnity.Core.Dtos.StudentFeatures;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Helpers;
 using CollegeUnity.Core.MappingExtensions.StudentExtensions.Get;
+using LinqKit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,12 +39,35 @@ namespace CollegeUnity.Services.AdminFeatures.Students
             return students.ToGetStudents();
         }
 
-        public async Task<PagedList<GStudentDto>> GetStudentSignUpRequest(GetStudentParameters parameters)
+        public async Task<PagedList<GStudentDto>> GetStudentSignUpRequest(GetStudentSignUpParameters parameters)
         {
-            Expression<Func<Student, bool>> conditions = s => s.AccountStatus == Core.Enums.AccountStatus.Waiting;
+            Expression<Func<Student, bool>> conditions = c => c.AccountStatus == Core.Enums.AccountStatus.Waiting;
+            bool isNumber = double.TryParse(parameters.NameOrCardId, out _);
+
+            if (!string.IsNullOrEmpty(parameters.NameOrCardId))
+            {
+                conditions =
+                    conditions.And(s => isNumber ? s.CardId == parameters.NameOrCardId :
+                    (s.FirstName + " " + s.MiddleName + " " + s.LastName).StartsWith(parameters.NameOrCardId));
+            }
+
+            if (parameters.Level is not null)
+            {
+                conditions = conditions.And(s => s.Level == parameters.Level);
+            }
+
+            if (parameters.AcceptanceType is not null)
+            {
+                conditions = conditions.And(s => s.AcceptanceType == parameters.AcceptanceType);
+            }
+
+            if (parameters.Major is not null)
+            {
+                conditions = conditions.And(s => s.Major == parameters.Major);
+            }
+
 
             var students = await _repositoryManager.StudentRepository.GetRangeByConditionsAsync(conditions, parameters);
-
             return students.ToGetStudents();
         }
     }

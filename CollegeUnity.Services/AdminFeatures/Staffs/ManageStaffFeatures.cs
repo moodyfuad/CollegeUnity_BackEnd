@@ -9,6 +9,7 @@ using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Enums;
 using CollegeUnity.Core.Helpers;
 using CollegeUnity.Core.MappingExtensions.StaffExtensions;
+using LinqKit;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -32,7 +33,7 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
 
         public async Task<ResultDto> CreateStaffAccount(CreateStaffDto dto)
         {
-            var isExist = await _repositoryManager.StaffRepository.GetByConditionsAsync(s => s.Email == dto.Email || s.Phone == dto.Phone);
+            var isExist = await _repositoryManager.StaffRepository.GetByConditionsAsync(s => s.Email.ToLower() == dto.Email.ToLower() || s.Phone == dto.Phone);
             if (isExist != null)
             {
                 return new(false, "There is a staff with the same email or phone number.");
@@ -122,13 +123,20 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
             }
         }
 
-        public async Task<PagedList<GStaffByRoleDto>> GetStaffByFullName(GetStaffParameters parameters)
+        public async Task<PagedList<GStaffByRoleDto>> GetStaffs(GetStaffParameters parameters)
         {
-            Expression<Func<Staff, bool>> conditions = s =>
-                (s.FirstName + " " + s.LastName).StartsWith(parameters.FullName) ||
-                (s.FirstName).StartsWith(parameters.FullName) ||
-                (s.LastName).StartsWith(parameters.FullName)
-            ;
+            Expression<Func<Staff, bool>> conditions = s => true;
+
+            if (parameters.Role.HasValue)
+            {
+                conditions = conditions.And(r => r.Roles.Contains(parameters.Role.Value));
+            }
+
+            if (!string.IsNullOrEmpty(parameters.FullName))
+            {
+                conditions = conditions.And(s =>
+                    (s.FirstName + " " + s.MiddleName + " " + s.LastName).StartsWith(parameters.FullName));
+            }
 
             var staffs = await _repositoryManager.StaffRepository.GetRangeByConditionsAsync(conditions, parameters);
             return staffs.ToGStaffRoleMappers();
@@ -148,19 +156,6 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
             await _repositoryManager.StaffRepository.Update(staff);
             await _repositoryManager.SaveChangesAsync();
             return true;
-        }
-
-        public async Task<PagedList<GStaffDto>> GetStaffByRole(GetStaffParameters parameters)
-        {
-            Expression<Func<Staff, bool>> conditions = s => s.Roles.Contains((Roles)parameters.Role);
-            var staffs = await _repositoryManager.StaffRepository.GetRangeByConditionsAsync(conditions, parameters);
-            return staffs.ToGStaffMappers();
-        }
-
-        public async Task<PagedList<GStaffByRoleDto>> GetAllStaff(GetStaffParameters parameters)
-        {
-            var results = await _repositoryManager.StaffRepository.GetRangeAsync(parameters);
-            return results.ToGStaffRoleMappers();
         }
 
         public async Task<ResultDto> ChangeUserAccountStatus(int id, ChangeUserStatusDto dto)

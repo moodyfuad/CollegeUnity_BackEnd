@@ -16,9 +16,7 @@ namespace CollegeUnity.Contract.AdminFeatures.Staffs
     {
         Task<ResultDto> CreateStaffAccount(CreateStaffDto staffDto);
         Task<ResultDto> UpdateStaffAccount(int staffId, UStaffDto dto);
-        Task<PagedList<GStaffByRoleDto>> GetStaffByFullName(GetStaffParameters parameters);
-        Task<PagedList<GStaffDto>> GetStaffByRole(GetStaffParameters parameters);
-        Task<PagedList<GStaffByRoleDto>> GetAllStaff(GetStaffParameters parameters);
+        Task<PagedList<GStaffByRoleDto>> GetStaffs(GetStaffParameters parameters);
         Task<bool> ChangeStaffPassword(int staffId, ChangeStaffPasswordDto dto);
         Task<ResultDto> ChangeUserAccountStatus(int id, ChangeUserStatusDto dto);
     }

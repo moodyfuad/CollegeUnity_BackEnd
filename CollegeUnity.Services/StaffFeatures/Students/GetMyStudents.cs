@@ -29,37 +29,34 @@ namespace CollegeUnity.Services.StaffFeatures
         public async Task<PagedList<GStudentDto>> MyStudents(int staffId, GetMyStudentsParameters parameters)
         {
             var subjects = await _getMySubjects.MySubjects(staffId);
-            var predicate = PredicateBuilder.New<Student>(false);
             PagedList<Student> matchingStudents;
             bool isNumber = double.TryParse(parameters.NameOrCardId, out _);
+            var predicate = PredicateBuilder.New<Student>(false);
 
-            if (parameters.NameOrCardId is null)
+            foreach (var subject in subjects)
             {
-                foreach (var subject in subjects)
-                {
-                    predicate = predicate.Or(s =>
-                        s.Level == subject.Level &&
-                        s.Major == subject.Major &&
-                        s.AcceptanceType == subject.AcceptanceType
-                    );
-                }
-                matchingStudents = await _repositoryManager.StudentRepository.GetRangeByConditionsAsync(
-                    predicate, parameters
+                predicate = predicate.Or(s =>
+                    s.Level == subject.Level &&
+                    s.Major == subject.Major &&
+                    s.AcceptanceType == subject.AcceptanceType
                 );
             }
-            else
+
+            if (!string.IsNullOrEmpty(parameters.NameOrCardId))
             {
-                matchingStudents = await _repositoryManager.StudentRepository.GetRangeByConditionsAsync(
-                    s =>
-                        string.IsNullOrEmpty(parameters.NameOrCardId) ||
-                        (isNumber
-                            ? s.CardId.StartsWith(parameters.NameOrCardId)
-                            : string.Concat(s.FirstName.ToLower(), " ", s.LastName.ToLower())
-                                .StartsWith(parameters.NameOrCardId.ToLower())),
-                    parameters
+                var namePredicate = PredicateBuilder.New<Student>(s =>
+                    isNumber
+                        ? s.CardId.StartsWith(parameters.NameOrCardId)
+                        : string.Concat(s.FirstName.ToLower(), " ", s.LastName.ToLower())
+                            .StartsWith(parameters.NameOrCardId.ToLower())
                 );
 
+                predicate = predicate.And(namePredicate);
             }
+
+            matchingStudents = await _repositoryManager.StudentRepository.GetRangeByConditionsAsync(
+                predicate, parameters);
+
 
             return matchingStudents.ToGetStudents();
         }

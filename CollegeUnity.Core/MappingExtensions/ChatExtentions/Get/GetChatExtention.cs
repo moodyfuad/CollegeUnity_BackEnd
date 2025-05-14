@@ -12,7 +12,7 @@ namespace CollegeUnity.Core.MappingExtensions.ChatExtentions.Get
 {
     public static class GetChatExtention
     {
-        public static GChatsList GetChat(this Chat chat, bool isStaff = true)
+        public static GChatsList GetChat(this Chat chat, int userId, bool isStaff = true)
         {
             // Get last message once to avoid multiple queries
             var lastMessage = chat.Messages?
@@ -23,32 +23,26 @@ namespace CollegeUnity.Core.MappingExtensions.ChatExtentions.Get
             {
                 ChatRoomId = chat.Id,
                 Sender = isStaff ? chat.User2.FirstName + " " + chat.User2.LastName : chat.User1.FirstName + " " + chat.User1.LastName,
-                LastMessageSent = lastMessage?.Content.TruncateContent(100),
+                LastMessageSent = lastMessage?.Content,
                 PicturePath = isStaff ? chat.User2.ProfilePicturePath : chat.User1.ProfilePicturePath,
                 UnreadCounter = chat.Messages?
                     .Count(m => m.Status == MessageStatus.Sent &&
-                               m.SenderId != lastMessage?.SenderId
+                               m.SenderId != userId
                                ) ?? 0, 
                 Time = lastMessage?.CreatedAt ?? DateTime.UtcNow
             };
         }
 
-        private static string TruncateContent(this string content, int maxLength = 100)
-        {
-            if (string.IsNullOrEmpty(content)) return content;
-            return content.Length <= maxLength ? content : $"{content[..maxLength]}...";
-        }
-
-        public static PagedList<GChatsList> GetListOfChats(this PagedList<Chat> chats, bool isStaff = true)
+        public static PagedList<GChatsList> GetListOfChats(this PagedList<Chat> chats, int userId, bool isStaff = true)
         {
             List<GChatsList> results;
             if (isStaff)
             {
-                results = chats.Select(c => c.GetChat(true)).ToList();
+                results = chats.Select(c => c.GetChat(userId, true)).ToList();
             }
             else
             {
-                results = chats.Select(c => c.GetChat(false)).ToList();
+                results = chats.Select(c => c.GetChat(userId, false)).ToList();
             }
                 var pagedList = new PagedList<GChatsList>
                     (

@@ -80,7 +80,7 @@ namespace CollegeUnity.Services
         {
             // Shared Features
             services.AddSignalR();
-            services.AddScoped<IConnectionManager, ConnectionManager>();
+            services.AddSingleton<IConnectionManager, ConnectionManager>();
             services.AddScoped<IMessageFeatures, MessageFeatures>();
             services.AddScoped<IChatListNotificationFeatures, ChatListNotificationFeatures>();
             services.AddScoped<IChatHubFeatures, ChatHubFeatures>();

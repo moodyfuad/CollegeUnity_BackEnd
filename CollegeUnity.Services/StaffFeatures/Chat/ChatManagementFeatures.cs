@@ -4,6 +4,7 @@ using CollegeUnity.Core.Dtos.ChatDtos.Create;
 using CollegeUnity.Core.Dtos.ChatDtos.Update;
 using CollegeUnity.Core.Dtos.FailureResualtDtos;
 using CollegeUnity.Core.MappingExtensions.ChatExtentions.Create;
+using CollegeUnity.Core.MappingExtensions.ChatExtentions.Get;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,11 +47,12 @@ namespace CollegeUnity.Services.StaffFeatures.Chat
                 IsChattingEnabled = true,
                 CreateAt = DateTime.Now,
             };
-
             await _repository.ChatRepository.CreateAsync(chat);
             await _repository.SaveChangesAsync();
+            
+            var data = chat.GetChat(chat.User2Id, false);
 
-            return new(true, null);
+            return new(true, null, data, chat.User2Id);
         }
 
         public async Task<ResultDto> ManageStatusChatRoom(int chatRoomId, int staffId, UChatDto dto)

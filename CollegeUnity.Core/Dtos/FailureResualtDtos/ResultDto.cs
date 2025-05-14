@@ -10,6 +10,8 @@ namespace CollegeUnity.Core.Dtos.FailureResualtDtos
     {
         public bool success;
         public string? message;
+        public object? data;
+        public object? additional;
         public List<string>? errors = [];
 
         public ResultDto(bool success, string? message)
@@ -17,11 +19,25 @@ namespace CollegeUnity.Core.Dtos.FailureResualtDtos
             this.success = success;
             this.message = message;
         }
+
+        public ResultDto(bool success, string? message, object? data)
+        {
+            this.success = success;
+            this.message = message;
+            this.data = data;
+        }
         public ResultDto(bool success, string? message = null, List<string>? errors = null)
         {
             this.success = success;
             this.message = message;
             this.errors = errors;
+        }
+        public ResultDto(bool success, string? message, object? data, object? additional)
+        {
+            this.success = success;
+            this.message = message;
+            this.data = data;
+            this.additional = additional;
         }
     }
 }

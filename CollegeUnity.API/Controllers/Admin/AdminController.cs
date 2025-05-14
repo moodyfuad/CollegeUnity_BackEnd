@@ -261,51 +261,15 @@ namespace CollegeUnity.API.Controllers.Admin
         [HttpGet("Staffs")]
         public async Task<IActionResult> GetStaffBy([FromQuery] GetStaffParameters parameters)
         {
-            if (!string.IsNullOrEmpty(parameters.FullName) && parameters.Role == null)
-            {
-                var resualt = await _manageStaffFeatures.GetStaffByFullName(parameters);
-                return new JsonResult(ApiResponse<PagedList<GStaffByRoleDto>?>.Success(resualt));
-            }
-
-            else if (string.IsNullOrEmpty(parameters.FullName) && parameters.Role != null)
-            {
-                var resualt = await _manageStaffFeatures.GetStaffByRole(parameters);
-                return new JsonResult(ApiResponse<PagedList<GStaffDto>?>.Success(resualt));
-            }
-
-            else
-            {
-                var resualt = await _manageStaffFeatures.GetAllStaff(parameters);
-                return new JsonResult(ApiResponse<PagedList<GStaffByRoleDto>?>.Success(resualt));
-            }
+            var resualt = await _manageStaffFeatures.GetStaffs(parameters);
+            return new JsonResult(ApiResponse<PagedList<GStaffByRoleDto>?>.Success(resualt));
         }
 
         [HttpGet("Communites")]
         public async Task<IActionResult> GetCommunites([FromQuery] GetCommunitesParameters parameters)
         {
-            if (parameters.CommunityState != null)
-            {
-                var communites = await _manageCommunityFeatures.GetCommunitesByName(parameters);
-                return new JsonResult(ApiResponse<PagedList<GCommunitesDto>>.Success(communites));
-            }
-
-            if (parameters.CommunityState != null)
-            {
-                var communites = await _manageCommunityFeatures.GetCommunitesByState(parameters);
-                return new JsonResult(ApiResponse<PagedList<GCommunitesDto>>.Success(communites));
-            }
-
-            else if (parameters.CommunityType != null)
-            {
-                var communites = await _manageCommunityFeatures.GetCommunitesByType(parameters);
-                return new JsonResult(ApiResponse<PagedList<GCommunitesDto>>.Success(communites));
-            }
-
-            else
-            {
-                var communites = await _manageCommunityFeatures.GetCommunites(parameters);
-                return new JsonResult(ApiResponse<PagedList<GCommunitesDto>>.Success(communites));
-            }
+            var communites = await _manageCommunityFeatures.GetCommunites(parameters);
+            return new JsonResult(ApiResponse<PagedList<GCommunitesDto>>.Success(communites));
         }
 
         [HttpGet("Community/Admins")]
@@ -324,7 +288,7 @@ namespace CollegeUnity.API.Controllers.Admin
         }
 
         [HttpGet("Request/SignUp/Students")]
-        public async Task<IActionResult> GetRequestSignUpStudents([FromQuery] GetStudentParameters parameters)
+        public async Task<IActionResult> GetRequestSignUpStudents([FromQuery] GetStudentSignUpParameters parameters)
         {
             var result = await _manageStudentFeatures.GetStudentSignUpRequest(parameters);
 

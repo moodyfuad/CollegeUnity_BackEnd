@@ -9,5 +9,6 @@ namespace CollegeUnity.Contract.EF_Contract.IEntitiesRepository
 {
     public interface IChatRepository : IBaseRepository<Chat>
     {
+        Task<int> GetChatRecipientId(int chatId, int senderId);
     }
 }

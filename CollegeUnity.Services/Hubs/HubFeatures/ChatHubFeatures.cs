@@ -27,7 +27,7 @@ namespace CollegeUnity.Services.Hubs.HubFeatures
         private readonly IChatListNotificationFeatures _chatListNotificationFeatures;
 
         public ChatHubFeatures(
-            IHubContext<BaseChatHub> hubContext, 
+            IHubContext<BaseChatHub> hubContext,
             IConnectionManager connectionManager,
             IRepositoryManager repositoryManager,
             IChatListNotificationFeatures chatListNotificationFeatures)
@@ -38,58 +38,53 @@ namespace CollegeUnity.Services.Hubs.HubFeatures
             _chatListNotificationFeatures = chatListNotificationFeatures;
         }
 
-        //private readonly IHubContext hub;
-        //public Task SendMessageToUser(int chatId, int senderId, string message)
-        //{
-        //    var cahtMessage = new ChatMessage
-        //    {
-        //        ChatId = chatId,
-        //        Content = message,
-        //        CreatedAt = DateTime.UtcNow,
-        //        ReadReceipts = false,
-        //        Status = Core.Enums.MessageStatus.Sent,
-        //        SenderId = senderId,
-        //    };
-        //}
 
-        public async Task SendMessageToUser(SendMessageDto dto)
+        public async Task SendMessageToUser(int senderId, SendMessageDto dto)
         {
+            int recipientId = await _repositoryManager.ChatRepository.GetChatRecipientId(dto.ChatId, senderId);
+
             if (string.IsNullOrWhiteSpace(dto.Content))
                 throw new ArgumentException("Message content cannot be empty");
 
-            var sendMessage = dto.GetChatMessage();
+            var sendMessage = dto.GetChatMessage(senderId, recipientId);
 
-            var recipientConnectionId = _connectionManager.GetConnection(dto.RecipientId);
+            var recipientConnectionId = _connectionManager.GetConnection(recipientId);
+            var isRecipientInChatRoom = _connectionManager.IsUserInChatRoom(recipientId, dto.ChatId);
+            var senderConnectionId = _connectionManager.GetConnection(senderId);
 
             if (!string.IsNullOrEmpty(recipientConnectionId))
+            {
                 sendMessage.Status = Core.Enums.MessageStatus.Delivered;
+            }
+
+            if (isRecipientInChatRoom)
+            {
+                sendMessage.Status = Core.Enums.MessageStatus.Read;
+            }
+
+            Task send = _hubContext.Clients
+                .Users($"chat-{dto.ChatId}")
+                .SendAsync("ReceiveMessage", sendMessage);
 
             await _repositoryManager.ChatMessageRepository.CreateAsync(sendMessage);
             await _repositoryManager.SaveChangesAsync();
 
-            var groupTask = _hubContext.Clients
-                    .Group($"user-{dto.RecipientId}")
-                    .SendAsync("ReceiveMessage", sendMessage);
-
-            var directTask = !string.IsNullOrEmpty(recipientConnectionId) ? _hubContext.Clients
-                    .Client(recipientConnectionId)
-                    .SendAsync("ReceiveMessage", sendMessage) : Task.CompletedTask;
+            var uncreadCounter = await _repositoryManager.ChatMessageRepository.GetUnreadMessages(dto.ChatId, recipientId);
 
             GChatsList getChat = new()
             {
                 ChatRoomId = dto.ChatId,
                 IsNew = true,
                 LastMessageSent = dto.Content,
-                UnreadCounter = await _repositoryManager.ChatMessageRepository.GetUnreadMessages(dto.ChatId, dto.RecipientId),
+                UnreadCounter = uncreadCounter,
                 Time = sendMessage.CreatedAt,
                 Sender = "",
                 PicturePath = "",
             };
 
-            var newMessageAtChat = _chatListNotificationFeatures.NotifyNewChat(dto.RecipientId, getChat);
+            Task notify = _chatListNotificationFeatures.NotifyNewChat(recipientId, getChat);
 
-
-            await Task.WhenAll(groupTask, directTask, newMessageAtChat);
+            await Task.WhenAll(send, notify);
         }
     }
 }

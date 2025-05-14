@@ -28,19 +28,27 @@ namespace CollegeUnity.Services.SharedFeatures.Messages
         }
 
 
-        public async Task<PagedList<GChatMessagesDto>> GetChatMessages(int chatId, int userId, GetChatMessagesParameters parameters)
+        public async Task<PagedList<ChatMessage>> GetChatMessages(int chatId, int userId, GetChatMessagesParameters parameters)
         {
+            await _repositoryManager.ChatMessageRepository.MakeMessagesReadAsync(chatId, userId);
             Expression<Func<ChatMessage, bool>> condition = c => c.ChatId == chatId;
-            var results = await _repositoryManager.ChatMessageRepository.GetRangeByConditionsAsync(condition, parameters);
-            results.OrderByDescending(c => c.CreatedAt);
-            return results.GetListOfChats(userId);
+            var results = await _repositoryManager.ChatMessageRepository.GetRangeByConditionsAsyncDes(condition, parameters);
+
+            var pagedList = new PagedList<ChatMessage>
+            (
+                items: results.OrderByDescending(c => c.CreatedAt).ToList(),
+                count: results.Count(),
+                pageNumber: parameters.PageNumber,
+                pageSize: parameters.PageSize
+            );
+            return pagedList;
         }
 
-        public async Task SendMessageAsync(SendMessageDto dto)
-        {
-            var message = dto.GetChatMessage();
-            await _repositoryManager.ChatMessageRepository.CreateAsync(message);
-            await _repositoryManager.SaveChangesAsync();
-        }
+        //public async Task SendMessageAsync(SendMessageDto dto)
+        //{
+        //    var message = dto.GetChatMessage();
+        //    await _repositoryManager.ChatMessageRepository.CreateAsync(message);
+        //    await _repositoryManager.SaveChangesAsync();
+        //}
     }
 }
