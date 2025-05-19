@@ -12,6 +12,6 @@ namespace CollegeUnity.Contract.AdminFeatures.Student
     public interface IManageStudentFeatures
     {
         Task<PagedList<GStudentDto>> GetStudents(GetStudentParameters parameters);
-        Task<PagedList<GStudentDto>> GetStudentSignUpRequest(GetStudentParameters parameters);
+        Task<PagedList<GStudentDto>> GetStudentSignUpRequest(GetStudentSignUpParameters parameters);
     }
 }

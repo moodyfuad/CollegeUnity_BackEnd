@@ -4,6 +4,7 @@ using CollegeUnity.Core.Dtos.ChatDtos.Get;
 using CollegeUnity.Core.Dtos.MessagesDto.Get;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
+using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -29,7 +30,7 @@ namespace CollegeUnity.API.Controllers.ChatMessages
 
             if (results != null)
             {
-                return new JsonResult(ApiResponse<PagedList<GChatMessagesDto>>.Success(results));
+                return new JsonResult(ApiResponse<PagedList<ChatMessage>>.Success(results));
             }
 
             return new JsonResult(ApiResponse<PagedList<GChatsList>>.NotFound("No Resource yet."));

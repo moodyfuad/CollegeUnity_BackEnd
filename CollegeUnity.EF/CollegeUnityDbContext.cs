@@ -80,7 +80,22 @@ namespace CollegeUnity.EF
                 .HasForeignKey(file => file.PostId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-                modelBuilder.Entity<Post>()
+            //Configure chat messages
+            modelBuilder.Entity<ChatMessage>()
+                .HasOne(cm => cm.Sender)
+                .WithMany()
+                .HasForeignKey(cm => cm.SenderId)
+                .OnDelete(DeleteBehavior.Cascade); // <== important
+
+            modelBuilder.Entity<ChatMessage>()
+                .HasOne(cm => cm.Recipient)
+                .WithMany()
+                .HasForeignKey(cm => cm.RecipientId)
+                .OnDelete(DeleteBehavior.Cascade); // or Restrict, as needed
+
+
+
+            modelBuilder.Entity<Post>()
         .HasOne(p => p.Subject)
         .WithMany(s => s.Posts)
         .HasForeignKey(p => p.SubjectId)

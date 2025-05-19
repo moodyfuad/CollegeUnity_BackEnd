@@ -27,7 +27,13 @@ namespace CollegeUnity.Core.Entities
         [Required]
         [ForeignKey(nameof(SenderId))]
         public virtual User Sender { get; set; }
+        
+        [Required]
+        public required int RecipientId { get; set; }
 
+        [ForeignKey(nameof(RecipientId))]
+        
+        public virtual User Recipient { get; set; }
         [Required]
         public required string Content { get; set; }
 
@@ -35,7 +41,6 @@ namespace CollegeUnity.Core.Entities
         public required MessageStatus Status { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime EditedAt { get; set; }
-        public bool ReadReceipts { get; set; }
 
     }
 }

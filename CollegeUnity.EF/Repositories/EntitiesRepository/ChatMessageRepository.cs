@@ -20,11 +20,42 @@ namespace CollegeUnity.EF.Repositories.EntitiesRepository
         public async Task<int> GetUnreadMessages(int chatId, int recipientId)
         {
             return await _context.ChatMessages.CountAsync(
-                i => i.SenderId != recipientId &&
+                i => i.RecipientId == recipientId &&
                      i.ChatId == chatId &&
-                     (i.Status == Core.Enums.MessageStatus.Sent ||
-                      i.Status == Core.Enums.MessageStatus.Delivered)
+                      i.Status == Core.Enums.MessageStatus.Delivered
             );
         }
+
+        public async Task MakeMessagesReadAsync(int chatId, int userId)
+        {
+            var messagesToUpdate = await _context.ChatMessages
+                .Where(m =>
+                    m.SenderId != userId &&
+                    m.ChatId == chatId &&
+                     m.Status == Core.Enums.MessageStatus.Delivered)
+                .ToListAsync();
+
+            foreach (var message in messagesToUpdate)
+            {
+                message.Status = Core.Enums.MessageStatus.Read;
+            }
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task MakrUserMessagesAsDeliverd(int userId)
+        {
+            var messagesToUpdate = await _context.ChatMessages
+                .Where(m =>
+                    m.SenderId != userId &&
+                    m.Status == Core.Enums.MessageStatus.Sent)
+                .ToListAsync();
+
+            foreach (var message in messagesToUpdate)
+            {
+                message.Status = Core.Enums.MessageStatus.Delivered;
+            }
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

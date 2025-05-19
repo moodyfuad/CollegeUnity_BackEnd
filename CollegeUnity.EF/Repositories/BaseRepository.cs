@@ -62,6 +62,26 @@ namespace CollegeUnity.EF.Repositories
             return await entity.AsPagedListAsync(queryStringParameters);
         }
 
+        public async Task<PagedList<T>> GetRangeByConditionsAsyncDes(
+            Expression<Func<T, bool>> condition,
+            QueryStringParameters queryStringParameters,
+            bool trackChanges = false,
+            params Expression<Func<T, object>>[] includes)
+        {
+            var entity = _dbContext.Set<T>().IgnoreAutoIncludes();
+
+            entity = entity.IncludeOneOrMany(includes);
+
+            entity = entity.Condition(condition);
+
+            entity = entity.OrderDescending();
+
+            entity = entity.TrackChanges(trackChanges);
+
+
+            return await entity.AsPagedListAsync(queryStringParameters);
+        }
+
         public async Task<PagedList<T>> GetRangeByConditionsAsync(
             Expression<Func<T, bool>>[] condition,
             QueryStringParameters queryStringParameters,

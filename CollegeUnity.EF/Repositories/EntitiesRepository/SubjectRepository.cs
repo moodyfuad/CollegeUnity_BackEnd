@@ -39,8 +39,8 @@ namespace CollegeUnity.EF.Repositories.EntitiesRepository
             .Where(s => s.TeacherId == staffId)
             .Select(s => new DistinctSubjectDto
             {
-                Major = s.Major,
                 Level = s.Level,
+                Major = s.Major,
                 AcceptanceType = s.AcceptanceType
             })
             .Distinct()

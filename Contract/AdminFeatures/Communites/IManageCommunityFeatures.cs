@@ -32,9 +32,6 @@ namespace CollegeUnity.Contract.AdminFeatures.Communites
         Task<PagedList<GCommunityAdminsDto>> GetAdmins(GetStudentCommunityAdminsParameters parameters);
         //Get Communites
         Task<PagedList<GCommunitesDto>> GetCommunites(GetCommunitesParameters parameters);
-        Task<PagedList<GCommunitesDto>> GetCommunitesByName(GetCommunitesParameters parameters);
-        Task<PagedList<GCommunitesDto>> GetCommunitesByState(GetCommunitesParameters parameters);
-        Task<PagedList<GCommunitesDto>> GetCommunitesByType(GetCommunitesParameters parameters);
         // Remove Admin
         Task<ResultDto> RemoveAdminFromCommunites(int studentId, int communityId);
         // Change State

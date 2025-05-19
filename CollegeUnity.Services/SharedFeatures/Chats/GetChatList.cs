@@ -37,7 +37,7 @@ namespace CollegeUnity.Services.SharedFeatures.Chats
                     (c.User2.FirstName + " " + c.User2.LastName).Contains(parameters.SearchName));
                 
                 chatList = await _repositoryManager.ChatRepository.GetRangeByConditionsAsync(expression, parameters, i => i.User2, i => i.Messages);
-                return chatList.GetListOfChats();
+                return chatList.GetListOfChats(userId);
             }
             else
             {
@@ -49,7 +49,7 @@ namespace CollegeUnity.Services.SharedFeatures.Chats
                 (c.User1.FirstName + " " + c.User1.LastName).Contains(parameters.SearchName));
 
                 chatList = await _repositoryManager.ChatRepository.GetRangeByConditionsAsync(expression, parameters, i => i.User1, i => i.Messages);
-                return chatList.GetListOfChats(false);
+                return chatList.GetListOfChats(userId, false);
             }
         }
     }

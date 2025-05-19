@@ -11,5 +11,8 @@ namespace CollegeUnity.Contract.SharedFeatures.Chats
         void AddConnection(int userId, string connectionId);
         void RemoveConnection(int userId);
         string GetConnection(int userId);
+        void SetUserCurrentChatRoom(int userId, int chatRoomId);
+        void RemoveUserFromChatRoom(int userId);
+        bool IsUserInChatRoom(int userId, int chatRoomId);
     }
 }

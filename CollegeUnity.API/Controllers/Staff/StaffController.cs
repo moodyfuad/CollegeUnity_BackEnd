@@ -31,13 +31,20 @@ namespace CollegeUnity.API.Controllers.Staff
         private readonly IChatManagementFeatures _chatManagementFeatures;
         private readonly IGetChatList _getChatList;
         private readonly IGetMyStudents _getMyStudents;
+        private readonly IChatListNotificationFeatures _chatListNotificationFeatures;
 
-        public StaffController(IServiceManager serviceManager, IChatManagementFeatures chatManagementFeatures, IGetChatList getChatList, IGetMyStudents getMyStudents)
+        public StaffController(
+            IServiceManager serviceManager, 
+            IChatManagementFeatures chatManagementFeatures, 
+            IGetChatList getChatList, 
+            IGetMyStudents getMyStudents,
+            IChatListNotificationFeatures chatListNotificationFeatures)
         {
             _adminServices = serviceManager.AdminServices;
             _chatManagementFeatures = chatManagementFeatures;
             _getChatList = getChatList;
             _getMyStudents = getMyStudents;
+            _chatListNotificationFeatures = chatListNotificationFeatures;
         }
 
         //[HttpGet]
@@ -68,6 +75,7 @@ namespace CollegeUnity.API.Controllers.Staff
 
             if (isSuccess.success)
             {
+                await _chatListNotificationFeatures.NotifyNewChat((int)isSuccess.additional, (GChatsList)isSuccess.data);
                 return new JsonResult(ApiResponse<bool?>.Created(null));
             }
 
