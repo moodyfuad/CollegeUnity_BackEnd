@@ -83,7 +83,7 @@ namespace CollegeUnity.Services.StaffFeatures.Account
 
             if (dto.Old != staff.Password)
             {
-                ApiResponse<bool>.BadRequest("Old Password Does Not Match");
+                return ApiResponse<bool>.BadRequest("Old Password Does Not Match");
             }
 
             staff.Password = dto.New;
