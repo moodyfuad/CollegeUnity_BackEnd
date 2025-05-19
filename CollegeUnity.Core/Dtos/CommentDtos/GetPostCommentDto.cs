@@ -1,5 +1,6 @@
 ﻿using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Enums;
 using CollegeUnity.Core.Helpers;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,7 @@ namespace CollegeUnity.Core.Dtos.CommentDtos
         public int UserId { get; set; }
 
         public string UserName { get; set; }
+        public EducationDegree? Degree{ get; set; }
 
         public string? ProfilePicturePath { get; set; }
 
@@ -40,7 +42,7 @@ namespace CollegeUnity.Core.Dtos.CommentDtos
 
         public string Content { get; set; }
 
-        public GetPostCommentDto(int id, int userId, string? profilePicturePath, string userName, DateTime createdAt, DateTime? editedAt, string content)
+        public GetPostCommentDto(int id, int userId, string? profilePicturePath, string userName, DateTime createdAt, DateTime? editedAt, string content, EducationDegree? degree)
         {
            
             Id = id;
@@ -54,15 +56,16 @@ namespace CollegeUnity.Core.Dtos.CommentDtos
 
         public static GetPostCommentDto MapFrom(PostComment comment)
         {
-            string userDegree = comment.User is Staff staff ?
-                staff.EducationDegree.ToString() :
-                string.Empty;
+            EducationDegree? userDegree = comment.User is Staff staff ?
+                staff.EducationDegree:
+                null;
 
             return new GetPostCommentDto(
                 id: comment.Id,
                 userId: comment.UserId,
                 profilePicturePath: comment.User.ProfilePicturePath,
-                userName: $"{userDegree}{comment.User.FirstName} {comment.User.LastName}",
+                degree: userDegree,
+                userName: $"{comment.User.FirstName} {comment.User.LastName}",
                 createdAt: comment.CreatedAt,
                 editedAt: comment.EditedAt,
                 content: comment.Content
