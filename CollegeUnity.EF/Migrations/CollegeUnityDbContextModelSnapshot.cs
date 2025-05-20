@@ -81,8 +81,8 @@ namespace CollegeUnity.EF.Migrations
                     b.Property<DateTime>("EditedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("ReadReceipts")
-                        .HasColumnType("bit");
+                    b.Property<int>("RecipientId")
+                        .HasColumnType("int");
 
                     b.Property<int>("SenderId")
                         .HasColumnType("int");
@@ -93,6 +93,8 @@ namespace CollegeUnity.EF.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ChatId");
+
+                    b.HasIndex("RecipientId");
 
                     b.HasIndex("SenderId");
 
@@ -449,6 +451,9 @@ namespace CollegeUnity.EF.Migrations
                     b.Property<int>("CommunityId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("LastSeen")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
@@ -684,13 +689,21 @@ namespace CollegeUnity.EF.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("CollegeUnity.Core.Entities.User", "Recipient")
+                        .WithMany()
+                        .HasForeignKey("RecipientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("CollegeUnity.Core.Entities.User", "Sender")
                         .WithMany("ChatMessages")
                         .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Chat");
+
+                    b.Navigation("Recipient");
 
                     b.Navigation("Sender");
                 });

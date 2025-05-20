@@ -396,3 +396,23 @@ CollegeUnity.EF/Migrations/20250330021136_to update database.cs
 CollegeUnity.EF/Migrations/20250330021136_to update database.Designer.cs
 CollegeUnity.EF/Migrations/20250430015019_UpdateFeedbackEntity.cs
 CollegeUnity.EF/Migrations/20250430015019_UpdateFeedbackEntity.Designer.cs
+CollegeUnity.EF/Migrations/20250330021136_to update database.Designer.cs
+CollegeUnity.EF/Migrations/20250125220012_init.cs
+CollegeUnity.EF/Migrations/20250125220012_init.cs
+CollegeUnity.EF/Migrations/20250125220012_init.Designer.cs
+CollegeUnity.EF/Migrations/20250128234842_add_birth_date.cs
+CollegeUnity.EF/Migrations/20250128234842_add_birth_date.Designer.cs
+CollegeUnity.EF/Migrations/20250213123655_initSubject.cs
+CollegeUnity.EF/Migrations/20250213123655_initSubject.Designer.cs
+CollegeUnity.EF/Migrations/20250215052730_Add_Comment_Status.cs
+CollegeUnity.EF/Migrations/20250215052730_Add_Comment_Status.Designer.cs
+CollegeUnity.EF/Migrations/20250328222353_add IsDelted property in Courses Table.cs
+CollegeUnity.EF/Migrations/20250328222353_add IsDelted property in Courses Table.Designer.cs
+CollegeUnity.EF/Migrations/20250330021136_to update database.cs
+CollegeUnity.EF/Migrations/20250330021136_to update database.Designer.cs
+CollegeUnity.EF/Migrations/20250430015019_UpdateFeedbackEntity.cs
+CollegeUnity.EF/Migrations/20250430015019_UpdateFeedbackEntity.Designer.cs
+CollegeUnity.EF/Migrations/20250516070344_editLastSeen.cs
+CollegeUnity.EF/Migrations/20250516070344_editLastSeen.Designer.cs
+CollegeUnity.EF/Migrations/20250125220012_init.cs
+/CollegeUnity.EF/Migrations
