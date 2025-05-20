@@ -1,5 +1,6 @@
 ﻿using CollegeUnity.Contract.AdminFeatures.FeedBacks;
 using CollegeUnity.Contract.AdminFeatures.Staffs;
+using CollegeUnity.Contract.AdminFeatures.Subjects;
 using CollegeUnity.Contract.EF_Contract;
 using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
@@ -19,6 +20,7 @@ using CollegeUnity.Services.PostFilesServices;
 using CollegeUnity.Services.SharedFeatures.Posts;
 using CollegeUnity.Services.StaffFeatures.Posts;
 using CollegeUnity.Services.StaffFeatures.Posts.PostsVotes;
+using CollegeUnity.Services.StaffFeatures.Subjects;
 using CollegeUnity.Services.StaffServices;
 using CollegeUnity.Services.StudentFeatures.Posts;
 using CollegeUnity.Services.StudentFeatures.Subjects;
@@ -50,7 +52,7 @@ namespace CollegeUnity.Services
 
         #region Get Posts Features
         public IGetPublicPostFeatures GetPublicPostFeatures => new GetPublicPostFeatures(_repositoryManager);
-        public IGetBatchPostFeatures GetBatchPostFeatures => new GetBatchPostFeatures(_repositoryManager, StudentSubjectFeatures);
+        public IGetBatchPostFeatures GetBatchPostFeatures => new GetBatchPostFeatures(_repositoryManager, StudentSubjectFeatures, GetMySubjects);
         public IGetSubjectPostFeatures GetSubjectPostFeatures => new GetSubjectPostFeatures(_repositoryManager);
         public IStudentSubjectFeatures StudentSubjectFeatures => new StudentSubjectFeatures(_repositoryManager);
         #endregion
@@ -86,6 +88,7 @@ namespace CollegeUnity.Services
         public IAdminServices AdminServices => new AdminService(_repositoryManager);
 
         public IStudentServices StudentServices => new StudentService(_repositoryManager);
+        public IGetMySubjects GetMySubjects => new GetMySubjects(_repositoryManager);
 
         public IStaffServices StaffServices => new StaffService(_repositoryManager);
 

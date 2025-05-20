@@ -55,7 +55,7 @@ namespace CollegeUnity.Services.StudentFeatures.Account
                 List<string> errors = [];
                 if (student.CardId == studentDto.CardId)
                 {
-                    errors.Add($"User Already exist with [ {student.CardId} ] Registration ID");
+                    errors.Add($"Student Already exist with [ {student.CardId} ] Registration ID");
                 }
 
                 if (student.Email.ToLower().Equals(studentDto.Email.ToLower()))

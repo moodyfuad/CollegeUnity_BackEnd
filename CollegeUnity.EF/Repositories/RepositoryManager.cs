@@ -32,10 +32,17 @@ namespace CollegeUnity.EF.Repositories
         private IChatRepository _chatRepository;
         private IChatMessageRepository _chatMessageRepository;
         private IFeedBackRepository _feedBackRepository;
+        private ICommunityMessagesRepository _communityMessagesRepository;
 
         public RepositoryManager(CollegeUnityDbContext dbContext)
         {
             _dbContext = dbContext;
+        }
+
+        public ICommunityMessagesRepository CommunityMessagesRepository
+        {
+            get => _communityMessagesRepository ??= new CommunityMessagesRepository(_dbContext);
+            private set { }
         }
 
         public IUserRepository UserRepository

@@ -26,5 +26,13 @@ namespace CollegeUnity.EF.Repositories.EntitiesRepository
         {
             return await GetByConditionsAsync(s => s.Email.ToLower().Equals(email.ToLower()));
         }
+
+        public async Task<string?> GetFullName(int id)
+        {
+            return await _context.Students
+                .Where(s => s.Id == id)
+                .Select(s => s.FirstName + " " + s.MiddleName + " " + s.LastName)
+                .FirstOrDefaultAsync();
+        }
     }
 }

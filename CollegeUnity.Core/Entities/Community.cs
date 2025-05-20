@@ -27,7 +27,5 @@ namespace CollegeUnity.Core.Entities
 
         public virtual ICollection<CommunityMessage>? CommunityMessages { get; set; }
 
-
-
     }
 }

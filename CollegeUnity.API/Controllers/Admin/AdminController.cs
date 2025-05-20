@@ -14,6 +14,7 @@ using CollegeUnity.Core.Dtos.CommunityDtos.Create;
 using CollegeUnity.Core.Dtos.CommunityDtos.Get;
 using CollegeUnity.Core.Dtos.CommunityDtos.Update;
 using CollegeUnity.Core.Dtos.CourseDtos;
+using CollegeUnity.Core.Dtos.FailureResualtDtos;
 using CollegeUnity.Core.Dtos.FeedBackDtos.Create;
 using CollegeUnity.Core.Dtos.FeedBackDtos.Get;
 using CollegeUnity.Core.Dtos.QueryStrings;
@@ -80,40 +81,18 @@ namespace CollegeUnity.API.Controllers.Admin
             return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
         }
 
-        [HttpPost("Community/RemoveAdmin/{studentId}")]
-        public async Task<IActionResult> RemoveAdmin(int studentId, [FromBody] int communityId)
+        [HttpPost("Community/SetAdmin/{studentId}/community/{communityId}")]
+        public async Task<IActionResult> SetAdmin(int studentId, int communityId, bool isSuperAdmin = true)
         {
-            var isSuccess = await _manageCommunityFeatures.RemoveAdminFromCommunites(studentId, communityId);
+            ResultDto isSuccess;
+            if (isSuperAdmin)
+                isSuccess = await _manageCommunityFeatures.SetSuperAdminForCommunity(studentId, communityId);
+            else
+                isSuccess = await _manageCommunityFeatures.SetAdminForCommunity(studentId, communityId);
 
             if (isSuccess.success)
             {
                 return new JsonResult(ApiResponse<bool?>.Success(null));
-            }
-
-            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
-        }
-
-        [HttpPost("Community/SetAdmin/{studentId}")]
-        public async Task<IActionResult> SetAdmin(int studentId, [FromBody] int communityId)
-        {
-            var isSuccess = await _manageCommunityFeatures.SetAdminForCommunity(studentId, communityId);
-
-            if (isSuccess.success)
-            {
-                return new JsonResult(ApiResponse<bool?>.Success(null));
-            }
-
-            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
-        }
-
-        [HttpPost("Community/SetSuperAdmin/{studentId}")]
-        public async Task<IActionResult> SetSuperAdmin(int studentId, [FromBody] int communityId)
-        {
-            var isSuccess = await _manageCommunityFeatures.SetSuperAdminForCommunity(studentId, communityId);
-
-            if (isSuccess.success)
-            {
-                return new JsonResult(ApiResponse<bool?>.Success(null, isSuccess.message));
             }
 
             return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
@@ -145,7 +124,7 @@ namespace CollegeUnity.API.Controllers.Admin
             return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
         }
 
-        [HttpPut("User/Change/AccountStatus/{userId}")]
+        [HttpPut("Student/Change/AccountStatus/{userId}")]
         public async Task<IActionResult> ChangeStaffAccountStatus(int userId, [FromBody] ChangeUserStatusDto dto)
         {
             var isSuccess = await _manageStaffFeatures.ChangeUserAccountStatus(userId, dto);
@@ -347,6 +326,19 @@ namespace CollegeUnity.API.Controllers.Admin
             if (isSuccess.success)
             {
                 return new JsonResult(ApiResponse<bool?>.Created(null));
+            }
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
+        }
+
+        [HttpDelete("Community/RemoveAdmin/{studentId}/community/{communityId}")]
+        public async Task<IActionResult> RemoveAdmin(int studentId, int communityId)
+        {
+            var isSuccess = await _manageCommunityFeatures.RemoveAdminFromCommunites(studentId, communityId);
+
+            if (isSuccess.success)
+            {
+                return new JsonResult(ApiResponse<bool?>.Success(null));
             }
 
             return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));

@@ -15,18 +15,15 @@ namespace CollegeUnity.Core.Entities
         public int Id { get; set; }
         [Required]
         [ForeignKey(nameof(StudentCommunity))]
-        public int StudentCommunityId { get; set; }
+        public required int StudentCommunityId { get; set; }
         [Required]
-        public virtual required StudentCommunity StudentCommunity { get; set; }
+        public virtual StudentCommunity StudentCommunity { get; set; }
 
         [Required]
         [ForeignKey(nameof(Community))]
-        public int CommunityId { get; set; }
+        public required int CommunityId { get; set; }
 
-        public virtual required Community Community { get; set; }
-
-
-        public CommunityMemberRoles Role  { get => StudentCommunity.Role; }
+        public virtual Community Community { get; set; }
         [Required]
         public required string Message { get; set; }
 

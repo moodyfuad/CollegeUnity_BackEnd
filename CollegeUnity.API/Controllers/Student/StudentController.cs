@@ -122,7 +122,7 @@ namespace CollegeUnity.API.Controllers.Student
         }
 
         [HttpGet("Communites")]
-        public async Task<IActionResult> GetNotJoindCommunites(GetStudentCommunitesParameters parameters)
+        public async Task<IActionResult> GetNotJoindCommunites([FromQuery] GetStudentCommunitesParameters parameters)
         {
             int _studentId = User.GetUserId();
             var communites = await _studentCommunityFeatures.GetNotJoinedCommunities(_studentId, parameters);

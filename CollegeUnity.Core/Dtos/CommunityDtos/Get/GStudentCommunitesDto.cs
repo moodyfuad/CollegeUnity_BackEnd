@@ -10,7 +10,9 @@ namespace CollegeUnity.Core.Dtos.CommunityDtos.Get
     public class GStudentCommunitesDto
     {        
         public required int Id { get; set; }
-        public required string Name { get; set; }
-        public required string Description { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public int? UnreadCounter { get; set; }
+        public string? LastMessage { get; set; }
     }
 }

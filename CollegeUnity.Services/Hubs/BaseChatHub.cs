@@ -2,6 +2,7 @@
 using CollegeUnity.Contract.SharedFeatures.Chats;
 using CollegeUnity.Core.Constants.AuthenticationConstants;
 using CollegeUnity.Core.Dtos.MessagesDto.Create;
+using CollegeUnity.Core.Dtos.MessagesDto.Send;
 using CollegeUnity.Core.Entities;
 using Microsoft.AspNetCore.SignalR;
 using System;
@@ -47,6 +48,23 @@ namespace CollegeUnity.Services.Hubs
             await base.OnConnectedAsync();
         }
 
+        public async Task joinCommunityRoom(int communityId)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, $"community-{communityId}");
+        }
+
+        public async Task LeaveCommunityRoom(int communityId)
+        {
+            var userId = GetUserIdFromClaims();
+            if (userId != null)
+            {
+                await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"community-{communityId}");
+                await _repositoryManager.StudentCommunityRepository.SetMyLastSeen(userId.Value, communityId);
+                await _repositoryManager.SaveChangesAsync();
+            }
+        }
+
+
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
             var userId = GetUserIdFromClaims();
@@ -63,10 +81,20 @@ namespace CollegeUnity.Services.Hubs
         {
             var userId = GetUserIdFromClaims();
             if (userId == null)
-                throw new UnauthorizedAccessException("User not logged in.");
+                throw new UnauthorizedAccessException("Student not logged in.");
 
 
             await _chatHubFeatures.SendMessageToUser(userId.Value, dto);
+        }
+
+        public async Task SendMessageToCommunity(SendMessageToCommunityDto dto)
+        {
+            var userId = GetUserIdFromClaims();
+            if (userId == null)
+                throw new UnauthorizedAccessException("Student not logged in.");
+
+
+            await _chatHubFeatures.SendMessageToUCommunity(userId.Value, dto);
         }
 
         public Task JoinChatRoom(int chatId)
@@ -77,7 +105,7 @@ namespace CollegeUnity.Services.Hubs
                 _connectionManager.SetUserCurrentChatRoom(userId.Value, chatId);
                 return Groups.AddToGroupAsync(Context.ConnectionId, $"chat-{chatId}");
             }
-            throw new UnauthorizedAccessException("User not logged in.");
+            throw new UnauthorizedAccessException("Student not logged in.");
         }
 
         public Task LeaveChatRoom(int chatId)
@@ -88,7 +116,7 @@ namespace CollegeUnity.Services.Hubs
                 _connectionManager.RemoveUserFromChatRoom(userId.Value);
                 return Groups.RemoveFromGroupAsync(Context.ConnectionId, $"chat-{chatId}");
             }
-            throw new UnauthorizedAccessException("User not logged in.");
+            throw new UnauthorizedAccessException("Student not logged in.");
         }
     }
 }

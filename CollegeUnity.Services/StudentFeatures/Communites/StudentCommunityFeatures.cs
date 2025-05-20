@@ -2,15 +2,18 @@
 using CollegeUnity.Contract.StudentFeatures.Community;
 using CollegeUnity.Core.Dtos.CommunityDtos.Get;
 using CollegeUnity.Core.Dtos.FailureResualtDtos;
+using CollegeUnity.Core.Dtos.MessagesDto.Get;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Helpers;
+using CollegeUnity.Core.MappingExtensions;
 using CollegeUnity.Core.MappingExtensions.CommunityExtensions.Get;
 using CollegeUnity.Core.MappingExtensions.StudentCommunityExtensions.Create;
 using CollegeUnity.Core.MappingExtensions.StudentCommunityExtensions.Get;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,21 +28,41 @@ namespace CollegeUnity.Services.StudentFeatures.Communites
             _repositoryManager = repositoryManager;
         }
 
+        public async Task<PagedList<GCommunityMessagesDto>> GetCommunityMessages(int studentId, int communityId, GetCommunityMessagesParameters parameters)
+        {
+            await _repositoryManager.StudentCommunityRepository.SetMyLastSeen(studentId, communityId);
+            await _repositoryManager.SaveChangesAsync();
+            Expression<Func<CommunityMessage, bool>> conditions = s => communityId == s.CommunityId;
+            var results = await _repositoryManager.CommunityMessagesRepository.GetRangeByConditionsAsync(conditions, parameters, i => i.StudentCommunity, i => i.StudentCommunity.Student);
+            return results.MapPagedList(GetCommunityMessageExtention.GetMessage);
+        }
+
         public async Task<PagedList<GStudentCommunitesDto>> GetMyCommunites(int studentId, GetStudentCommunitesParameters parameters)
         {
             var joinedCommunites = await _repositoryManager.StudentCommunityRepository.GetCommunitiesByStudentIdAsync(studentId);
+            var unreadCounters = new Dictionary<int, int>();
+
+            foreach (var communityId in joinedCommunites)
+            {
+                int unread = await _repositoryManager.StudentCommunityRepository
+                    .GetUnreadMessagesFromLastSeen(studentId, communityId);
+
+                unreadCounters[communityId] = unread;
+            }
+
             PagedList<Community> communites;
+            Expression<Func<Community, object>>[] includes = [i => i.CommunityMessages];
 
             if (string.IsNullOrEmpty(parameters.Name))
             {
-                communites = await _repositoryManager.CommunityRepository.GetRangeByConditionsAsync(s => joinedCommunites.Contains(s.Id), parameters);
+                communites = await _repositoryManager.CommunityRepository.GetRangeByConditionsAsync(s => joinedCommunites.Contains(s.Id) && s.CommunityState == Core.Enums.CommunityState.Active, parameters, includes);
             }
             else
             {
-                communites = await _repositoryManager.CommunityRepository.GetRangeByConditionsAsync(s => joinedCommunites.Contains(s.Id) && s.Name.StartsWith(parameters.Name), parameters);
+                communites = await _repositoryManager.CommunityRepository.GetRangeByConditionsAsync(s => joinedCommunites.Contains(s.Id) && s.Name.StartsWith(parameters.Name) && s.CommunityState == Core.Enums.CommunityState.Active, parameters, includes);
             }
 
-            var result = communites.ToGetStudentCommunites();
+            var result = communites.ToGetStudentCommunites(unreadCounters);
             return result;
         }
 
@@ -52,13 +75,13 @@ namespace CollegeUnity.Services.StudentFeatures.Communites
             if (string.IsNullOrEmpty(parameters.Name))
             {
                 communities = await _repositoryManager.CommunityRepository.GetRangeByConditionsAsync(
-                    s => !joinedCommunities.Contains(s.Id),
+                    s => !joinedCommunities.Contains(s.Id) && s.CommunityState == Core.Enums.CommunityState.Active,
                     parameters);
             }
             else
             {
                 communities = await _repositoryManager.CommunityRepository.GetRangeByConditionsAsync(
-                    s => !joinedCommunities.Contains(s.Id) && s.Name.StartsWith(parameters.Name),
+                    s => !joinedCommunities.Contains(s.Id) && s.Name.StartsWith(parameters.Name) && s.CommunityState == Core.Enums.CommunityState.Active,
                     parameters);
             }
 
@@ -80,9 +103,9 @@ namespace CollegeUnity.Services.StudentFeatures.Communites
                 return new(false, "Community not found.");
             }
 
-            var isStudentJoined = _repositoryManager.StudentCommunityRepository.GetByConditionsAsync(s => s.StudentId == studentId && s.CommunityId == communityId);
+            var isStudentJoined = await _repositoryManager.StudentCommunityRepository.AnyAsync(s => s.StudentId == studentId && s.CommunityId == communityId);
 
-            if (isStudentJoined != null)
+            if (isStudentJoined)
             {
                 return new(false, "Student is already joined in the community.");
             }

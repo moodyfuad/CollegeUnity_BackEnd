@@ -34,5 +34,36 @@ namespace CollegeUnity.EF.Repositories.EntitiesRepository
 
             return communities;
         }
+
+        public async Task<List<int>> GetStudentIdsInCommunity(int communityId)
+        {
+            return await _context.StudentCommunities
+                .Where(sc => sc.CommunityId == communityId)
+                .Select(sc => sc.StudentId)
+                .ToListAsync();
+        }
+
+        public async Task<int> GetUnreadMessagesFromLastSeen(int studentId, int communityId)
+        {
+            var lastSeen = await _context.StudentCommunities
+                .Where(s => s.StudentId == studentId && s.CommunityId == communityId)
+                .Select(s => s.LastSeen)
+                .FirstOrDefaultAsync();
+
+            return await _context.CommunityMessages
+                .Where(m => m.CommunityId == communityId && m.CreatedAt > lastSeen)
+                .CountAsync();
+
+        }
+
+        public async Task SetMyLastSeen(int studentId, int communityId)
+        {
+            var isExist = await _context.StudentCommunities.FirstOrDefaultAsync(s => s.StudentId == studentId && s.CommunityId == communityId);
+            if (isExist != null)
+            {
+                isExist.LastSeen = DateTime.Now;
+                _context.StudentCommunities.Update(isExist);
+            }
+        }
     }
 }

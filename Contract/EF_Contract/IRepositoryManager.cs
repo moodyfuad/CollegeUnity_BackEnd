@@ -33,6 +33,7 @@ namespace CollegeUnity.Contract.EF_Contract
 
         IRequestRepository RequestRepository { get; }
 
+        ICommunityMessagesRepository CommunityMessagesRepository { get; }
         ICoursesRepository CoursesRepository { get; }
         IScheduleFilesRepository ScheduleFilesRepository { get; }
         IChatMessageRepository ChatMessageRepository { get; }
