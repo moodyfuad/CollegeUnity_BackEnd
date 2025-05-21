@@ -164,7 +164,7 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
 
             if (user == null)
             {
-                return new(false, "No User found.");
+                return new(false, "No Student found.");
             }
 
             user.AccountStatus = dto.AccountStatus;

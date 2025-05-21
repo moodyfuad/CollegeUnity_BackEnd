@@ -28,7 +28,7 @@ namespace CollegeUnity.Services.SharedFeatures.Posts.Comments
 
             if (user == null)
             {
-                string errorMessage = "NO User Found";
+                string errorMessage = "NO Student Found";
                 return AddCommentResultDto.Failed(errorMessage);
             }
 
@@ -63,7 +63,7 @@ namespace CollegeUnity.Services.SharedFeatures.Posts.Comments
             var user = await _repositories.UserRepository.GetByIdAsync(userId);
             if (user is null)
             {
-                throw new UnauthorizedAccessException($"User with given Not Found");
+                throw new UnauthorizedAccessException($"Student with given Not Found");
             }
 
             bool isExist = await IsExist(commentId);

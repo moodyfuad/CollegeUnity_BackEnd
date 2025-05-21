@@ -70,5 +70,17 @@ namespace CollegeUnity.Core.MappingExtensions.SubjectExtenstions
                 
         }
 
+        public static GTeacherSubjectDto GetTeacherSubject(this Subject subject)
+        {
+            return new()
+            {
+                Id = subject.Id,
+                Name = subject.Name,
+                Level = subject.Level,
+                AcceptanceType = subject.AcceptanceType,
+                Major = subject.Major,
+            };
+        }
+
     }
 }

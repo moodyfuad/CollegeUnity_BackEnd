@@ -87,7 +87,10 @@ namespace CollegeUnity.Core.MappingExtensions.StaffExtensions
                 Gender = ConvertToArabicHelper.GenderToArabic(staff.Gender),
                 profilePicturePath = staff.ProfilePicturePath,
                 AccountStatus = staff.AccountStatus.ToString(),
-                roles = ConvertToArabicHelper.RolesToArabic(staff.Roles)
+                roles = staff.Roles.ToDictionary(
+                    role => (int)role,
+                    role => role.ToString()
+                )
             };
         }
 

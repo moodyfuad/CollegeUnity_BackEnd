@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Core.Dtos.QueryStrings
 {
-    public class GetStudentCommunitesParameters : QueryStringParameters
+    public class GetMySubjectsParameters : QueryStringParameters
     {
-        public string? Name { get; set; }
     }
 }

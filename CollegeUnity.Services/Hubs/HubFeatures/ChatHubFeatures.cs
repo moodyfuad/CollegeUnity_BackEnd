@@ -4,8 +4,11 @@ using CollegeUnity.Core.Constants.AuthenticationConstants;
 using CollegeUnity.Core.Dtos.ChatDtos;
 using CollegeUnity.Core.Dtos.ChatDtos.Get;
 using CollegeUnity.Core.Dtos.MessagesDto.Create;
+using CollegeUnity.Core.Dtos.MessagesDto.Send;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.MappingExtensions.ChatMessageExtentions.Create;
+using CollegeUnity.Core.MappingExtensions.CommunityExtensions.Get;
+using CollegeUnity.Core.MappingExtensions.CommunityMessageExtentions;
 using CollegeUnity.Services.Hubs;
 using CollegeUnity.Services.SharedFeatures.Chats;
 using Microsoft.AspNetCore.SignalR;
@@ -38,6 +41,27 @@ namespace CollegeUnity.Services.Hubs.HubFeatures
             _chatListNotificationFeatures = chatListNotificationFeatures;
         }
 
+        public async Task SendMessageToUCommunity(int senderId, SendMessageToCommunityDto dto)
+        {
+            int studentInCommunityId =
+                (await _repositoryManager.StudentCommunityRepository.GetByConditionsAsync(s => s.StudentId == senderId && s.CommunityId == dto.CommunityId)).Id;
+
+            if (string.IsNullOrWhiteSpace(dto.Content))
+                throw new ArgumentException("Message content cannot be empty");
+
+            var communityMessage = CommunityMessageExtention.ToCommunityMessage(studentInCommunityId, dto.CommunityId, dto.Content);
+
+            string studentName = await _repositoryManager.StudentRepository.GetFullName(senderId);
+
+            await _hubContext.Clients
+                .Group($"community-{dto.CommunityId}")
+                .SendAsync("ReceiveCommunityMessage", communityMessage.GetMessage(studentName));
+
+            await _repositoryManager.CommunityMessagesRepository.CreateAsync(communityMessage);
+            await _repositoryManager.SaveChangesAsync();
+
+            await _chatListNotificationFeatures.NotifyNewMessageInCommunity(dto.CommunityId, dto.Content);
+        }
 
         public async Task SendMessageToUser(int senderId, SendMessageDto dto)
         {

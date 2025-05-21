@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace CollegeUnity.Core.Dtos.QueryStrings
 {
-    public class GetStudentCommunitesParameters : QueryStringParameters
+    public class GetCommunityMessagesParameters : QueryStringParameters
     {
-        public string? Name { get; set; }
     }
 }

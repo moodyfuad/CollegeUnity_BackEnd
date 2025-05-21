@@ -199,7 +199,18 @@ namespace CollegeUnity.API.Controllers.Post
         public async Task<IActionResult> GetBatchPost([FromQuery] SubjectPostParameters postParameters)
         {
             var studentId = User.GetUserId();
-            var posts = await _getBatchPostFeatures.GetBatchPost(studentId, postParameters);
+
+            bool hasFilters = postParameters.Level != null ||
+                              postParameters.Major != null ||
+                              postParameters.AcceptanceType != null;
+
+            PagedList<GStudentBatchPost> posts;
+
+            if (hasFilters)
+                posts = await _getBatchPostFeatures.GetBatchPost(postParameters);
+            else
+                posts = await _getBatchPostFeatures.GetBatchPost(studentId, postParameters);
+
             if (posts.Count() > 0)
             {
                 return new JsonResult(ApiResponse<PagedList<GStudentBatchPost>>.Success(data: posts));
@@ -207,6 +218,7 @@ namespace CollegeUnity.API.Controllers.Post
 
             return new JsonResult(ApiResponse<PagedList<GStudentBatchPost>?>.NotFound("No Posts yet."));
         }
+
 
         [HttpGet("Subject")]
         public async Task<IActionResult> GetSubjectPost([FromQuery] GetSubjectPostParameters Parameters)
@@ -247,7 +259,7 @@ namespace CollegeUnity.API.Controllers.Post
         {
             var staffId = User.GetUserId();
             
-            if (await _basePost.DeleteAsync(postId, staffId))
+            if (await _basePost.DeleteAsync(staffId, postId))
             {
                 return new JsonResult(ApiResponse<bool?>.Success(null));
             }

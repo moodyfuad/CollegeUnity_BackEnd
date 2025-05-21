@@ -35,8 +35,6 @@ namespace CollegeUnity.Core.Entities
 
         [InverseProperty(nameof(Course.RegisteredStudents))]
         public virtual ICollection<Course>? RegisteredCourses { get; set; }
-
-
         public virtual ICollection<StudentCommunity>? StudentCommunity { get; set; }
 
     }

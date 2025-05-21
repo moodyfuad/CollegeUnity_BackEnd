@@ -74,7 +74,10 @@ namespace CollegeUnity.Services.StaffFeatures.Posts
                     await _repositoryManager.PostFilesRepository.Delete(picture);
                 }
 
-                await createPostFiles(dto.NewPictures, postId);
+                if (dto.NewPictures != null)
+                {
+                    await createPostFiles(dto.NewPictures, postId);
+                }
                 await _repositoryManager.PostRepository.Update(post);
                 await _repositoryManager.SaveChangesAsync();
                 return true;

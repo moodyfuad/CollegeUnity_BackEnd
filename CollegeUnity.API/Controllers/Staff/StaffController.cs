@@ -1,4 +1,5 @@
 ﻿using CollegeUnity.API.Middlerware_Extentions;
+using CollegeUnity.Contract.AdminFeatures.Subjects;
 using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
 using CollegeUnity.Contract.SharedFeatures.Chats;
@@ -11,6 +12,7 @@ using CollegeUnity.Core.Dtos.ChatDtos.Update;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Dtos.StudentFeatures;
+using CollegeUnity.Core.Dtos.SubjectDtos;
 using CollegeUnity.Core.Enums;
 using CollegeUnity.Core.Helpers;
 using CollegeUnity.Services;
@@ -32,19 +34,23 @@ namespace CollegeUnity.API.Controllers.Staff
         private readonly IGetChatList _getChatList;
         private readonly IGetMyStudents _getMyStudents;
         private readonly IChatListNotificationFeatures _chatListNotificationFeatures;
+        private readonly IGetMySubjects _getMySubjects;
 
         public StaffController(
-            IServiceManager serviceManager, 
-            IChatManagementFeatures chatManagementFeatures, 
-            IGetChatList getChatList, 
+            IServiceManager serviceManager,
+            IChatManagementFeatures chatManagementFeatures,
+            IGetChatList getChatList,
             IGetMyStudents getMyStudents,
-            IChatListNotificationFeatures chatListNotificationFeatures)
+            IChatListNotificationFeatures chatListNotificationFeatures,
+            IGetMySubjects getMySubjects
+            )
         {
             _adminServices = serviceManager.AdminServices;
             _chatManagementFeatures = chatManagementFeatures;
             _getChatList = getChatList;
             _getMyStudents = getMyStudents;
             _chatListNotificationFeatures = chatListNotificationFeatures;
+            _getMySubjects = getMySubjects;
         }
 
         //[HttpGet]
@@ -135,6 +141,20 @@ namespace CollegeUnity.API.Controllers.Staff
             }
 
             return new JsonResult(ApiResponse<PagedList<GStudentDto>>.NotFound("No Resource yet."));
+        }
+
+        [HttpGet("Get/Teacher/Subjects")]
+        public async Task<IActionResult> GetTeahcerSubjects([FromQuery] GetMySubjectsParameters parameters)
+        {
+            int _teacherId = User.GetUserId();
+            var list = await _getMySubjects.MySubjects(_teacherId, parameters);
+
+            if (list != null)
+            {
+                return new JsonResult(ApiResponse<PagedList<GTeacherSubjectDto>>.Success(list));
+            }
+
+            return new JsonResult(ApiResponse<PagedList<GTeacherSubjectDto>>.NotFound("No Resource yet."));
         }
 
         //[HttpPost("Create")]

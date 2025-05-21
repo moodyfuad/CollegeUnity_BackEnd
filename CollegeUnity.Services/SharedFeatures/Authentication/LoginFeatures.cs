@@ -85,7 +85,7 @@ namespace CollegeUnity.Services.SharedFeatures.Authentication
                         _ => throw new Exception("one or more errors please try again later"),
                     };
 
-                default: throw new Exception("User Type Error");
+                default: throw new Exception("Student Type Error");
             }
         }
 

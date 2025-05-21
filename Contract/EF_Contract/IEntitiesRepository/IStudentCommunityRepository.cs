@@ -12,5 +12,8 @@ namespace CollegeUnity.Contract.EF_Contract.IEntitiesRepository
     {
         Task<bool> AnyAsync(Expression<Func<StudentCommunity, bool>> predicate);
         Task<List<int>> GetCommunitiesByStudentIdAsync(int studentId);
+        Task<int> GetUnreadMessagesFromLastSeen(int studentId, int communityId);
+        Task SetMyLastSeen(int studentId, int communityId);
+        Task<List<int>> GetStudentIdsInCommunity(int communityId);
     }
 }

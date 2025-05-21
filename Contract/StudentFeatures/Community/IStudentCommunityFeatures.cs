@@ -1,6 +1,8 @@
 ﻿using CollegeUnity.Core.Dtos.CommunityDtos.Get;
 using CollegeUnity.Core.Dtos.FailureResualtDtos;
+using CollegeUnity.Core.Dtos.MessagesDto.Get;
 using CollegeUnity.Core.Dtos.QueryStrings;
+using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Helpers;
 using System;
 using System.Collections.Generic;
@@ -15,6 +17,7 @@ namespace CollegeUnity.Contract.StudentFeatures.Community
         // Get
         Task<PagedList<GStudentCommunitesDto>> GetMyCommunites(int studentId, GetStudentCommunitesParameters parameters);
         Task<PagedList<GStudentCommunitesDto>> GetNotJoinedCommunities(int studentId, GetStudentCommunitesParameters parameters);
+        Task<PagedList<GCommunityMessagesDto>> GetCommunityMessages(int studentId, int communityId, GetCommunityMessagesParameters parameters);
         // join
         Task<ResultDto> JoinToCommunity(int studentId, int communityId);
         // Leave

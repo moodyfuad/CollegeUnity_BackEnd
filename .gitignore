@@ -368,3 +368,31 @@ FodyWeavers.xsd
 /Files/Profile-Pictures/826cccb6-b050-47cc-80da-0b31486c1635.png
 /Files/Students-Card-Id-Pictures/d3deff61-a81b-4604-934d-0e9a8eda18fe.png
 /Files
+CollegeUnity.EF/Migrations/20250125220012_init.cs
+CollegeUnity.EF/Migrations/20250125220012_init.Designer.cs
+CollegeUnity.EF/Migrations/20250128234842_add_birth_date.cs
+CollegeUnity.EF/Migrations/20250128234842_add_birth_date.Designer.cs
+CollegeUnity.EF/Migrations/20250213123655_initSubject.cs
+CollegeUnity.EF/Migrations/20250213123655_initSubject.Designer.cs
+CollegeUnity.EF/Migrations/20250215052730_Add_Comment_Status.cs
+CollegeUnity.EF/Migrations/20250215052730_Add_Comment_Status.Designer.cs
+CollegeUnity.EF/Migrations/20250328222353_add IsDelted property in Courses Table.cs
+CollegeUnity.EF/Migrations/20250328222353_add IsDelted property in Courses Table.Designer.cs
+CollegeUnity.EF/Migrations/20250330021136_to update database.cs
+CollegeUnity.EF/Migrations/20250330021136_to update database.Designer.cs
+CollegeUnity.EF/Migrations/20250430015019_UpdateFeedbackEntity.cs
+CollegeUnity.EF/Migrations/20250430015019_UpdateFeedbackEntity.Designer.cs
+CollegeUnity.EF/Migrations/20250125220012_init.cs
+CollegeUnity.EF/Migrations/20250125220012_init.Designer.cs
+CollegeUnity.EF/Migrations/20250128234842_add_birth_date.cs
+CollegeUnity.EF/Migrations/20250128234842_add_birth_date.Designer.cs
+CollegeUnity.EF/Migrations/20250213123655_initSubject.cs
+CollegeUnity.EF/Migrations/20250213123655_initSubject.Designer.cs
+CollegeUnity.EF/Migrations/20250215052730_Add_Comment_Status.cs
+CollegeUnity.EF/Migrations/20250215052730_Add_Comment_Status.Designer.cs
+CollegeUnity.EF/Migrations/20250328222353_add IsDelted property in Courses Table.cs
+CollegeUnity.EF/Migrations/20250328222353_add IsDelted property in Courses Table.Designer.cs
+CollegeUnity.EF/Migrations/20250330021136_to update database.cs
+CollegeUnity.EF/Migrations/20250330021136_to update database.Designer.cs
+CollegeUnity.EF/Migrations/20250430015019_UpdateFeedbackEntity.cs
+CollegeUnity.EF/Migrations/20250430015019_UpdateFeedbackEntity.Designer.cs
