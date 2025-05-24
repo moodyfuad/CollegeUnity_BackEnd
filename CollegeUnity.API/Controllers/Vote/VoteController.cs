@@ -1,4 +1,5 @@
 ﻿using CollegeUnity.API.Filters;
+using CollegeUnity.API.Middlerware_Extentions;
 using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.SharedFeatures.Posts.Votes;
 using CollegeUnity.Core.Dtos.QueryStrings;
@@ -24,11 +25,11 @@ namespace CollegeUnity.API.Controllers.Vote
         }
 
         [HttpPost("Vote")]
-        //[ServiceFilter(typeof(ValidateExistActionFilter))]
         [ValidateEntityExist("postid")]
-        public async Task<IActionResult> AddVoteToPost(int postId, [FromQuery] VoteInPostDto dto)
+        public async Task<ActionResult<ApiResponse<bool>>> AddVoteToPost([FromQuery] VoteInPostDto dto)
         {
-            var result = await voteFeatures.VoteInPost(dto);
+            int userId = User.GetUserId();
+            var result = await voteFeatures.VoteInPost(userId, dto);
 
             if (result.IsSuccess)
             {

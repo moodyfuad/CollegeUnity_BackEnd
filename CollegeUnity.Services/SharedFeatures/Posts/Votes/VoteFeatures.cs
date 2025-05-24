@@ -1,5 +1,6 @@
 ﻿using CollegeUnity.Contract.EF_Contract;
 using CollegeUnity.Contract.SharedFeatures.Posts.Votes;
+using CollegeUnity.Core.CustomExceptions;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ServiceResultsDtos;
 using CollegeUnity.Core.Dtos.VoteDtos;
@@ -25,52 +26,37 @@ namespace CollegeUnity.Services.SharedFeatures.Posts.Votes
             return GetPostVotesResultDto.New(result.FirstOrDefault()?.Post ?? null);
         }
 
-        public async Task<RequestResult<bool>> VoteInPost(VoteInPostDto dto)
+        public async Task<RequestResult<bool>> VoteInPost(int userId, VoteInPostDto dto)
         {
-            var post = await _repositoryManager.PostRepository.GetByConditionsAsync(
-                condition: p => p.Id == dto.postId,
-                includes: p => p.Votes);
+            var votes = await _repositoryManager.VotesRepository.GetPostVotes(dto.postId);
 
-            PostVote vote = await GetVoteById(dto);
-
-            User user = await GetUserById(dto);
-
-            if (user == null)
+            if (votes.FirstOrDefault(v => v?.Id == dto.voteId, null) == null)
             {
-                return RequestResult<bool>.Failed("user not found");
+                throw new BadRequestException("Post Or Vote Doesn't Exist");
             }
 
-            var validateResult = ValidatePost(post, vote);
+            User user = await _repositoryManager.UserRepository.GetByConditionsAsync(
+                condition: u => u.Id == userId,
+                includes: u=> u.Votes);
 
-            if (!validateResult.IsSuccess)
+            foreach (var vote in votes)
             {
-                return validateResult;
+                if (vote.Id == dto.voteId && vote.SelectedBy?.FirstOrDefault(u => u.Id == userId) == null)
+                {
+                    vote.SelectedBy?.Add(user!);
+                    user!.Votes?.Add(vote);
+                }
+                else
+                {
+                    vote.SelectedBy?.Remove(user!);
+                    user!.Votes?.Remove(vote);
+                }
+                 await _repositoryManager.VotesRepository.Update(vote);
             }
 
-            if (vote == null)
-            {
-                return RequestResult<bool>.Failed("vote not found");
-            }
+            await _repositoryManager.SaveChangesAsync();
 
-            PostVote previousSelection = IsUserAlreadyVoted(user, post);
-
-            if (previousSelection != null)
-            {
-                return await UpdateUserVote(vote, user, previousSelection);
-            }
-
-            try
-            {
-                vote.SelectedBy?.Add(user);
-                await _repositoryManager.VotesRepository.Update(vote);
-                await _repositoryManager.SaveChangesAsync();
-
-                return RequestResult<bool>.Success("Voted Successfully");
-            }
-            catch (Exception ex)
-            {
-                return RequestResult<bool>.Failed(ex.Message);
-            }
+            return RequestResult<bool>.Success("Successfully Voted");
         }
 
         private RequestResult<bool> ValidatePost(Post post, PostVote vote)
@@ -101,28 +87,6 @@ namespace CollegeUnity.Services.SharedFeatures.Posts.Votes
             await _repositoryManager.VotesRepository.Update(newVoteSelection);
             await _repositoryManager.SaveChangesAsync();
             return RequestResult<bool>.Success("change Voted");
-        }
-
-        private async Task<PostVote> GetVoteById(VoteInPostDto dto)
-        {
-            return await _repositoryManager.VotesRepository.GetByConditionsAsync(
-                condition: v => v.Id == dto.voteId,
-                includes: v => v.SelectedBy);
-        }
-
-        private async Task<User> GetUserById(VoteInPostDto dto)
-        {
-            return await _repositoryManager.UserRepository.GetByConditionsAsync(
-                condition: u => u.Id == dto.userId,
-                includes: u => u.Votes);
-        }
-
-        PostVote? IsUserAlreadyVoted(User user, Post post)
-        {
-            var userSelectedVote = post.Votes?
-                .FirstOrDefault(v => v.SelectedBy?.Contains(user) ?? default) ?? null;
-
-            return userSelectedVote;
         }
     }
 }
