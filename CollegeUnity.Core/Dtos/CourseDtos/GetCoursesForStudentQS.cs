@@ -10,8 +10,24 @@ namespace CollegeUnity.Core.Dtos.CourseDtos
 {
     public class GetCoursesForStudentQS : QueryStringParameters
     {
+        private string? name;
+
         [DisplayName("Course Name")]
-        public string Name { get; set; } = string.Empty;
+        public string? Name
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(name))
+                {
+                    return string.Empty;
+                }
+                else
+                {
+                    return name.Trim();
+                }
+            }
+            set => name = value;
+        }
         [DisplayName("Get My Courses Only")]
         public bool IsMyCourses { get; set; } = false;
     }

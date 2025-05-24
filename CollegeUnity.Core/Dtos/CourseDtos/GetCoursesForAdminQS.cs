@@ -1,6 +1,7 @@
 ﻿using CollegeUnity.Core.Dtos.QueryStrings;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -15,7 +16,24 @@ namespace CollegeUnity.Core.Dtos.CourseDtos
 
         public bool IncludeStudents { get; set; } = false;
 
-        public string Name { get; set; } = string.Empty;
+
+        private string? name;
+
+        public string? Name
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(name))
+                {
+                    return string.Empty;
+                }
+                else
+                {
+                    return name.Trim();
+                }
+            }
+            set => name = value;
+        }
 
         public string Description { get; set; } = string.Empty;
 
