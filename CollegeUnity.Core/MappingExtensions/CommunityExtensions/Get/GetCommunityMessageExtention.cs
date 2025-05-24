@@ -15,17 +15,19 @@ namespace CollegeUnity.Core.MappingExtensions.CommunityExtensions.Get
             return new()
             {
                 Id = message.Id,
+                SenderId = message.StudentCommunity.StudentId,
                 DateTime = message.CreatedAt,
                 Message = message.Message,
                 SenderName = string.Concat(message.StudentCommunity.Student.FirstName + " " + message.StudentCommunity.Student.MiddleName + " " + message.StudentCommunity.Student.LastName)
             };
         }
 
-        public static GCommunityMessagesDto GetMessage(this CommunityMessage message, string studentName)
+        public static GCommunityMessagesDto GetMessage(this CommunityMessage message, int senderId, string studentName)
         {
             return new()
             {
                 Id = message.Id,
+                SenderId = senderId,
                 DateTime = message.CreatedAt,
                 Message = message.Message,
                 SenderName = studentName

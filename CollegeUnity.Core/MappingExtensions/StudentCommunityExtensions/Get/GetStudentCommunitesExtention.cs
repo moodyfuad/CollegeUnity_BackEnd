@@ -13,7 +13,7 @@ namespace CollegeUnity.Core.MappingExtensions.StudentCommunityExtensions.Get
     {
 
         //For Get My Communites
-        private static GStudentCommunitesDto GetCommunity(this Community community, Dictionary<int, int> unreadCounter)
+        private static GStudentCommunitesDto GetCommunity(this Community community, Dictionary<int, int> unreadCounter, int studentId)
         {
             return new GStudentCommunitesDto
             {
@@ -22,12 +22,14 @@ namespace CollegeUnity.Core.MappingExtensions.StudentCommunityExtensions.Get
                 Description = community.Description,
                 LastMessage = community.CommunityMessages.LastOrDefault()?.Message,
                 UnreadCounter = unreadCounter.ContainsKey(community.Id) ? unreadCounter[community.Id] : 0,
+                role = community.CommunityStudents.FirstOrDefault(s => s.StudentId == studentId).Role,
+                Type = community.CommunityType
             };
         }
 
-        public static PagedList<GStudentCommunitesDto> ToGetStudentCommunites(this PagedList<Community> communities, Dictionary<int, int> unreadCounter)
+        public static PagedList<GStudentCommunitesDto> ToGetStudentCommunites(this PagedList<Community> communities, Dictionary<int, int> unreadCounter, int studentId)
         {
-            var results = communities.Select(c => c.GetCommunity(unreadCounter)).ToList();
+            var results = communities.Select(c => c.GetCommunity(unreadCounter, studentId)).ToList();
             var pagedList = new PagedList<GStudentCommunitesDto>
                 (
                     items: results,

@@ -33,16 +33,17 @@ namespace CollegeUnity.API.Controllers.Post
         private readonly IGetBatchPostFeatures _getBatchPostFeatures;
         private readonly IGetSubjectPostFeatures _getSubjectPostFeatures;
 
-        private readonly IManagePublicPostsFeatures _managePublicPostsFeatures;
-        private readonly IManageBatchPostsFeatures _manageBatchPostsFeatures;
-        private readonly IManageSubjectPostsFeatures _manageSubjectPostsFeatures;
+        //private readonly IManagePublicPostsFeatures _managePublicPostsFeatures;
+        //private readonly IManageBatchPostsFeatures _manageBatchPostsFeatures;
+        //private readonly IManageSubjectPostsFeatures _manageSubjectPostsFeatures;
 
         private readonly IManageSubjectFeatures _manageSubjectFeatures;
+        private readonly ICreatePostFeatures _createPostFeatures;
 
         private readonly IBasePost _basePost;
 
 
-        public PostController(IServiceManager serviceManager)
+        public PostController(IServiceManager serviceManager, ICreatePostFeatures createPostFeatures)
         {
             _serviceManager = serviceManager;
 
@@ -50,11 +51,12 @@ namespace CollegeUnity.API.Controllers.Post
             _getBatchPostFeatures = serviceManager.GetBatchPostFeatures;
             _getSubjectPostFeatures = serviceManager.GetSubjectPostFeatures;
 
-            _managePublicPostsFeatures = serviceManager.managePublicPostsFeatures;
-            _manageBatchPostsFeatures = serviceManager.manageBatchPostsFeatures;
-            _manageSubjectPostsFeatures = serviceManager.manageSubjectPostsFeatures;
+            //_managePublicPostsFeatures = serviceManager.managePublicPostsFeatures;
+            //_manageBatchPostsFeatures = serviceManager.manageBatchPostsFeatures;
+            //_manageSubjectPostsFeatures = serviceManager.manageSubjectPostsFeatures;
 
             _manageSubjectFeatures = serviceManager.manageSubjectFeatures;
+            _createPostFeatures = createPostFeatures;
 
             _basePost = serviceManager.basePost;
         }
@@ -108,7 +110,7 @@ namespace CollegeUnity.API.Controllers.Post
             var isExist = await _serviceManager.IsExist<CollegeUnity.Core.Entities.Staff>(staffId);
             if (isExist != null)
             {
-                await _managePublicPostsFeatures.CreatePublicPostAsync(dto, staffId);
+                await _createPostFeatures.CreatePostAsync(dto, staffId);
                 return new JsonResult(ApiResponse<bool?>.Created(null));
             }
 
@@ -122,7 +124,7 @@ namespace CollegeUnity.API.Controllers.Post
             var isExist = await _serviceManager.IsExist<CollegeUnity.Core.Entities.Staff>(staffId);
             if (isExist != null)
             {
-                await _manageBatchPostsFeatures.CreateBatchPostAsync(dto, staffId);
+                await _createPostFeatures.CreatePostAsync(dto, staffId);
                 return new JsonResult(ApiResponse<bool?>.Created(null));
             }
 
@@ -136,7 +138,7 @@ namespace CollegeUnity.API.Controllers.Post
             bool isSubjectStudiedByTeacher = await _manageSubjectFeatures.SubjectStudyCheck(dto.SubjectId, staffId);
             if (isSubjectStudiedByTeacher)
             {
-                await _manageSubjectPostsFeatures.CreateSubjectPostAsync(dto, staffId);
+                await _createPostFeatures.CreatePostAsync(dto, staffId);
                 return new JsonResult(ApiResponse<bool?>.Created(null));
             }
 
@@ -199,17 +201,7 @@ namespace CollegeUnity.API.Controllers.Post
         public async Task<IActionResult> GetBatchPost([FromQuery] SubjectPostParameters postParameters)
         {
             var studentId = User.GetUserId();
-
-            bool hasFilters = postParameters.Level != null ||
-                              postParameters.Major != null ||
-                              postParameters.AcceptanceType != null;
-
-            PagedList<GStudentBatchPost> posts;
-
-            if (hasFilters)
-                posts = await _getBatchPostFeatures.GetBatchPost(postParameters);
-            else
-                posts = await _getBatchPostFeatures.GetBatchPost(studentId, postParameters);
+            var posts = await _getBatchPostFeatures.GetBatchPost(studentId, postParameters);
 
             if (posts.Count() > 0)
             {

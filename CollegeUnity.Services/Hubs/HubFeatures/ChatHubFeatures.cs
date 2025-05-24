@@ -6,6 +6,7 @@ using CollegeUnity.Core.Dtos.ChatDtos.Get;
 using CollegeUnity.Core.Dtos.MessagesDto.Create;
 using CollegeUnity.Core.Dtos.MessagesDto.Send;
 using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Enums;
 using CollegeUnity.Core.MappingExtensions.ChatMessageExtentions.Create;
 using CollegeUnity.Core.MappingExtensions.CommunityExtensions.Get;
 using CollegeUnity.Core.MappingExtensions.CommunityMessageExtentions;
@@ -41,27 +42,52 @@ namespace CollegeUnity.Services.Hubs.HubFeatures
             _chatListNotificationFeatures = chatListNotificationFeatures;
         }
 
-        public async Task SendMessageToUCommunity(int senderId, SendMessageToCommunityDto dto)
+        private async Task SendCommunityMessage(int senderId, SendMessageToCommunityDto dto)
         {
-            int studentInCommunityId =
-                (await _repositoryManager.StudentCommunityRepository.GetByConditionsAsync(s => s.StudentId == senderId && s.CommunityId == dto.CommunityId)).Id;
+            int? studentInCommunityId = await _repositoryManager.StudentCommunityRepository.GetStudentIdInCommunity(senderId, dto.CommunityId);
+
+            if (studentInCommunityId is null)
+                throw new UnauthorizedAccessException("can not send, student id is required.");
 
             if (string.IsNullOrWhiteSpace(dto.Content))
                 throw new ArgumentException("Message content cannot be empty");
 
-            var communityMessage = CommunityMessageExtention.ToCommunityMessage(studentInCommunityId, dto.CommunityId, dto.Content);
+            var communityMessage = CommunityMessageExtention
+                .ToCommunityMessage(studentInCommunityId.Value, dto.CommunityId, dto.Content);
 
             string studentName = await _repositoryManager.StudentRepository.GetFullName(senderId);
 
             await _hubContext.Clients
                 .Group($"community-{dto.CommunityId}")
-                .SendAsync("ReceiveCommunityMessage", communityMessage.GetMessage(studentName));
+                .SendAsync("ReceiveCommunityMessage", communityMessage.GetMessage(senderId, studentName));
 
             await _repositoryManager.CommunityMessagesRepository.CreateAsync(communityMessage);
             await _repositoryManager.SaveChangesAsync();
 
-            await _chatListNotificationFeatures.NotifyNewMessageInCommunity(dto.CommunityId, dto.Content);
+            await _chatListNotificationFeatures.NotifyNewMessageInCommunity(dto.CommunityId, dto.Content, senderId);
         }
+
+        public async Task SendMessageToUCommunity(int senderId, SendMessageToCommunityDto dto)
+        {
+            var studentRole = await _repositoryManager.StudentCommunityRepository
+                .GetStudentRoleInCommunity(senderId, dto.CommunityId);
+
+            var communityType = await _repositoryManager.CommunityRepository
+                .TypeOfCommunity(dto.CommunityId);
+
+            bool isLocked = communityType == CommunityType.LookedPrivate || communityType == CommunityType.Private;
+            bool isAdmin = studentRole == CommunityMemberRoles.Admin || studentRole == CommunityMemberRoles.SuperAdmin;
+
+            if (!isLocked || (isLocked && isAdmin))
+            {
+                await SendCommunityMessage(senderId, dto);
+            }
+            else
+            {
+                throw new UnauthorizedAccessException("You are not allowed to send messages in this community.");
+            }
+        }
+
 
         public async Task SendMessageToUser(int senderId, SendMessageDto dto)
         {
@@ -87,7 +113,7 @@ namespace CollegeUnity.Services.Hubs.HubFeatures
             }
 
             Task send = _hubContext.Clients
-                .Users($"chat-{dto.ChatId}")
+                .Group($"chat-{dto.ChatId}")
                 .SendAsync("ReceiveMessage", sendMessage);
 
             await _repositoryManager.ChatMessageRepository.CreateAsync(sendMessage);

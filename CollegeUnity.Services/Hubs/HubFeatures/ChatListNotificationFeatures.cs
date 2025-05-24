@@ -44,7 +44,7 @@ namespace CollegeUnity.Services.Hubs.HubFeatures
             }
         }
 
-        public async Task NotifyNewMessageInCommunity(int communityId, string content)
+        public async Task NotifyNewMessageInCommunity(int communityId, string content, int excludedStudentId)
         {
             var studentIds = await _repositoryManager.StudentCommunityRepository.GetStudentIdsInCommunity(communityId);
 
@@ -52,9 +52,11 @@ namespace CollegeUnity.Services.Hubs.HubFeatures
 
             foreach (var studentId in studentIds)
             {
+
                 tasks.Add(Task.Run(async () =>
                 {
-                    var lastMessagesCounter = await _repositoryManager.StudentCommunityRepository.GetUnreadMessagesFromLastSeen(studentId, communityId);
+                    var lastMessagesCounter = await _repositoryManager.StudentCommunityRepository
+                        .GetUnreadMessagesFromLastSeen(studentId, communityId);
 
                     GStudentCommunitesDto dto = new()
                     {
@@ -75,6 +77,7 @@ namespace CollegeUnity.Services.Hubs.HubFeatures
 
             await Task.WhenAll(tasks);
         }
+
 
     }
 }

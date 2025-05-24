@@ -142,28 +142,26 @@ namespace CollegeUnity.Services.AdminFeatures.Communites
 
         public async Task<ResultDto> RemoveAdminFromCommunites(int studentId, int communityId)
         {
-            var studentExist = await _repositoryManager.StudentRepository.GetByIdAsync(studentId);
-            var communityExist = await _repositoryManager.CommunityRepository.GetByIdAsync(communityId);
-
-            if (studentExist == null)
+            if (studentId == null)
             {
                 return new(false, "Student not found.");
             }
 
-            if (communityExist == null)
+            if (communityId == null)
             {
                 return new(false, "Community not found.");
             }
 
             var isAdmin = await _repositoryManager.StudentCommunityRepository
-                .AnyAsync(sc => sc.StudentId == studentId && (sc.Role == CommunityMemberRoles.Admin || sc.Role == CommunityMemberRoles.SuperAdmin));
+                .GetByConditionsAsync(sc => sc.StudentId == studentId && sc.CommunityId == communityId);
 
-            if (isAdmin)
+            if (isAdmin.Role != CommunityMemberRoles.Admin && isAdmin.Role != CommunityMemberRoles.SuperAdmin)
             {
                 return new ResultDto(false, "Student is not Admin in a community.");
             }
 
-            var studentCommunity = RemoveCommunityAdminExtention.ToNormalStudentCommunity(studentId, communityId);
+            var studentCommunity = RemoveCommunityAdminExtention.ToNormalStudentCommunity(isAdmin.Id, studentId, communityId);
+            _repositoryManager.Detach(isAdmin);
             await _repositoryManager.StudentCommunityRepository.Update(studentCommunity);
             await _repositoryManager.SaveChangesAsync();
 
@@ -183,16 +181,26 @@ namespace CollegeUnity.Services.AdminFeatures.Communites
             }
 
             var isAdmin = await _repositoryManager.StudentCommunityRepository
-                .GetByConditionsAsync(sc => sc.StudentId == studentId && sc.CommunityId == communityId && sc.Role == CommunityMemberRoles.Admin);
+                .GetByConditionsAsync(sc => sc.StudentId == studentId && sc.CommunityId == communityId);
 
             if (isAdmin != null)
             {
-                return new ResultDto(true, "Student is already a Admin in a community.");
+                if (isAdmin.Role == CommunityMemberRoles.Admin)
+                {
+                    return new ResultDto(false, "Student is already an Admin in a community.");
+                }
+
+                var studentCommunity = StudentCommunityExtention.ToAdminStudentCommunity(isAdmin.Id, studentId, communityId);
+                _repositoryManager.Detach(isAdmin);
+                await _repositoryManager.StudentCommunityRepository.Update(studentCommunity);
             }
 
-            var studentCommunity = StudentCommunityExtention.ToAdminStudentCommunity(studentId, communityId);
+            if (isAdmin == null)
+            {
+                var studentCommunity = StudentCommunityExtention.ToAdminStudentCommunity(studentId, communityId);
+                await _repositoryManager.StudentCommunityRepository.CreateAsync(studentCommunity);
+            }
 
-            await _repositoryManager.StudentCommunityRepository.CreateAsync(studentCommunity);
             await _repositoryManager.SaveChangesAsync();
 
             return new(true, null);
@@ -211,16 +219,26 @@ namespace CollegeUnity.Services.AdminFeatures.Communites
             }
 
             var isSuperAdmin = await _repositoryManager.StudentCommunityRepository
-                .GetByConditionsAsync(sc => sc.StudentId == studentId && sc.CommunityId == communityId && sc.Role == CommunityMemberRoles.SuperAdmin);
+                .GetByConditionsAsync(sc => sc.StudentId == studentId && sc.CommunityId == communityId);
 
             if (isSuperAdmin != null)
             {
-                return new ResultDto(true, "Student is already a Super Admin in a community.");
+                if (isSuperAdmin.Role == CommunityMemberRoles.SuperAdmin)
+                {
+                    return new ResultDto(false, "Student is already a Super Admin in a community.");
+                }
+
+                var studentCommunity = StudentCommunityExtention.ToSuperAdminStudentCommunity(isSuperAdmin.Id, studentId, communityId);
+                _repositoryManager.Detach(isSuperAdmin);
+                await _repositoryManager.StudentCommunityRepository.Update(studentCommunity);
             }
 
-            var studentCommunity = StudentCommunityExtention.ToSuperAdminStudentCommunity(studentId, communityId);
+            if (isSuperAdmin == null)
+            {
+                var studentCommunity = StudentCommunityExtention.ToSuperAdminStudentCommunity(studentId, communityId);
+                await _repositoryManager.StudentCommunityRepository.CreateAsync(studentCommunity);
+            }
 
-            await _repositoryManager.StudentCommunityRepository.CreateAsync(studentCommunity);
             await _repositoryManager.SaveChangesAsync();
 
             return new(true, null);

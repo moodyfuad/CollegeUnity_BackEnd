@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CollegeUnity.Core.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,5 +13,18 @@ namespace CollegeUnity.Core.Dtos.PostDtos.Create
     public class CSubjectPostDto : CPostDto
     {
         public int SubjectId { get; set; }
+
+        public override Post ToPost(int staffId)
+        {
+            return new Post
+            {
+                Content = this.Content,
+                CreatedAt = DateTime.Now,
+                Priority = this.Priority,
+                IsPublic = false,
+                SubjectId = this.SubjectId,
+                StaffId = staffId,
+            };
+        }
     }
 }

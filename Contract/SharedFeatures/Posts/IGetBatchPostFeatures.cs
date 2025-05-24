@@ -13,6 +13,5 @@ namespace CollegeUnity.Contract.SharedFeatures.Posts
     {
         // get
         public Task<PagedList<GStudentBatchPost>> GetBatchPost(int studentId, SubjectPostParameters parameters);
-        Task<PagedList<GStudentBatchPost>> GetBatchPost(SubjectPostParameters parameters);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CollegeUnity.Core.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -14,5 +15,7 @@ namespace CollegeUnity.Core.Dtos.CommunityDtos.Get
         public string Description { get; set; }
         public int? UnreadCounter { get; set; }
         public string? LastMessage { get; set; }
+        public CommunityMemberRoles role { get; set; }
+        public CommunityType Type { get; set; }
     }
 }

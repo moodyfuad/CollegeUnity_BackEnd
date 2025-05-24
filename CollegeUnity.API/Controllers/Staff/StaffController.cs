@@ -4,6 +4,7 @@ using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
 using CollegeUnity.Contract.SharedFeatures.Chats;
 using CollegeUnity.Contract.StaffFeatures.Chats;
+using CollegeUnity.Contract.StaffFeatures.Staffs;
 using CollegeUnity.Contract.StaffFeatures.Students;
 using CollegeUnity.Core.Dtos.AdminServiceDtos;
 using CollegeUnity.Core.Dtos.ChatDtos.Create;
@@ -11,6 +12,7 @@ using CollegeUnity.Core.Dtos.ChatDtos.Get;
 using CollegeUnity.Core.Dtos.ChatDtos.Update;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
+using CollegeUnity.Core.Dtos.StaffFeatures;
 using CollegeUnity.Core.Dtos.StudentFeatures;
 using CollegeUnity.Core.Dtos.SubjectDtos;
 using CollegeUnity.Core.Enums;
@@ -25,6 +27,12 @@ using System.Net.WebSockets;
 
 namespace CollegeUnity.API.Controllers.Staff
 {
+    [Authorize(Roles = $"{nameof(Roles.Dean)}," +
+    $"{nameof(Roles.StudentAffairsViceDeanShip)}," +
+    $"{nameof(Roles.HeadOfCSDepartment)}," +
+    $"{nameof(Roles.HeadOfITDepartment)}," +
+    $"{nameof(Roles.Teacher)}," +
+    $"{nameof(Roles.RegistrationAdmissionEmployee)}")]
     [Route("api/[controller]")]
     [ApiController]
     public class StaffController : ControllerBase
@@ -35,6 +43,7 @@ namespace CollegeUnity.API.Controllers.Staff
         private readonly IGetMyStudents _getMyStudents;
         private readonly IChatListNotificationFeatures _chatListNotificationFeatures;
         private readonly IGetMySubjects _getMySubjects;
+        private readonly IGetStaffFeatures _getStaffFeatures;
 
         public StaffController(
             IServiceManager serviceManager,
@@ -42,7 +51,8 @@ namespace CollegeUnity.API.Controllers.Staff
             IGetChatList getChatList,
             IGetMyStudents getMyStudents,
             IChatListNotificationFeatures chatListNotificationFeatures,
-            IGetMySubjects getMySubjects
+            IGetMySubjects getMySubjects,
+            IGetStaffFeatures getStaffFeatures
             )
         {
             _adminServices = serviceManager.AdminServices;
@@ -51,6 +61,7 @@ namespace CollegeUnity.API.Controllers.Staff
             _getMyStudents = getMyStudents;
             _chatListNotificationFeatures = chatListNotificationFeatures;
             _getMySubjects = getMySubjects;
+            _getStaffFeatures = getStaffFeatures;
         }
 
         //[HttpGet]
@@ -67,12 +78,20 @@ namespace CollegeUnity.API.Controllers.Staff
             return new JsonResult(response);
         }
 
-        [Authorize(Roles = $"{nameof(Roles.Dean)}," +
-            $"{nameof(Roles.StudentAffairsViceDeanShip)}," +
-            $"{nameof(Roles.HeadOfCSDepartment)}," +
-            $"{nameof(Roles.HeadOfITDepartment)}," +
-            $"{nameof(Roles.Teacher)}," +
-            $"{nameof(Roles.RegistrationAdmissionEmployee)}")]
+        [HttpGet("Staffs")]
+        public async Task<IActionResult> GetStaff([FromQuery] GetStaffParameters parameters)
+        {
+            int staffId = User.GetUserId();
+            var list = await _getStaffFeatures.GetStaffs(staffId, parameters);
+
+            if (list != null)
+            {
+                return new JsonResult(ApiResponse<PagedList<GetStaffDto>>.Success(list));
+            }
+
+            return new JsonResult(ApiResponse<PagedList<GetStaffDto>>.NotFound("No Resource yet."));
+        }
+
         [HttpPost("Create/ChatRoom/{studentId}")]
         public async Task<IActionResult> CreateChatRoom(int studentId)
         {
@@ -88,12 +107,6 @@ namespace CollegeUnity.API.Controllers.Staff
             return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
         }
 
-        [Authorize(Roles = $"{nameof(Roles.Dean)}," +
-            $"{nameof(Roles.StudentAffairsViceDeanShip)}," +
-            $"{nameof(Roles.HeadOfCSDepartment)}," +
-            $"{nameof(Roles.HeadOfITDepartment)}," +
-            $"{nameof(Roles.Teacher)}," +
-            $"{nameof(Roles.RegistrationAdmissionEmployee)}")]
         [HttpPost("Update/ChatRoom/{chatRoomId}")]
         public async Task<IActionResult> UpdateChatRoom(int chatRoomId, UChatDto dto)
         {
@@ -108,12 +121,6 @@ namespace CollegeUnity.API.Controllers.Staff
             return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
         }
 
-        [Authorize(Roles = $"{nameof(Roles.Dean)}," +
-            $"{nameof(Roles.StudentAffairsViceDeanShip)}," +
-            $"{nameof(Roles.HeadOfCSDepartment)}," +
-            $"{nameof(Roles.HeadOfITDepartment)}," +
-            $"{nameof(Roles.Teacher)}," +
-            $"{nameof(Roles.RegistrationAdmissionEmployee)}")]
         [HttpGet("List/Chat")]
         public async Task<IActionResult> GetChatsList([FromQuery] GetChatParameters parameters)
         {
@@ -128,7 +135,6 @@ namespace CollegeUnity.API.Controllers.Staff
             return new JsonResult(ApiResponse<PagedList<GChatsList>>.NotFound("No Resource yet."));
         }
 
-        
         [HttpGet("Get/Teacher/Students")]
         public async Task<IActionResult> GetTeahcerStudents([FromQuery] GetMyStudentsParameters parameters)
         {

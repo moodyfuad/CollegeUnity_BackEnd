@@ -23,34 +23,27 @@ namespace CollegeUnity.Services.SharedFeatures.Chats
             _repositoryManager = repositoryManager;
         }
 
-        public async Task<PagedList<GChatsList>> GetListOfChat(int userId, GetChatParameters parameters, bool isStaff = true)
+        //This is between staff and student
+        public async Task<PagedList<GChatsList>> GetListOfChat(int userId, GetChatParameters parameters)
         {
-            Expression<Func<CollegeUnity.Core.Entities.Chat, bool>> expression;
-            PagedList<CollegeUnity.Core.Entities.Chat> chatList;
-            if (isStaff)
-            {
-                expression = c =>
-                    c.IsHiddenForUser1 == parameters.isHidden &&
-                    c.IsChattingEnabled == parameters.isEnabled &&
-                    c.User1Id == userId &&
-                    (string.IsNullOrEmpty(parameters.SearchName) ||
-                    (c.User2.FirstName + " " + c.User2.LastName).Contains(parameters.SearchName));
-                
-                chatList = await _repositoryManager.ChatRepository.GetRangeByConditionsAsync(expression, parameters, i => i.User2, i => i.Messages);
-                return chatList.GetListOfChats(userId);
-            }
-            else
-            {
-                expression = c =>
-                c.IsHiddenForUser2 == parameters.isHidden &&
-                c.IsChattingEnabled == parameters.isEnabled &&
-                c.User2Id == userId &&
-                (string.IsNullOrEmpty(parameters.SearchName) ||
-                (c.User1.FirstName + " " + c.User1.LastName).Contains(parameters.SearchName));
+            Expression<Func<CollegeUnity.Core.Entities.Chat, bool>> expression = c =>
+                ((c.User1Id == userId && c.IsHiddenForUser1 == parameters.isHidden) ||
+                  (c.User2Id == userId && c.IsHiddenForUser2 == parameters.isHidden))
+                && c.IsChattingEnabled == parameters.isEnabled
+                && (string.IsNullOrEmpty(parameters.SearchName) ||
+                    (
+                        (c.User1Id == userId && (c.User2.FirstName + " " + c.User2.LastName).Contains(parameters.SearchName)) ||
+                        (c.User2Id == userId && (c.User1.FirstName + " " + c.User1.LastName).Contains(parameters.SearchName))
+                    ));
 
-                chatList = await _repositoryManager.ChatRepository.GetRangeByConditionsAsync(expression, parameters, i => i.User1, i => i.Messages);
-                return chatList.GetListOfChats(userId, false);
-            }
+            var chatList = await _repositoryManager.ChatRepository.GetRangeByConditionsAsync(
+                expression,
+                parameters,
+                i => i.User1,
+                i => i.User2,
+                i => i.Messages);
+
+            return chatList.GetListOfChatsWithOtherUserNames(userId);
         }
     }
 }

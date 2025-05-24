@@ -4,6 +4,7 @@ using CollegeUnity.Core.Dtos.ScheduleFilesDtos.Get;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Enums;
 using CollegeUnity.Core.Helpers;
+using CollegeUnity.Core.MappingExtensions.VoteExtentions.Get;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +39,7 @@ namespace CollegeUnity.Core.MappingExtensions.PostExtensions.Get
                     TeachNames = post.Staff.Roles.Select(r => r.AsString())
                 },
                 PostFiles = post.PostFiles?.Select(p => p.Path).ToList(),
-                //Votes = post.Votes?.Select(p => p.Name).ToList()
+                Votes = post.Votes.MapToGVotesDto()
             };
 
             if (dto is GPublicPostDto publicPostDto)

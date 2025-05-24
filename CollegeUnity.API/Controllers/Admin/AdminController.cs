@@ -124,7 +124,7 @@ namespace CollegeUnity.API.Controllers.Admin
             return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
         }
 
-        [HttpPut("Student/Change/AccountStatus/{userId}")]
+        [HttpPut("User/Change/AccountStatus/{userId}")]
         public async Task<IActionResult> ChangeStaffAccountStatus(int userId, [FromBody] ChangeUserStatusDto dto)
         {
             var isSuccess = await _manageStaffFeatures.ChangeUserAccountStatus(userId, dto);

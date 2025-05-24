@@ -27,6 +27,7 @@ namespace CollegeUnity.Core.Entities
         [Required]
         public required CommunityMemberRoles Role {  get; set; }
         public DateTime? LastSeen { get; set; }
+        public bool IsDeleted { get; set; }
 
         public virtual ICollection<CommunityMessage>? CommunityMessages { get; set; }
     }

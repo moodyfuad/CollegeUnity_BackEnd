@@ -2,6 +2,7 @@
 using CollegeUnity.Contract.StaffFeatures.Posts;
 using CollegeUnity.Contract.StaffFeatures.Posts.PostFiles;
 using CollegeUnity.Contract.StaffFeatures.Posts.PostsVotes;
+using CollegeUnity.Core.Dtos.FailureResualtDtos;
 using CollegeUnity.Core.Dtos.PostDtos.Update;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Helpers;
@@ -26,6 +27,35 @@ namespace CollegeUnity.Services.StaffFeatures.Posts
             _repositoryManager = repositoryManager;
             _postFilesFeatures = postFilesFeatures;
             _postVoteFeatures = postVoteFeatures;
+        }
+
+        protected ResultDto ValidatePostFiles(List<IFormFile> files)
+        {
+            var documentExtensions = new[] { ".pdf", ".doc", ".docx", ".ppt", ".pptx" };
+            var imageExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp" };
+
+            byte docCount = 0;
+            byte imageCount = 0;
+
+            foreach (var file in files)
+            {
+                var extension = Path.GetExtension(file.FileName).ToLower();
+
+                if (documentExtensions.Contains(extension))
+                    docCount++;
+                else if (imageExtensions.Contains(extension))
+                    imageCount++;
+                else
+                    return new(false, $"Unsupported file type: {extension}. Only images and documents are allowed.");
+            }
+
+            if (docCount > 1)
+                return new (false, "Only one document file (pdf/doc/ppt) is allowed per post.");
+
+            if (imageCount > 4)
+                return new (false, "You can upload up to 4 image files only.");
+
+            return new(true, null);
         }
 
         public async Task createPostFiles(List<IFormFile> pictureFiles, int postId)

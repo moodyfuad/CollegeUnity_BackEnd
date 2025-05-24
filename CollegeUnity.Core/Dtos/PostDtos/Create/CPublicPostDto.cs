@@ -16,5 +16,16 @@ namespace CollegeUnity.Core.Dtos.PostDtos.Create
     /// </summary>
     public class CPublicPostDto : CPostDto
     {
+        public override Post ToPost(int staffId)
+        {
+            return new Post
+            {
+                Content = this.Content,
+                CreatedAt = DateTime.Now,
+                Priority = this.Priority,
+                IsPublic = true,
+                StaffId = staffId,
+            };
+        }
     }
 }

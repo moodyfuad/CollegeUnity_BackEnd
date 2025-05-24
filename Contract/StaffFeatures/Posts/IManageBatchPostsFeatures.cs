@@ -1,4 +1,5 @@
-﻿using CollegeUnity.Core.Dtos.PostDtos.Create;
+﻿using CollegeUnity.Core.Dtos.FailureResualtDtos;
+using CollegeUnity.Core.Dtos.PostDtos.Create;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,6 @@ namespace CollegeUnity.Contract.StaffFeatures.Posts
     public interface IManageBatchPostsFeatures : IBasePost
     {
         // Add, Delete, Edit
-        public Task CreateBatchPostAsync(CBatchPostDto dto, int staffId);
+        Task<ResultDto> CreateBatchPostAsync(CBatchPostDto dto, int staffId);
     }
 }

@@ -8,9 +8,8 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Contract.StaffFeatures.Posts
 {
-    public interface IManageSubjectPostsFeatures : IBasePost
+    public interface ICreatePostFeatures
     {
-        // C, U, D
-        Task<ResultDto> CreateSubjectPostAsync(CSubjectPostDto dto, int staffId);
+        Task<ResultDto> CreatePostAsync<TDto>(TDto dto, int staffId) where TDto : CPostDto;
     }
 }

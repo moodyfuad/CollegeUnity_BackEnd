@@ -1,5 +1,6 @@
 ﻿using CollegeUnity.Contract.EF_Contract.IEntitiesRepository;
 using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -24,10 +25,10 @@ namespace CollegeUnity.EF.Repositories.EntitiesRepository
             return await _context.StudentCommunities.AnyAsync(predicate);
         }
 
-        public async Task<List<int>> GetCommunitiesByStudentIdAsync(int studentId)
+        public async Task<List<int>> GetCommunitiesByStudentIdAsync(int studentId, bool isDeleted)
         {
             var communities = await _context.StudentCommunities
-                .Where(sc => sc.StudentId == studentId)
+                .Where(sc => sc.StudentId == studentId && sc.IsDeleted == isDeleted)
                 .Select(sc => sc.CommunityId)
                 .Distinct()
                 .ToListAsync();
@@ -41,6 +42,22 @@ namespace CollegeUnity.EF.Repositories.EntitiesRepository
                 .Where(sc => sc.CommunityId == communityId)
                 .Select(sc => sc.StudentId)
                 .ToListAsync();
+        }
+
+        public async Task<CommunityMemberRoles> GetStudentRoleInCommunity(int studentId, int communityId)
+        {
+            return await _context.StudentCommunities
+                .Where(s => s.StudentId == studentId && s.CommunityId == communityId)
+                .Select(r => r.Role)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<int>? GetStudentIdInCommunity(int studentId, int communityId)
+        {
+            return await _context.StudentCommunities
+                .Where(s => s.StudentId == studentId && s.CommunityId == communityId)
+                .Select(r => r.Id)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<int> GetUnreadMessagesFromLastSeen(int studentId, int communityId)

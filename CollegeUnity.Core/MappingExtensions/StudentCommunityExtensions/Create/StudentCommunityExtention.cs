@@ -9,6 +9,19 @@ namespace CollegeUnity.Core.MappingExtensions.StudentCommunityExtensions.Create
 {
     public static class StudentCommunityExtention
     {
+        public static StudentCommunity ToSuperAdminStudentCommunity(int id, int studentId, int communityId)
+        {
+            StudentCommunity community = new()
+            {
+                Id = id,
+                CommunityId = communityId,
+                StudentId = studentId,
+                Role = Enums.CommunityMemberRoles.SuperAdmin
+            };
+
+            return community;
+        }
+
         public static StudentCommunity ToSuperAdminStudentCommunity(int studentId, int communityId)
         {
             StudentCommunity community = new()
@@ -16,6 +29,19 @@ namespace CollegeUnity.Core.MappingExtensions.StudentCommunityExtensions.Create
                 CommunityId = communityId,
                 StudentId = studentId,
                 Role = Enums.CommunityMemberRoles.SuperAdmin
+            };
+
+            return community;
+        }
+
+        public static StudentCommunity ToAdminStudentCommunity(int id, int studentId, int communityId)
+        {
+            StudentCommunity community = new()
+            {
+                Id = id,
+                CommunityId = communityId,
+                StudentId = studentId,
+                Role = Enums.CommunityMemberRoles.Admin
             };
 
             return community;

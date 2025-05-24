@@ -69,7 +69,7 @@ namespace CollegeUnity.API.Controllers.Student
         public async Task<IActionResult> GetChatsList([FromQuery] GetChatParameters parameters)
         {
             int _studentId = User.GetUserId();
-            var list = await _getChatList.GetListOfChat(_studentId, parameters, false);
+            var list = await _getChatList.GetListOfChat(_studentId, parameters);
             
             if (list != null)
             {

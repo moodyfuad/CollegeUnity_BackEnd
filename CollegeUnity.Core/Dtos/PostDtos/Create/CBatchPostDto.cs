@@ -1,4 +1,5 @@
-﻿using CollegeUnity.Core.Enums;
+﻿using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -19,5 +20,20 @@ namespace CollegeUnity.Core.Dtos.PostDtos.Create
         public Level? ForLevel { get; set; }
         [Required]
         public AcceptanceType? ForAcceptanceType { get; set; }
+
+        public override Post ToPost(int staffId)
+        {
+            return new Post
+            {
+                Content = this.Content,
+                CreatedAt = DateTime.Now,
+                Priority = this.Priority,
+                ForAcceptanceType = this.ForAcceptanceType,
+                ForLevel = this.ForLevel,
+                ForMajor = this.ForMajor,
+                IsPublic = true,
+                StaffId = staffId,
+            };
+        }
     }
 }

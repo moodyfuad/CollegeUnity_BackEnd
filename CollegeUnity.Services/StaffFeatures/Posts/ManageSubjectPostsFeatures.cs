@@ -1,6 +1,7 @@
 ﻿using CollegeUnity.Contract.EF_Contract;
 using CollegeUnity.Contract.StaffFeatures.Posts.PostFiles;
 using CollegeUnity.Contract.StaffFeatures.Posts.PostsVotes;
+using CollegeUnity.Core.Dtos.FailureResualtDtos;
 using CollegeUnity.Core.Dtos.PostDtos.Create;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.MappingExtensions.PostExtensions.Create;
@@ -21,7 +22,7 @@ namespace CollegeUnity.Contract.StaffFeatures.Posts
             IPostVoteFeatures postVoteFeatures) : base(repositoryManager, postFilesFeatures, postVoteFeatures)
         {
         }
-        public async Task CreateSubjectPostAsync(CSubjectPostDto dto, int staffId)
+        public async Task<ResultDto> CreateSubjectPostAsync(CSubjectPostDto dto, int staffId)
         {
             Post post = dto.ToPost<Post>(staffId);
             post = await _repositoryManager.PostRepository.CreateAsync(post);
@@ -29,6 +30,10 @@ namespace CollegeUnity.Contract.StaffFeatures.Posts
 
             if (dto.PictureFiles != null)
             {
+                var isSuccess = ValidatePostFiles(dto.PictureFiles);
+                if (!isSuccess.success)
+                    return isSuccess;
+
                 await createPostFiles(dto.PictureFiles, post.Id);
             }
 
@@ -36,6 +41,8 @@ namespace CollegeUnity.Contract.StaffFeatures.Posts
             {
                 await createPostVotes(dto.Votes, post.Id);
             }
+
+            return new(true, null);
         }
     }
 }

@@ -11,8 +11,8 @@ namespace CollegeUnity.Core.Dtos.QueryStrings
 {
     public class SubjectPostParameters : QueryStringParameters
     {
-        public Level Level { get; set; }
-        public Major Major { get; set; }
-        public AcceptanceType AcceptanceType { get; set; }
+        public Level? Level { get; set; }
+        public Major? Major { get; set; }
+        public AcceptanceType? AcceptanceType { get; set; }
     }
 }

@@ -1,32 +1,30 @@
 ﻿using CollegeUnity.Contract.EF_Contract;
+using CollegeUnity.Contract.StaffFeatures.Posts;
 using CollegeUnity.Contract.StaffFeatures.Posts.PostFiles;
 using CollegeUnity.Contract.StaffFeatures.Posts.PostsVotes;
 using CollegeUnity.Core.Dtos.FailureResualtDtos;
 using CollegeUnity.Core.Dtos.PostDtos.Create;
 using CollegeUnity.Core.Entities;
-using CollegeUnity.Core.MappingExtensions.PostExtensions.Create;
-using CollegeUnity.Services.StaffFeatures.Posts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CollegeUnity.Contract.StaffFeatures.Posts
+namespace CollegeUnity.Services.StaffFeatures.Posts
 {
-    public class ManageBatchPostsFeatures : BasePost, IManageBatchPostsFeatures
+    public class CreatePostFeatures : BasePost, ICreatePostFeatures
     {
-        public ManageBatchPostsFeatures(
+        public CreatePostFeatures(
             IRepositoryManager repositoryManager, 
-            IFilesFeatures postFilesFeatures,
+            IFilesFeatures postFilesFeatures, 
             IPostVoteFeatures postVoteFeatures) : base(repositoryManager, postFilesFeatures, postVoteFeatures)
         {
         }
 
-        // Add, Delete, Edit
-        public async Task<ResultDto> CreateBatchPostAsync(CBatchPostDto dto, int staffId)
+        public async Task<ResultDto> CreatePostAsync<TDto>(TDto dto, int staffId) where TDto : CPostDto
         {
-            Post post = dto.ToPost<Post>(staffId);
+            Post post = dto.ToPost(staffId);
             post = await _repositoryManager.PostRepository.CreateAsync(post);
             await _repositoryManager.SaveChangesAsync();
 

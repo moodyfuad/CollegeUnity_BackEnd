@@ -30,23 +30,19 @@ namespace CollegeUnity.Services.SharedFeatures.Posts
 
         public async Task<PagedList<GStudentBatchPost>> GetBatchPost(int studentId, SubjectPostParameters parameters)
         {
-            Student student = await _repositoryManager.StudentRepository.GetByIdAsync(studentId);
-            List<int> subjects = await _studentSubjectFeatures.GetStudentSubject(student.Level, student.Major, student.AcceptanceType);
-            PagedList<Post> posts = await _repositoryManager.PostRepository.GetRangeByConditionsAsync(
-                p => subjects.Contains((int)p.SubjectId),
-                parameters,
-                [
-                    i => i.PostFiles,
-                    i => i.Staff,
-                    i => i.Subject,
-                    i => i.Votes
-                ]);
-            return posts.ToGPostMappers<GStudentBatchPost>();
-        }
+            List<int> subjects;
+            bool hasFilters = parameters.Level != null ||
+                  parameters.Major != null ||
+                  parameters.AcceptanceType != null;
 
-        public async Task<PagedList<GStudentBatchPost>> GetBatchPost(SubjectPostParameters parameters)
-        {
-            List<int> subjects = await _getMySubjects.GetSubjectsBy(parameters.Level, parameters.Major, parameters.AcceptanceType);
+            if (hasFilters)
+                subjects = await _getMySubjects.GetSubjectsBy(parameters.Level.Value, parameters.Major.Value, parameters.AcceptanceType.Value);
+            else
+            {
+                Student student = await _repositoryManager.StudentRepository.GetByIdAsync(studentId);
+                subjects = await _studentSubjectFeatures.GetStudentSubject(student.Level, student.Major, student.AcceptanceType);
+            }
+
             PagedList<Post> posts = await _repositoryManager.PostRepository.GetRangeByConditionsAsync(
                 p => subjects.Contains((int)p.SubjectId),
                 parameters,

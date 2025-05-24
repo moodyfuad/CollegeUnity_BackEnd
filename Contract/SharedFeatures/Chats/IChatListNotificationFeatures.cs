@@ -11,6 +11,6 @@ namespace CollegeUnity.Contract.SharedFeatures.Chats
     public interface IChatListNotificationFeatures
     {
         Task NotifyNewChat(int recipientUserId, GChatsList chat);
-        Task NotifyNewMessageInCommunity(int communityId, string content);
+        Task NotifyNewMessageInCommunity(int communityId, string content, int excludedStudentId);
     }
 }

@@ -59,6 +59,12 @@ using CollegeUnity.Contract.SharedFeatures.Helpers;
 using CollegeUnity.Services.SharedFeatures.Helpers;
 using CollegeUnity.Contract.StaffFeatures.Account;
 using CollegeUnity.Services.StaffFeatures.Account;
+using CollegeUnity.Contract.StaffFeatures.Posts;
+using CollegeUnity.Services.StaffFeatures.Posts;
+using CollegeUnity.Contract.StaffFeatures.Posts.PostsVotes;
+using CollegeUnity.Services.StaffFeatures.Posts.PostsVotes;
+using CollegeUnity.Contract.StaffFeatures.Staffs;
+using CollegeUnity.Services.StaffFeatures.Staffs;
 
 namespace CollegeUnity.Services
 {
@@ -133,8 +139,11 @@ namespace CollegeUnity.Services
         private static IServiceCollection AddStaffFeaturesDI(this IServiceCollection services)
         {
             // Staff Features
+            services.AddScoped<IGetStaffFeatures, GetStaffFeatures>();
             services.AddScoped<IChatManagementFeatures, ChatManagementFeatures>();
             services.AddScoped<IGetMyStudents, GetMyStudents>();
+            services.AddScoped<ICreatePostFeatures, CreatePostFeatures>();
+            services.AddScoped<IPostVoteFeatures, PostVoteFeatures>();
             services.AddScoped<IGetMySubjects, GetMySubjects>();
             services.AddScoped<IStaffRequestsFeatures, StaffRequestsFeatures>();
             services.AddScoped<IStaffProfileFeatures, StaffProfileFeatures>();

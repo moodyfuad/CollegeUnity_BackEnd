@@ -11,6 +11,6 @@ namespace CollegeUnity.Contract.SharedFeatures.Chats
 {
     public interface IGetChatList
     {
-        public Task<PagedList<GChatsList>> GetListOfChat(int userId, GetChatParameters parameters, bool isStaff = true);
+        public Task<PagedList<GChatsList>> GetListOfChat(int userId, GetChatParameters parameters);
     }
 }

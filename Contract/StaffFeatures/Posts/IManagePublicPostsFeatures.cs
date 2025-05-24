@@ -1,4 +1,5 @@
-﻿using CollegeUnity.Core.Dtos.PostDtos.Create;
+﻿using CollegeUnity.Core.Dtos.FailureResualtDtos;
+using CollegeUnity.Core.Dtos.PostDtos.Create;
 using CollegeUnity.Core.Entities;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,6 @@ namespace CollegeUnity.Contract.StaffFeatures.Posts
     public interface IManagePublicPostsFeatures : IBasePost
     {
         // C,U,D
-        public Task CreatePublicPostAsync(CPublicPostDto dto, int staffId);
+        Task<ResultDto> CreatePublicPostAsync(CPublicPostDto dto, int staffId);
     }
 }

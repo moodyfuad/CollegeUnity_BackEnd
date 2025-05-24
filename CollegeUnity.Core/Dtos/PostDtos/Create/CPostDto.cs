@@ -1,4 +1,5 @@
-﻿using CollegeUnity.Core.Enums;
+﻿using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Enums;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -19,5 +20,6 @@ namespace CollegeUnity.Core.Dtos.PostDtos.Create
 
         public List<IFormFile>? PictureFiles { get; set; }
         public List<string>? Votes { get; set; }
+        public abstract Post ToPost(int staffId);
     }
 }

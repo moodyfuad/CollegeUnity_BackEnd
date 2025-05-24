@@ -22,5 +22,17 @@ namespace CollegeUnity.Core.MappingExtensions.CommunityExtensions.Update
                 CommunityType = dto.CommunityType,
             };
         }
+
+        public static Community ToCommunity<T>(this UCommunityInfoByStudentDto dto, Community oldInfo, int communityId) where T : Community
+        {
+            return new()
+            {
+                Id = communityId,
+                Name = dto.Name,
+                Description = dto.Description,
+                CommunityState = oldInfo.CommunityState,
+                CommunityType = dto.CommunityType,
+            };
+        }
     }
 }

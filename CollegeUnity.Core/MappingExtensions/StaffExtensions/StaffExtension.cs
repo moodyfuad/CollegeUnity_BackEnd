@@ -1,6 +1,7 @@
 ﻿using CollegeUnity.Core.Dtos.AdminServiceDtos;
 using CollegeUnity.Core.Dtos.CommunityDtos.Get;
 using CollegeUnity.Core.Dtos.PostDtos.Get;
+using CollegeUnity.Core.Dtos.StaffFeatures;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Enums;
 using CollegeUnity.Core.Helpers;
@@ -8,6 +9,7 @@ using CollegeUnity.Core.MappingExtensions.PostExtensions.Get;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,6 +17,17 @@ namespace CollegeUnity.Core.MappingExtensions.StaffExtensions
 {
     public partial class StaffExtension
     {
+        public static GetStaffDto GetStaff(this Staff staff)
+        {
+            return new()
+            {
+                Id = staff.Id,
+                FullName = string.Concat(staff.FirstName, " ", staff.MiddleName, " ", staff.LastName),
+                ImageUrl = staff.ProfilePicturePath,
+                AcademicRoles = staff.Roles.Select(s => s.ToString()).ToList()
+            };
+        }
+
         public static Staff MapTo<T>(this Staff oldInfo, UStaffDto newInfo) where T : Staff
         {
             Staff staff = new()
@@ -87,10 +100,7 @@ namespace CollegeUnity.Core.MappingExtensions.StaffExtensions
                 Gender = ConvertToArabicHelper.GenderToArabic(staff.Gender),
                 profilePicturePath = staff.ProfilePicturePath,
                 AccountStatus = staff.AccountStatus.ToString(),
-                roles = staff.Roles.ToDictionary(
-                    role => (int)role,
-                    role => role.ToString()
-                )
+                roles = ConvertToArabicHelper.RolesToArabic(staff.Roles)
             };
         }
 
