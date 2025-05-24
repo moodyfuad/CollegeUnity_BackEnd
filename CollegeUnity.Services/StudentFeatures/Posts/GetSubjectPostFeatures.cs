@@ -23,15 +23,14 @@ namespace CollegeUnity.Services.StudentFeatures.Posts
 
         public async Task<PagedList<GSubjectPostDto>> GetSubjectPosts(GetSubjectPostParameters parameters)
         {
-            PagedList<Post> posts = await _repositoryManager.PostRepository.GetRangeByConditionsAsync(
+            PagedList<Post> posts = await _repositoryManager.PostRepository.GetVotesWithConditionsAsync(
                 p => p.SubjectId == parameters.Id,
                 parameters,
-                [
-                    i => i.PostFiles,
-                    i => i.Staff,
-                    i => i.Votes,
-                    i => i.Subject
-                ]
+                false,
+                i => i.PostFiles,
+                i => i.Staff,
+                i => i.Votes,
+                i => i.Subject
             );
 
             return posts.ToGPostMappers<GSubjectPostDto>();

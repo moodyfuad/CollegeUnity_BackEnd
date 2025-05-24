@@ -43,15 +43,15 @@ namespace CollegeUnity.Services.SharedFeatures.Posts
                 subjects = await _studentSubjectFeatures.GetStudentSubject(student.Level, student.Major, student.AcceptanceType);
             }
 
-            PagedList<Post> posts = await _repositoryManager.PostRepository.GetRangeByConditionsAsync(
+            PagedList<Post> posts = await _repositoryManager.PostRepository.GetVotesWithConditionsAsync(
                 p => subjects.Contains((int)p.SubjectId),
                 parameters,
-                [
-                    i => i.PostFiles,
-                    i => i.Staff,
-                    i => i.Subject,
-                    i => i.Votes
-                ]);
+                false,
+                i => i.PostFiles,
+                i => i.Staff,
+                i => i.Subject,
+                i => i.Votes
+            );
             return posts.ToGPostMappers<GStudentBatchPost>();
         }
     }
