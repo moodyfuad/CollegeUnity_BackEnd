@@ -20,7 +20,7 @@ namespace CollegeUnity.Services.VoteServices
 
             PostVote vote = await GetVoteById(dto);
 
-            User user = await GetUserById(dto);
+            User user = null;
 
             if (user == null)
             {
@@ -97,12 +97,7 @@ namespace CollegeUnity.Services.VoteServices
                 includes: v => v.SelectedBy);
         }
 
-        private async Task<User> GetUserById(VoteInPostDto dto)
-        {
-            return await _repositoryManager.UserRepository.GetByConditionsAsync(
-                condition: u => u.Id == dto.userId,
-                includes: u => u.Votes);
-        }
+        
 
         PostVote? IsUserAlreadyVoted(User user, Post post)
         {

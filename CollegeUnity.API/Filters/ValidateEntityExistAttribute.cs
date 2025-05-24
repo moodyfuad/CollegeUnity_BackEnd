@@ -84,7 +84,7 @@ namespace CollegeUnity.API.Filters
 
             private static int GetIdFromQuery(string propertyIdName, IQueryCollection queryData)
             {
-                var vla = queryData.FirstOrDefault(kvp => kvp.Key.Equals(propertyIdName)).Value;
+                var vla = queryData.FirstOrDefault(kvp => kvp.Key.Equals(propertyIdName, StringComparison.OrdinalIgnoreCase)).Value;
                 bool parseResult = int.TryParse(vla!.ToString(), out int id);
 
                 return parseResult ? id : 0;

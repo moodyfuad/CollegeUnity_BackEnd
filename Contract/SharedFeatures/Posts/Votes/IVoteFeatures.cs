@@ -11,7 +11,7 @@ namespace CollegeUnity.Contract.SharedFeatures.Posts.Votes
 {
     public interface IVoteFeatures
     {
-        Task<RequestResult<bool>> VoteInPost(VoteInPostDto dto);
+        Task<RequestResult<bool>> VoteInPost(int userId, VoteInPostDto dto);
 
         Task<GetPostVotesResultDto> GetPostVotes(GetPostVotesParameters parameters);
     }

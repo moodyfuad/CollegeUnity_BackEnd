@@ -27,5 +27,10 @@ namespace CollegeUnity.EF.Repositories.EntitiesRepository
         {
             await _context.PostVotes.AddRangeAsync(votes);
         }
+
+        public async Task<List<PostVote>> GetPostVotes(int postId)
+        {
+            return await _context.PostVotes.Where(vote => vote.PostId == postId).Include(v => v.SelectedBy).ToListAsync();
+        }
     }
 }
