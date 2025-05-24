@@ -1,8 +1,13 @@
 ﻿using CollegeUnity.Contract.EF_Contract.IEntitiesRepository;
+using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Helpers;
+using CollegeUnity.EF.Extensions;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 

@@ -25,16 +25,16 @@ namespace CollegeUnity.Services.SharedFeatures.Posts
         public async Task<PagedList<GPublicPostDto>> GetPublicPostAsync(PublicPostParameters postParameters)
         {
             int filterNumber = (int)postParameters.FilterPost;
-            PagedList<Post> posts = await _repositoryManager.PostRepository.GetRangeByConditionsAsync(
+            PagedList<Post> posts = await _repositoryManager.PostRepository.GetVotesWithConditionsAsync(
                 p => p.IsPublic == true &&
-                filterNumber == 0 || p.Staff.Roles.Contains((Roles)filterNumber),
+                    (filterNumber == 0 || p.Staff.Roles.Contains((Roles)filterNumber)),
                 postParameters,
-                [
-                    i => i.PostFiles,
-                    i => i.Staff,
-                    i => i.Votes
-                ]
+                false,
+                i => i.PostFiles,
+                i => i.Staff,
+                i => i.Votes
             );
+
 
             return posts.ToGPostMappers<GPublicPostDto>();
         }
