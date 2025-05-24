@@ -32,25 +32,26 @@ namespace CollegeUnity.Services.SharedFeatures.Posts.Votes
 
             if (votes.FirstOrDefault(v => v?.Id == dto.voteId, null) == null)
             {
-                throw new BadRequestException("Post Or Vote Doesn't Exist");
+                throw new BadRequestException("Vote Doesn't Exist");
             }
 
-            User user = await _repositoryManager.UserRepository.GetByConditionsAsync(
-                condition: u => u.Id == userId,
-                includes: u=> u.Votes);
+            User user = await _repositoryManager.UserRepository.GetByIdAsync(userId);
 
-            foreach (var vote in votes)
+            foreach (PostVote vote in votes)
             {
                 if (vote.Id == dto.voteId && vote.SelectedBy?.FirstOrDefault(u => u.Id == userId) == null)
                 {
                     vote.SelectedBy?.Add(user!);
-                    user!.Votes?.Add(vote);
+                }
+                else if(vote.SelectedBy?.FirstOrDefault(u => u.Id == userId) == null)
+                {
+                    continue;
                 }
                 else
                 {
                     vote.SelectedBy?.Remove(user!);
-                    user!.Votes?.Remove(vote);
                 }
+
                  await _repositoryManager.VotesRepository.Update(vote);
             }
 
