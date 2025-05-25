@@ -7,6 +7,7 @@ using CollegeUnity.Core.Helpers;
 using CollegeUnity.Core.MappingExtensions.VoteExtentions.Get;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -55,7 +56,10 @@ namespace CollegeUnity.Core.MappingExtensions.PostExtensions.Get
 
             if (dto is GStudentBatchPost studentBatchPostDto)
             {
-                studentBatchPostDto.SubjectName = post.Subject.Name;
+                if (post.Subject != null)
+                {
+                    studentBatchPostDto.SubjectName = post.Subject.Name;
+                }
             }
 
             if (dto is GSubjectPostDto subjectPostDto)

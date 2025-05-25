@@ -6,11 +6,13 @@ using CollegeUnity.Contract.StudentFeatures.Subjects;
 using CollegeUnity.Core.Dtos.PostDtos.Get;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Enums;
 using CollegeUnity.Core.Helpers;
 using CollegeUnity.Core.MappingExtensions.PostExtensions.Get;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -31,20 +33,37 @@ namespace CollegeUnity.Services.SharedFeatures.Posts
         public async Task<PagedList<GStudentBatchPost>> GetBatchPost(int studentId, SubjectPostParameters parameters)
         {
             List<int> subjects;
-            bool hasFilters = parameters.Level != null ||
-                  parameters.Major != null ||
-                  parameters.AcceptanceType != null;
+            Level level;
+            Major major;
+            AcceptanceType acceptanceType;
 
-            if (hasFilters)
-                subjects = await _getMySubjects.GetSubjectsBy(parameters.Level.Value, parameters.Major.Value, parameters.AcceptanceType.Value);
+            Student student = await _repositoryManager.StudentRepository.GetByIdAsync(studentId);
+
+            if (student != null)
+            {
+                level = student.Level;
+                major = student.Major;
+                acceptanceType = student.AcceptanceType;
+                subjects = await _studentSubjectFeatures.GetStudentSubject(level, major, acceptanceType);
+            }
             else
             {
-                Student student = await _repositoryManager.StudentRepository.GetByIdAsync(studentId);
-                subjects = await _studentSubjectFeatures.GetStudentSubject(student.Level, student.Major, student.AcceptanceType);
+                level = parameters.Level ?? 0;
+                major = parameters.Major ?? 0;
+                acceptanceType = parameters.AcceptanceType ?? 0;
+                subjects = await _getMySubjects.GetSubjectsBy(level, major, acceptanceType);
             }
 
-            PagedList<Post> posts = await _repositoryManager.PostRepository.GetVotesWithConditionsAsync(
-                p => subjects.Contains((int)p.SubjectId),
+            Expression<Func<Post, bool>> filter = p =>
+                subjects.Contains((int)p.SubjectId) ||
+                (
+                    p.ForLevel == level &&
+                    p.ForMajor == major &&
+                    p.ForAcceptanceType == acceptanceType
+                );
+
+            var posts = await _repositoryManager.PostRepository.GetVotesWithConditionsAsync(
+                filter,
                 parameters,
                 false,
                 i => i.PostFiles,
@@ -52,7 +71,9 @@ namespace CollegeUnity.Services.SharedFeatures.Posts
                 i => i.Subject,
                 i => i.Votes
             );
+
             return posts.ToGPostMappers<GStudentBatchPost>();
         }
+
     }
 }

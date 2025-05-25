@@ -118,8 +118,24 @@ namespace CollegeUnity.Services.AdminFeatures.Communites
 
         public async Task<PagedList<GCommunityAdminsDto>> GetAdmins(GetStudentCommunityAdminsParameters parameters)
         {
-            var admins = await _repositoryManager.StudentCommunityRepository.GetRangeByConditionsAsync(c => c.CommunityId == parameters.communityId, parameters, i => i.Student);
-            admins.OrderByDescending(a => a.Role);
+            Expression<Func<StudentCommunity, bool>> condition;
+
+            if (parameters.Admins)
+            {
+                condition = c => c.CommunityId == parameters.communityId &&
+                                 (c.Role == CommunityMemberRoles.Admin || c.Role == CommunityMemberRoles.SuperAdmin);
+            }
+            else
+            {
+                condition = c => c.CommunityId == parameters.communityId &&
+                                 c.Role == CommunityMemberRoles.Normal;
+            }
+
+            var admins = await _repositoryManager.StudentCommunityRepository
+                .GetRangeByConditionsAsync(condition, parameters, i => i.Student);
+
+            admins.OrderByDescending(r => r.Role);
+
             return admins.ToCommunityAdminsMappers();
         }
 
