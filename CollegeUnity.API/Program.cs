@@ -35,16 +35,6 @@ builder.Services.AddControllers(options =>
 
 builder.Services.ConfigureModelValidationResponse();
 
-#region this part is moved to CollegeUnity.EF.EntityFrameworkDIExtensions
-//builder.Services.AddDbContext<CollegeUnityDbContext>(options =>
-//{
-//    //options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
-//    //options.UseSqlServer(builder.Configuration.GetConnectionString("FaisalLocal"));
-//    options.UseSqlServer(builder.Configuration.GetConnectionString("Local"));
-//});
-
-#endregion
-
 // EF DI
 builder.Services.AddCollegeUnityDbContext(builder.Configuration);
 builder.Services.AddEFLayerDI();
