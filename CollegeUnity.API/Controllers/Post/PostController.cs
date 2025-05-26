@@ -27,8 +27,6 @@ namespace CollegeUnity.API.Controllers.Post
     [ApiController]
     public class PostController : ControllerBase
     {
-        private readonly IServiceManager _serviceManager;
-
         private readonly IGetPublicPostFeatures _getPublicPostFeatures;
         private readonly IGetBatchPostFeatures _getBatchPostFeatures;
         private readonly IGetSubjectPostFeatures _getSubjectPostFeatures;
@@ -43,22 +41,20 @@ namespace CollegeUnity.API.Controllers.Post
         private readonly IBasePost _basePost;
 
 
-        public PostController(IServiceManager serviceManager, ICreatePostFeatures createPostFeatures)
+        public PostController(
+            IGetPublicPostFeatures getPublicPostFeatures,
+            IGetBatchPostFeatures getBatchPostFeatures,
+            IGetSubjectPostFeatures getSubjectPostFeatures,
+            IManageSubjectFeatures manageSubjectFeatures,
+            ICreatePostFeatures createPostFeatures)
         {
-            _serviceManager = serviceManager;
 
-            _getPublicPostFeatures = serviceManager.GetPublicPostFeatures;
-            _getBatchPostFeatures = serviceManager.GetBatchPostFeatures;
-            _getSubjectPostFeatures = serviceManager.GetSubjectPostFeatures;
+            _getPublicPostFeatures = getPublicPostFeatures;
+            _getBatchPostFeatures = getBatchPostFeatures;
+            _getSubjectPostFeatures = getSubjectPostFeatures;
 
-            //_managePublicPostsFeatures = serviceManager.managePublicPostsFeatures;
-            //_manageBatchPostsFeatures = serviceManager.manageBatchPostsFeatures;
-            //_manageSubjectPostsFeatures = serviceManager.manageSubjectPostsFeatures;
-
-            _manageSubjectFeatures = serviceManager.manageSubjectFeatures;
+            _manageSubjectFeatures = manageSubjectFeatures;
             _createPostFeatures = createPostFeatures;
-
-            _basePost = serviceManager.basePost;
         }
 
         #region Before Refactoring the create features
@@ -107,42 +103,34 @@ namespace CollegeUnity.API.Controllers.Post
         public async Task<IActionResult> CreatePublicPost([FromForm] CPublicPostDto dto)
         {
             var staffId = User.GetUserId();
-            var isExist = await _serviceManager.IsExist<CollegeUnity.Core.Entities.Staff>(staffId);
-            if (isExist != null)
-            {
-                await _createPostFeatures.CreatePostAsync(dto, staffId);
-                return new JsonResult(ApiResponse<bool?>.Created(null));
-            }
-
-            return new JsonResult(ApiResponse<bool?>.NotFound("Something wrong, try again."));
+            await _createPostFeatures.CreatePostAsync(dto, staffId);
+            return new JsonResult(ApiResponse<bool?>.Created(null));
         }
 
         [HttpPost("Batch/Create")]
         public async Task<IActionResult> CreateBatchPost([FromForm] CBatchPostDto dto)
         {
             var staffId = User.GetUserId();
-            var isExist = await _serviceManager.IsExist<CollegeUnity.Core.Entities.Staff>(staffId);
-            if (isExist != null)
+            var result = await _createPostFeatures.CreatePostAsync(dto, staffId);
+            if (result.success)
             {
-                await _createPostFeatures.CreatePostAsync(dto, staffId);
                 return new JsonResult(ApiResponse<bool?>.Created(null));
             }
 
-            return new JsonResult(ApiResponse<bool?>.BadRequest("Something wrong, try again."));
+            return new JsonResult(ApiResponse<bool?>.BadRequest(result.message));
         }
 
         [HttpPost("Subject/Create")]
         public async Task<IActionResult> CreateSubjectPost([FromForm] CSubjectPostDto dto)
         {
             var staffId = User.GetUserId();
-            bool isSubjectStudiedByTeacher = await _manageSubjectFeatures.SubjectStudyCheck(dto.SubjectId, staffId);
-            if (isSubjectStudiedByTeacher)
+            var result = await _createPostFeatures.CreatePostAsync(dto, staffId);
+            if (result.success)
             {
-                await _createPostFeatures.CreatePostAsync(dto, staffId);
                 return new JsonResult(ApiResponse<bool?>.Created(null));
             }
 
-            return new JsonResult(ApiResponse<bool?>.BadRequest("Something wrong, try again."));
+            return new JsonResult(ApiResponse<bool?>.BadRequest(result.message));
         }
         #endregion
 
@@ -188,7 +176,8 @@ namespace CollegeUnity.API.Controllers.Post
         [HttpGet("Public")]
         public async Task<IActionResult> GetPublicPost([FromQuery] PublicPostParameters postParameters)
         {
-            var posts = await _getPublicPostFeatures.GetPublicPostAsync(postParameters);
+            int userId = User.GetUserId();
+            var posts = await _getPublicPostFeatures.GetPublicPostAsync(userId, postParameters);
             if (posts.Count() > 0)
             {
                 return new JsonResult(ApiResponse<PagedList<GPublicPostDto>>.Success(data: posts));
@@ -216,7 +205,7 @@ namespace CollegeUnity.API.Controllers.Post
         public async Task<IActionResult> GetSubjectPost([FromQuery] GetSubjectPostParameters Parameters)
         {
             var studentId = User.GetUserId();
-            var posts = await _getSubjectPostFeatures.GetSubjectPosts(Parameters);
+            var posts = await _getSubjectPostFeatures.GetSubjectPosts(studentId, Parameters);
             if (posts.Count() > 0)
             {
                 return new JsonResult(ApiResponse<PagedList<GSubjectPostDto>>.Success(data: posts));

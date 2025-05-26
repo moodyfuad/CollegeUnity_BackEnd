@@ -22,7 +22,7 @@ namespace CollegeUnity.Services.SharedFeatures.Posts
         {
             _repositoryManager = repositoryManager;
         }
-        public async Task<PagedList<GPublicPostDto>> GetPublicPostAsync(PublicPostParameters postParameters)
+        public async Task<PagedList<GPublicPostDto>> GetPublicPostAsync(int userId, PublicPostParameters postParameters)
         {
             int filterNumber = (int)postParameters.FilterPost;
             PagedList<Post> posts = await _repositoryManager.PostRepository.GetVotesWithConditionsAsync(
@@ -36,7 +36,7 @@ namespace CollegeUnity.Services.SharedFeatures.Posts
             );
 
 
-            return posts.ToGPostMappers<GPublicPostDto>();
+            return posts.ToGPostMappers<GPublicPostDto>(userId);
         }
     }
 }

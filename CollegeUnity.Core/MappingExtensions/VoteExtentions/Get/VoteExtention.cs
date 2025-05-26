@@ -10,22 +10,23 @@ namespace CollegeUnity.Core.MappingExtensions.VoteExtentions.Get
 {
     public static class VoteExtention
     {
-        private static GVoteDto MapToGVoteDto(this PostVote postVote, int totalVotes)
+        private static GVoteDto MapToGVoteDto(this PostVote postVote, int totalVotes, int userId)
         {
             return new GVoteDto
             {
                 Id = postVote.Id,
                 Name = postVote.Name,
                 VoteCount = postVote.SelectedBy?.Count ?? 0,
-                VotesPercentage = totalVotes > 0 ? (postVote.SelectedBy?.Count ?? 0) * 100.0 / totalVotes : 0
+                VotesPercentage = totalVotes > 0 ? (postVote.SelectedBy?.Count ?? 0) * 100.0 / totalVotes : 0,
+                IsVoted = postVote.SelectedBy.Any(a => a.Id == userId)
             };
         }
 
-        public static IEnumerable<GVoteDto> MapToGVotesDto(this IEnumerable<PostVote> postVotes)
+        public static IEnumerable<GVoteDto> MapToGVotesDto(this IEnumerable<PostVote> postVotes, int userId)
         {
             int totalVotes = postVotes.Sum(pv => pv.SelectedBy?.Count ?? 0);
 
-            var gVoteDtos = postVotes.Select(pv => MapToGVoteDto(pv, totalVotes)).ToList();
+            var gVoteDtos = postVotes.Select(pv => MapToGVoteDto(pv, totalVotes, userId)).ToList();
 
             return gVoteDtos;
         }

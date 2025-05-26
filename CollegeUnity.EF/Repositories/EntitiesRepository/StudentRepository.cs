@@ -34,5 +34,11 @@ namespace CollegeUnity.EF.Repositories.EntitiesRepository
                 .Select(s => s.FirstName + " " + s.MiddleName + " " + s.LastName)
                 .FirstOrDefaultAsync();
         }
+
+        public async Task ChangeStateUpgradeLevelForStudents(bool isOpen)
+        {
+            await _context.Database.ExecuteSqlRawAsync(
+                "EXEC SetStudentsLevelEditable @Value = {0}", isOpen ? 1 : 0);
+        }
     }
 }

@@ -451,6 +451,9 @@ namespace CollegeUnity.EF.Migrations
                     b.Property<int>("CommunityId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("LastSeen")
                         .HasColumnType("datetime2");
 

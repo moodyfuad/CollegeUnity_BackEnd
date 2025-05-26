@@ -21,7 +21,7 @@ namespace CollegeUnity.Services.StudentFeatures.Posts
             _repositoryManager = repositoryManager;
         }
 
-        public async Task<PagedList<GSubjectPostDto>> GetSubjectPosts(GetSubjectPostParameters parameters)
+        public async Task<PagedList<GSubjectPostDto>> GetSubjectPosts(int userId, GetSubjectPostParameters parameters)
         {
             PagedList<Post> posts = await _repositoryManager.PostRepository.GetVotesWithConditionsAsync(
                 p => p.SubjectId == parameters.Id,
@@ -33,7 +33,7 @@ namespace CollegeUnity.Services.StudentFeatures.Posts
                 i => i.Subject
             );
 
-            return posts.ToGPostMappers<GSubjectPostDto>();
+            return posts.ToGPostMappers<GSubjectPostDto>(userId);
         }
     }
 }

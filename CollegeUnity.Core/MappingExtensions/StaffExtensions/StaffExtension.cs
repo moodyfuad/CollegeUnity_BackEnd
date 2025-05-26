@@ -33,19 +33,19 @@ namespace CollegeUnity.Core.MappingExtensions.StaffExtensions
             Staff staff = new()
             {
                 Id = oldInfo.Id,
-                FirstName = newInfo.FirstName,
-                LastName = newInfo.LastName,
-                MiddleName = newInfo.MiddleName,
+                FirstName = newInfo.FirstName ?? oldInfo.FirstName,
+                LastName = newInfo.LastName ?? oldInfo.LastName,
+                MiddleName = newInfo.MiddleName ?? oldInfo.MiddleName,
                 Password = oldInfo.Password,
                 ConfirmPassword = oldInfo.ConfirmPassword,
                 ProfilePicturePath = oldInfo.ProfilePicturePath,
-                Email = newInfo.Email,
-                Phone = newInfo.Phone,
-                Roles = newInfo.Roles,
-                BirthDate = newInfo.BirthDate,
-                EducationDegree = newInfo.EducationDegree,
+                Email = newInfo.Email ?? oldInfo.Email,
+                Phone = newInfo.Phone ?? oldInfo.Phone,
+                Roles = newInfo.Roles ?? oldInfo.Roles,
+                BirthDate = newInfo.BirthDate ?? oldInfo.BirthDate,
+                EducationDegree = newInfo.EducationDegree ?? oldInfo.EducationDegree,
                 AccountStatus = oldInfo.AccountStatus,
-                Gender = newInfo.Gender,
+                Gender = newInfo.Gender ?? oldInfo.Gender,
             };
 
             return staff;

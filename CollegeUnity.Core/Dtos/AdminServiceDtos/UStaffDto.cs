@@ -11,34 +11,16 @@ namespace CollegeUnity.Core.Dtos.AdminServiceDtos
 {
     public class UStaffDto
     {
-        [Required(ErrorMessage = "First Name is required")]
-        public required string FirstName { get; set; }
+        public string? FirstName { get; set; }
+        public string? MiddleName { get; set; }        
+        public string? LastName { get; set; }
+        public EducationDegree? EducationDegree { get; set; }
         
-        [Required(ErrorMessage = "Middle Name is required")]
-        public required string MiddleName { get; set; }
-        
-        [Required(ErrorMessage = "Last Name is required")]
-        public required string LastName { get; set; }
-        
-        [Required(ErrorMessage = "Education Degree is required")]
-        public required EducationDegree EducationDegree { get; set; }
-        
-        public IFormFile? ProfilePicturePath { get; set; }
-        
-        [EmailAddress(ErrorMessage = "Invalid Email")]
-        public required string Email { get; set; }
-        
-        [Required(ErrorMessage = "Phone number is required")]
-        [Phone(ErrorMessage = "Invalid Phone number")]
-        public required string Phone { get; set; }
-        
-        [Required(ErrorMessage = "Birth Date is required")]
-        public required DateOnly BirthDate { get; set; }
-
-        [Required(ErrorMessage = "Gender field is required")]
-        public required Gender Gender { get; set; }
-
-        [Required(ErrorMessage = "Roles Field is required")]
-        public required ICollection<Roles> Roles { get; set; }
+        public IFormFile? ProfilePicturePath { get; set; }        
+        public string? Email { get; set; }
+        public string? Phone { get; set; }
+        public DateOnly? BirthDate { get; set; }
+        public Gender? Gender { get; set; }
+        public ICollection<Roles>? Roles { get; set; }
     }
 }

@@ -23,7 +23,7 @@ namespace CollegeUnity.Core.MappingExtensions.PostExtensions.Get
         /// <param Name="post"></param>
         /// <returns></returns>
         #region Public post
-        public static T ToGPostDto<T>(this Post post) where T : GPostDto, new()
+        public static T ToGPostDto<T>(this Post post, int userId) where T : GPostDto, new()
         {
             var dto = new T
             {
@@ -40,7 +40,7 @@ namespace CollegeUnity.Core.MappingExtensions.PostExtensions.Get
                     TeachNames = post.Staff.Roles.Select(r => r.AsString())
                 },
                 PostFiles = post.PostFiles?.Select(p => p.Path).ToList(),
-                Votes = post.Votes.MapToGVotesDto()
+                Votes = post.Votes.MapToGVotesDto(userId),
             };
 
             if (dto is GPublicPostDto publicPostDto)
@@ -69,9 +69,9 @@ namespace CollegeUnity.Core.MappingExtensions.PostExtensions.Get
 
             return dto;
         }
-        public static PagedList<T> ToGPostMappers<T>(this PagedList<Post> posts) where T : GPostDto, new()
+        public static PagedList<T> ToGPostMappers<T>(this PagedList<Post> posts, int userId) where T : GPostDto, new()
         {
-            var results = posts.Select(post => post.ToGPostDto<T>()).ToList();
+            var results = posts.Select(post => post.ToGPostDto<T>(userId)).ToList();
             var pagedList = new PagedList<T>
                 (
                     items: results,

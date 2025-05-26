@@ -15,5 +15,6 @@ namespace CollegeUnity.Contract.EF_Contract.IEntitiesRepository
     {
         Task<Student> GetByEmail(string email);
         Task<string?> GetFullName(int id);
+        Task ChangeStateUpgradeLevelForStudents(bool isOpen);
     }
 }
