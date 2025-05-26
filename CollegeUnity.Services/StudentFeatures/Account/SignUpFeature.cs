@@ -8,6 +8,7 @@ using CollegeUnity.Core.Enums;
 using CollegeUnity.Core.Helpers;
 using CollegeUnity.Core.MappingExtensions.StudentExtensions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,10 +38,6 @@ namespace CollegeUnity.Services.StudentFeatures.Account
             {
                 return ApiResponse<string>.BadRequest("Sign up failed", ["Invalid Registration Id Card Picture"]);
             }
-
-            Func<string, string, bool> isMatched =
-                (string string1, string string2)
-                => string1.ToLower() == string2.ToLower();
 
             Student? student = await _repositoryManager.StudentRepository.GetByConditionsAsync(
                 s =>
@@ -98,6 +95,11 @@ namespace CollegeUnity.Services.StudentFeatures.Account
             string msg = "Sign up Information Updated";
             if (forCreate)
             {
+                // TODO: password hashing 
+                var passwordHasher = new PasswordHasher<User>();
+                string hashedPassword = passwordHasher.HashPassword(student, student.Password);
+                student.Password = hashedPassword;
+                student.ConfirmPassword = hashedPassword;
                 student = await _repositoryManager.StudentRepository.CreateAsync(student);
                 msg = "Sign up Success";
             }

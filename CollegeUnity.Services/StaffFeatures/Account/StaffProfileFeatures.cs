@@ -8,6 +8,7 @@ using CollegeUnity.Core.Dtos.StudentFeatures;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Helpers;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -81,13 +82,21 @@ namespace CollegeUnity.Services.StaffFeatures.Account
                 throw new KeyNotFoundException("Student Not Found");
             }
 
-            if (dto.Old != staff.Password)
-            {
-                return ApiResponse<bool>.BadRequest("Old Password Does Not Match");
-            }
+            //if (dto.Old != staff.Password)
+            //{
+            //    return ApiResponse<bool>.BadRequest("Old Password Does Not Match");
+            //}
 
-            staff.Password = dto.New;
-            staff.ConfirmPassword = dto.New;
+            //if (PasswordHasherHelper.VerifyPassword(staff, dto.Old))
+            //{
+            //    return ApiResponse<bool>.BadRequest("Old Password Does Not Match");
+            //}
+
+
+
+            string hashedPassword = PasswordHasherHelper.Hash(staff, dto.New);
+            staff.Password = hashedPassword;
+            staff.ConfirmPassword = hashedPassword;
 
             await _repositories.SaveChangesAsync();
 
