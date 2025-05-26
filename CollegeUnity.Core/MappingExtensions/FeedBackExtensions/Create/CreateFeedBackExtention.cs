@@ -24,5 +24,17 @@ namespace CollegeUnity.Core.MappingExtensions.FeedBackExtensions.Create
                 FeedBackStatus = dto.Status,
             };
         }
+
+        public static Feedback ToFeedBack(this CFeedBackResponseDto dto, int userId)
+        {
+            return new()
+            {
+                UserId = userId,
+                Location = dto.Location,
+                Title = dto.Title,
+                Description = dto.Description,
+                TypeOfFeedBack = dto.TypeOfFeedBack,
+            };
+        }
     }
 }

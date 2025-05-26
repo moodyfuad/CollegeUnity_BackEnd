@@ -43,7 +43,6 @@ namespace CollegeUnity.API.Controllers.Admin
     [ApiController]
     public class AdminController : ControllerBase
     {
-        private readonly IServiceManager _serviceManager;
         private readonly IManageStaffFeatures _manageStaffFeatures;
         private readonly IManageCommunityFeatures _manageCommunityFeatures;
         private readonly IManageCoursesFeatures _manageCoursesFeatures;
@@ -52,13 +51,12 @@ namespace CollegeUnity.API.Controllers.Admin
         private readonly IGetScheduleFilesFeatures _getScheduleFilesFeatures;
         private readonly IManageFeedBackFeatures _manageFeedBackFeatures;
 
-        public AdminController(IServiceManager serviceManager, IManageStaffFeatures manageStaffFeatures, IManageCommunityFeatures manageCommunityFeatures,
+        public AdminController(IManageStaffFeatures manageStaffFeatures, IManageCommunityFeatures manageCommunityFeatures,
             IManageCoursesFeatures manageCoursesFeatures, IManageStudentFeatures manageStudentFeatures, IManageScheduleFilesFeatures manageScheduleFilesFeatures,
             IGetScheduleFilesFeatures getScheduleFilesFeatures,
             IManageFeedBackFeatures manageFeedBackFeatures
             )
         {
-            _serviceManager = serviceManager;
             _manageStaffFeatures = manageStaffFeatures;
             _manageCommunityFeatures = manageCommunityFeatures;
             _manageCoursesFeatures = manageCoursesFeatures;
@@ -129,6 +127,25 @@ namespace CollegeUnity.API.Controllers.Admin
         {
             var isSuccess = await _manageStaffFeatures.ChangeUserAccountStatus(userId, dto);
 
+            if (isSuccess.success)
+            {
+                return new JsonResult(ApiResponse<bool?>.Success(null));
+            }
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
+        }
+
+        [HttpPut("Students/Level/{isOpen}")]
+        public async Task<IActionResult> UodateStateOfLevelUpgradeForStudents(bool isOpen)
+        {
+            await _manageStudentFeatures.OpenUpgradeStudentsLevel(isOpen);
+            return new JsonResult(ApiResponse<bool?>.Success(null));
+        }
+
+        [HttpPut("Student/{studentId}/Level/{Level}")]
+        public async Task<IActionResult> UodateStateOfLevelUpgradeForStudent(int studentId, Level level)
+        {
+            var isSuccess = await _manageStudentFeatures.OpenUpgradeStudentLevel(studentId, level);
             if (isSuccess.success)
             {
                 return new JsonResult(ApiResponse<bool?>.Success(null));

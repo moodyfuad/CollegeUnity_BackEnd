@@ -49,7 +49,7 @@ builder.Services.ConfigureModelValidationResponse();
 builder.Services.AddCollegeUnityDbContext(builder.Configuration);
 builder.Services.AddEFLayerDI();
 
-builder.Services.AddScoped<IServiceManager, ServiceManager>();
+//builder.Services.AddScoped<IServiceManager, ServiceManager>();
 
 // Features DI
 builder.Services.AddFeaturesLayerDI();

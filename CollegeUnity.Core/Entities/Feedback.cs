@@ -20,11 +20,11 @@ namespace CollegeUnity.Core.Entities
         public required string Location { get; set; }
         [Required]
         public enFeedBackStatus FeedBackStatus { get; set; } = enFeedBackStatus.New;
+        public enTypeOfFeedBack TypeOfFeedBack { get; set; }
         public string? Response { get; set; }
         [Required]
         [ForeignKey(nameof(FromUser))]
         public int UserId { get; set; }
-        [Required]
-        public virtual required User FromUser { get; set; }
+        public virtual User FromUser { get; set; }
     }
 }

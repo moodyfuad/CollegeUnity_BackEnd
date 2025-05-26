@@ -1,8 +1,10 @@
 ﻿ using CollegeUnity.Contract.AdminFeatures.Student;
 using CollegeUnity.Contract.EF_Contract;
+using CollegeUnity.Core.Dtos.FailureResualtDtos;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.StudentFeatures;
 using CollegeUnity.Core.Entities;
+using CollegeUnity.Core.Enums;
 using CollegeUnity.Core.Helpers;
 using CollegeUnity.Core.MappingExtensions.StudentExtensions.Get;
 using LinqKit;
@@ -69,6 +71,22 @@ namespace CollegeUnity.Services.AdminFeatures.Students
 
             var students = await _repositoryManager.StudentRepository.GetRangeByConditionsAsync(conditions, parameters);
             return students.ToGetStudents();
+        }
+
+        public async Task<ResultDto> OpenUpgradeStudentLevel(int studentId, Level level)
+        {
+            var student = await _repositoryManager.StudentRepository.GetByIdAsync(studentId);
+            if (student is null)
+                return new(false, "Student not found.");
+            student.Level = level;
+            await _repositoryManager.StudentRepository.Update(student);
+            await _repositoryManager.SaveChangesAsync();
+            return new(true);
+        }
+
+        public async Task OpenUpgradeStudentsLevel(bool isOpen)
+        {
+            await _repositoryManager.StudentRepository.ChangeStateUpgradeLevelForStudents(isOpen);
         }
     }
 }

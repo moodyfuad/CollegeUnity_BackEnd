@@ -1,5 +1,7 @@
-﻿using CollegeUnity.Core.Dtos.QueryStrings;
+﻿using CollegeUnity.Core.Dtos.FailureResualtDtos;
+using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.StudentFeatures;
+using CollegeUnity.Core.Enums;
 using CollegeUnity.Core.Helpers;
 using System;
 using System.Collections.Generic;
@@ -13,5 +15,7 @@ namespace CollegeUnity.Contract.AdminFeatures.Student
     {
         Task<PagedList<GStudentDto>> GetStudents(GetStudentParameters parameters);
         Task<PagedList<GStudentDto>> GetStudentSignUpRequest(GetStudentSignUpParameters parameters);
+        Task OpenUpgradeStudentsLevel(bool isOpen);
+        Task<ResultDto> OpenUpgradeStudentLevel(int studentId, Level level);
     }
 }

@@ -12,6 +12,6 @@ namespace CollegeUnity.Contract.StudentFeatures.Post
 {
     public interface IGetSubjectPostFeatures
     {
-        Task<PagedList<GSubjectPostDto>> GetSubjectPosts(GetSubjectPostParameters parameters);
+        Task<PagedList<GSubjectPostDto>> GetSubjectPosts(int userId, GetSubjectPostParameters parameters);
     }
 }

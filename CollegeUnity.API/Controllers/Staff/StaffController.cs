@@ -37,7 +37,7 @@ namespace CollegeUnity.API.Controllers.Staff
     [ApiController]
     public class StaffController : ControllerBase
     {
-        private readonly IAdminServices _adminServices;
+
         private readonly IChatManagementFeatures _chatManagementFeatures;
         private readonly IGetChatList _getChatList;
         private readonly IGetMyStudents _getMyStudents;
@@ -46,7 +46,6 @@ namespace CollegeUnity.API.Controllers.Staff
         private readonly IGetStaffFeatures _getStaffFeatures;
 
         public StaffController(
-            IServiceManager serviceManager,
             IChatManagementFeatures chatManagementFeatures,
             IGetChatList getChatList,
             IGetMyStudents getMyStudents,
@@ -55,7 +54,6 @@ namespace CollegeUnity.API.Controllers.Staff
             IGetStaffFeatures getStaffFeatures
             )
         {
-            _adminServices = serviceManager.AdminServices;
             _chatManagementFeatures = chatManagementFeatures;
             _getChatList = getChatList;
             _getMyStudents = getMyStudents;
@@ -71,12 +69,12 @@ namespace CollegeUnity.API.Controllers.Staff
         //    return new JsonResult(response);
         //}
 
-        [HttpGet("{FirstName}")]
-        public async Task<IActionResult> Get(string FirstName, StaffParameters staffParameters)
-        {
-            var response = await _adminServices.SearchStaffBy(FirstName, staffParameters);
-            return new JsonResult(response);
-        }
+        //[HttpGet("{FirstName}")]
+        //public async Task<IActionResult> Get(string FirstName, StaffParameters staffParameters)
+        //{
+        //    var response = await _adminServices.SearchStaffBy(FirstName, staffParameters);
+        //    return new JsonResult(response);
+        //}
 
         [HttpGet("Staffs")]
         public async Task<IActionResult> GetStaff([FromQuery] GetStaffParameters parameters)

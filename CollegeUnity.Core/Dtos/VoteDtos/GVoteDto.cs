@@ -12,6 +12,7 @@ namespace CollegeUnity.Core.Dtos.VoteDtos
         public string Name { get; set; }
         public int VoteCount { get; set; }
         public double VotesPercentage { get; set; }
+        public bool IsVoted { get; set; }
 
     }
 }

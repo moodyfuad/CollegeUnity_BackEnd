@@ -65,6 +65,10 @@ using CollegeUnity.Contract.StaffFeatures.Posts.PostsVotes;
 using CollegeUnity.Services.StaffFeatures.Posts.PostsVotes;
 using CollegeUnity.Contract.StaffFeatures.Staffs;
 using CollegeUnity.Services.StaffFeatures.Staffs;
+using CollegeUnity.Contract.SharedFeatures.Posts;
+using CollegeUnity.Services.SharedFeatures.Posts;
+using CollegeUnity.Contract.StudentFeatures.Post;
+using CollegeUnity.Services.StudentFeatures.Posts;
 
 namespace CollegeUnity.Services
 {
@@ -92,6 +96,9 @@ namespace CollegeUnity.Services
             services.AddSignalR();
             services.AddSingleton<IConnectionManager, ConnectionManager>();
             services.AddScoped<IMessageFeatures, MessageFeatures>();
+            services.AddScoped<IGetPublicPostFeatures, GetPublicPostFeatures>();
+            services.AddScoped<IGetBatchPostFeatures, GetBatchPostFeatures>();
+            services.AddScoped<IGetSubjectPostFeatures, GetSubjectPostFeatures>();
             services.AddScoped<IChatListNotificationFeatures, ChatListNotificationFeatures>();
             services.AddScoped<IChatHubFeatures, ChatHubFeatures>();
             services.AddScoped<IActionFilterHelpers, ActionFilterHelpers>();

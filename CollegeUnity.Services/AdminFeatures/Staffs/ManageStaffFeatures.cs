@@ -77,24 +77,21 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
 
         public async Task<ResultDto> UpdateStaffAccount(int staffId, UStaffDto dto)
         {
-            var isExist = await _repositoryManager.StaffRepository.GetByConditionsAsync(s => (s.Email == dto.Email || s.Phone == dto.Phone) && s.Id != staffId);
+            var isExist = await _repositoryManager.StaffRepository
+                .GetByConditionsAsync(s => (s.Email == dto.Email || s.Phone == dto.Phone) && s.Id != staffId);
+
             if (isExist != null)
-            {
                 return new(false, "There is a staff with the same email or phone number.");
-            }
 
             var staff = await _repositoryManager.StaffRepository.GetByConditionsAsync(s => s.Id == staffId);
             if (staff == null)
-            {
                 return new(false, "No staff found.");
-            }
 
             await using var transaction = await _repositoryManager.BeginTransactionAsync();
 
             try
             {
                 _repositoryManager.Detach(staff);
-
                 var newStaffInfo = staff.MapTo<Staff>(dto);
 
                 if (dto.ProfilePicturePath != null)
@@ -103,15 +100,15 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
                     {
                         string picturePath = await _filesFeatures.MappingFormToProfilePicture(dto.ProfilePicturePath);
                         newStaffInfo.ProfilePicturePath = picturePath;
-
-                        await _repositoryManager.StaffRepository.Update(newStaffInfo);
-                        await _repositoryManager.SaveChangesAsync();
                     }
                     else
                     {
                         return new(false, "The uploaded file is not a valid image. Please upload a picture file.");
                     }
                 }
+
+                await _repositoryManager.StaffRepository.Update(newStaffInfo);
+                await _repositoryManager.SaveChangesAsync();
 
                 await transaction.CommitAsync();
                 return new(true, null);
@@ -122,6 +119,7 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
                 throw;
             }
         }
+
 
         public async Task<PagedList<GStaffByRoleDto>> GetStaffs(GetStaffParameters parameters)
         {

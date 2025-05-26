@@ -38,7 +38,6 @@ namespace CollegeUnity.API.Controllers.Student
     [Authorize(Roles = nameof(Roles.Student))]
     public class StudentController : ControllerBase
     {
-        private readonly IServiceManager _serviceManager;
         private readonly IStudentSubjectFeatures _studentSubjectFeatures;
         private readonly IStudentRequestsFeatures _requestsFeature;
         private readonly IStudentCommunityFeatures _studentCommunityFeatures;
@@ -47,7 +46,6 @@ namespace CollegeUnity.API.Controllers.Student
         private readonly IStudentProfileFeatures _studentProfileFeatures;
 
         public StudentController(
-            IServiceManager serviceManager,
             IStudentSubjectFeatures studentSubjectFeatures,
             IStudentRequestsFeatures requestsFeature,
             IStudentCommunityFeatures studentCommunityFeatures,
@@ -56,7 +54,6 @@ namespace CollegeUnity.API.Controllers.Student
             IStudentProfileFeatures studentProfileFeatures
             )
         {
-            _serviceManager = serviceManager;
             _studentSubjectFeatures = studentSubjectFeatures;
             _requestsFeature = requestsFeature;
             _studentCommunityFeatures = studentCommunityFeatures;
@@ -191,36 +188,36 @@ namespace CollegeUnity.API.Controllers.Student
             return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
         }
 
-        [HttpPost("Search")]
-        public async Task<IActionResult> StudentSearch([FromQuery] StudentSearchParameters searchParameters)
-        {
-            try
-            {
-                var result = await _serviceManager.StudentServices.GetStudentsAsync(searchParameters);
+        //[HttpPost("Search")]
+        //public async Task<IActionResult> StudentSearch([FromQuery] StudentSearchParameters searchParameters)
+        //{
+        //    try
+        //    {
+        //        var result = await _serviceManager.StudentServices.GetStudentsAsync(searchParameters);
 
-                if (!result.Any())
-                {
-                    return new JsonResult(ApiResponse<PagedList<Core.Entities.Student>>.NotFound());
-                }
+        //        if (!result.Any())
+        //        {
+        //            return new JsonResult(ApiResponse<PagedList<Core.Entities.Student>>.NotFound());
+        //        }
 
-                if (result.Count.Equals(1))
-                {
-                    return new JsonResult(ApiResponse<PagedList<Core.Entities.Student>>.Success(message: $"[{result.Count}] records fetched.", data: result));
-                }
+        //        if (result.Count.Equals(1))
+        //        {
+        //            return new JsonResult(ApiResponse<PagedList<Core.Entities.Student>>.Success(message: $"[{result.Count}] records fetched.", data: result));
+        //        }
 
-                if (result.Count > 1)
-                {
-                    return new JsonResult(ApiResponse<PagedList<Core.Entities.Student>>.Success(message: $"[{result.Count}] records fetched.", data: result));
-                }
-                else{
-                    return new JsonResult(ApiResponse<string>.InternalServerError(errors :["error fetching students"]));
-                }
-            }
-            catch (Exception ex)
-            {
-                return new JsonResult(ApiResponse<string>.InternalServerError(errors: [ex.Message]));
-            }
-        }
+        //        if (result.Count > 1)
+        //        {
+        //            return new JsonResult(ApiResponse<PagedList<Core.Entities.Student>>.Success(message: $"[{result.Count}] records fetched.", data: result));
+        //        }
+        //        else{
+        //            return new JsonResult(ApiResponse<string>.InternalServerError(errors :["error fetching students"]));
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return new JsonResult(ApiResponse<string>.InternalServerError(errors: [ex.Message]));
+        //    }
+        //}
 
         [HttpGet("Requests")]
         public async Task<ActionResult<ApiResponse<PagedList<GetStudentRequestsDto>>>> GetRequests([FromQuery] GetStudentRequestsQueryString queryString)

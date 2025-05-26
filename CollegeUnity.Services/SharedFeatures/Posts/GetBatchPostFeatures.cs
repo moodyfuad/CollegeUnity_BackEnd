@@ -72,7 +72,7 @@ namespace CollegeUnity.Services.SharedFeatures.Posts
                 i => i.Votes
             );
 
-            return posts.ToGPostMappers<GStudentBatchPost>();
+            return posts.ToGPostMappers<GStudentBatchPost>(studentId);
         }
 
     }
