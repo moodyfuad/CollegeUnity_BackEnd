@@ -4,6 +4,7 @@ using CollegeUnity.Contract.StudentFeatures.Account;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Dtos.SharedFeatures.Authentication;
 using CollegeUnity.Core.Dtos.StudentFeatures;
+using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Helpers;
 using CollegeUnity.Core.MappingExtensions.StudentExtensions;
 using CollegeUnity.Core.MappingExtensions.StudentExtensions.Get;
@@ -81,11 +82,21 @@ namespace CollegeUnity.Services.StudentFeatures.Account
                 throw new KeyNotFoundException("Student Not Found");
             }
 
-            if (dto.Old != student.Password)
-            {
-                return ApiResponse<bool>.BadRequest("Old Password Does Not Match");
-            }
+            // TODO: password hashing 
 
+            //if (dto.Old != student.Password)
+            //{
+            //    return ApiResponse<bool>.BadRequest("Old Password Does Not Match");
+            //}
+
+            //if (PasswordHasherHelper.VerifyPassword(student, student.Password))
+            //{
+            //    return ApiResponse<bool>.BadRequest("Old Password Does Not Match");
+            //}
+
+            string hashedPassword = PasswordHasherHelper.Hash(student, dto.New);
+            student.Password = hashedPassword;
+            student.ConfirmPassword = hashedPassword;
             student.Password = dto.New;
             student.ConfirmPassword = dto.New;
 

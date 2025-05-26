@@ -59,35 +59,5 @@ namespace CollegeUnity.Services.SharedFeatures.Posts.Votes
 
             return RequestResult<bool>.Success("Successfully Voted");
         }
-
-        private RequestResult<bool> ValidatePost(Post post, PostVote vote)
-        {
-            if (post == null)
-            {
-                return RequestResult<bool>.Failed("post not found");
-            }
-
-            if (!post.Votes.Any())
-            {
-                return RequestResult<bool>.Failed("post does not contain any votes");
-            }
-
-            if (!post.Votes.Contains(vote))
-            {
-                return RequestResult<bool>.Failed("post does not contain selected vote");
-            }
-
-            return RequestResult<bool>.Success("");
-        }
-
-        private async Task<RequestResult<bool>> UpdateUserVote(PostVote newVoteSelection, User user, PostVote previousSelection)
-        {
-            previousSelection.SelectedBy?.Remove(user);
-            await _repositoryManager.VotesRepository.Update(previousSelection);
-            newVoteSelection.SelectedBy?.Add(user);
-            await _repositoryManager.VotesRepository.Update(newVoteSelection);
-            await _repositoryManager.SaveChangesAsync();
-            return RequestResult<bool>.Success("change Voted");
-        }
     }
 }

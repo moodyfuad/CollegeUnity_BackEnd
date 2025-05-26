@@ -55,6 +55,7 @@ namespace CollegeUnity.API.Controllers.Authentication
         [HttpPost("student/login")]
         public async Task<ActionResult<ApiResponse<LoginResultDto>>> StudentLogin([FromForm] StudentLoginDto student)
         {
+            // TODO: password hashing 
             var result = await _loginFeature.Login(student);
             if (result.IsSuccess)
             {
@@ -72,6 +73,7 @@ namespace CollegeUnity.API.Controllers.Authentication
         [HttpPost("student/SignUp")]
         public async Task<ActionResult<ApiResponse<string?>>> StudentSignUp([FromForm] StudentSignUpDto student)
         {
+            // TODO: password hashing 
             var result = await _signUpFeatures.SignUpStudent(student);
 
             return new JsonResult(result);
@@ -80,6 +82,7 @@ namespace CollegeUnity.API.Controllers.Authentication
         [HttpPost("staff/login")]
         public async Task<ActionResult<ApiResponse<LoginResultDto>>> StaffLogin([FromForm] StaffLoginDto staff)
         {
+            // TODO: password hashing 
             var result = await _loginFeature.Login(staff);
             if (result.IsSuccess)
             {
@@ -131,6 +134,7 @@ namespace CollegeUnity.API.Controllers.Authentication
             [ContainsUpperCase(1)]
         string newPassword)
         {
+            // TODO: password hashing 
             string email = this.HttpContext.User.FindFirst(CustomClaimTypes.Email)?.Value ?? string.Empty;
 
             var result = await this._forgetPasswordFeatures.ResetPassword(email, newPassword);
