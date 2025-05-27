@@ -15,6 +15,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="SubjectServices\**" />
+    <EmbeddedResource Remove="SubjectServices\**" />
+    <None Remove="SubjectServices\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="LinqKit.Microsoft.EntityFrameworkCore" Version="9.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.2.0" />
@@ -28,10 +34,6 @@
     <ProjectReference Include="..\CollegeUnity.Core\CollegeUnity.Core.csproj" />
     <ProjectReference Include="..\Contract\CollegeUnity.Contract.csproj" />
     <ProjectReference Include="..\EmailService\EmailService.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="SubjectServices\" />
   </ItemGroup>
 
 </Project>

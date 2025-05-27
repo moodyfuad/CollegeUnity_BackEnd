@@ -4,6 +4,7 @@ using CollegeUnity.Core.CustomExceptions;
 using CollegeUnity.Core.Dtos.AuthenticationDtos;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Dtos.SharedFeatures.Authentication.LoginFeatures;
+using CollegeUnity.Core.Dtos.StudentFeatures;
 using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Enums;
 using EmailService;
@@ -94,9 +95,13 @@ namespace CollegeUnity.Services.SharedFeatures.Authentication
             Student? student =
                 await _repositoryManager.StudentRepository
                 .GetByConditionsAsync(
-                    std => std.CardId == studentDto.CardId && std.Password == studentDto.Password);
+                    std => std.CardId == studentDto.CardId);
+            if (student is not null && PasswordHasherHelper.VerifyPassword(student, studentDto.Password ?? string.Empty))
+            {
+                return student;
+            }
 
-            return student;
+            return null;
         }
 
         private async Task<Staff?> _ValidateStaffCredentials(StaffLoginDto staffDto)
@@ -104,10 +109,13 @@ namespace CollegeUnity.Services.SharedFeatures.Authentication
             Staff? staff = await _repositoryManager.StaffRepository
                 .GetByConditionsAsync(
                     staff =>
-                    staff.Email == staffDto.Email &&
-                    staff.Password == staffDto.Password);
+                    staff.Email == staffDto.Email);
+            if (staff is not null && PasswordHasherHelper.VerifyPassword(staff, staffDto.Password ?? string.Empty))
+            {
+                return staff;
+            }
 
-            return staff;
+            return null;
         }
 
         public async Task<ApiResponse<string?>> AcceptWaitingStudent(string cardId)

@@ -19,7 +19,7 @@ namespace CollegeUnity.EF.Repositories.EntitiesRepository
 
         public async Task<User> GetByEmail(string email)
         {
-            return await GetByConditionsAsync(s => s.Email.ToLower().Equals(email.ToLower()));
+            return await GetByConditionsAsync(s => s.Email.ToLower().Equals(email.ToLower()),trackChanges:true);
         }
     }
 }

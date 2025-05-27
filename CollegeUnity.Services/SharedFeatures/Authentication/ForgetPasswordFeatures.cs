@@ -94,9 +94,9 @@ namespace CollegeUnity.Services.SharedFeatures.Authentication
             var user = await _GetUserByEmail(email);
             try
             {
-                user.Password = newPassword;
-                user.ConfirmPassword = newPassword;
-                //user = await _repositoryManager.UserRepository.Update(user);
+                string hashedPassword = PasswordHasherHelper.Hash(user, newPassword);
+                user.Password = hashedPassword;
+                user.ConfirmPassword = hashedPassword;
                 await _repositoryManager.SaveChangesAsync();
 
                 return ForgetPasswordFeatureResultDto.Reset();
