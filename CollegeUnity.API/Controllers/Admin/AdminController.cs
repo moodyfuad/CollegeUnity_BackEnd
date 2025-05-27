@@ -148,9 +148,9 @@ namespace CollegeUnity.API.Controllers.Admin
         }
 
         [HttpPut("Student/{studentId}/Level")]
-        public async Task<IActionResult> UodateStateOfLevelUpgradeForStudent(int studentId, [FromBody] Level level)
+        public async Task<IActionResult> UodateStateOfLevelUpgradeForStudent(int studentId, ULevelDto dto)
         {
-            var isSuccess = await _manageStudentFeatures.OpenUpgradeStudentLevel(studentId, level);
+            var isSuccess = await _manageStudentFeatures.OpenUpgradeStudentLevel(studentId, dto.Level);
             if (isSuccess.success)
             {
                 return new JsonResult(ApiResponse<bool?>.Success(null));

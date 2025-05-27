@@ -75,6 +75,8 @@ namespace CollegeUnity.Services.AdminFeatures.Students
 
         public async Task<ResultDto> OpenUpgradeStudentLevel(int studentId, Level level)
         {
+            if (level < Level.First || level > Level.fourth)
+                return new(false, "Invalid level. Level must be between 1 and 4.");
             var student = await _repositoryManager.StudentRepository.GetByIdAsync(studentId);
             if (student is null)
                 return new(false, "Student not found.");
