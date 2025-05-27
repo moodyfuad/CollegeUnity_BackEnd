@@ -82,6 +82,24 @@ namespace CollegeUnity.Core.MappingExtensions.PostExtensions.Get
             return pagedList;
         }
         #endregion
-
+        public static GPostsByAdmin ToGetPost(this Post post)
+        {
+            return new()
+            {
+                Id = post.Id,
+                Content = post.Content,
+                CreatedAt = post.CreatedAt,
+                EditedAt = post.EditedAt,
+                Staff = new GPostDto.StaffInfo
+                {
+                    Id = post.StaffId,
+                    Name = $"{post.Staff.FirstName} {post.Staff.MiddleName} {post.Staff.LastName}",
+                    EducationDegree = post.Staff.EducationDegree,
+                    ProfilePicPath = post.Staff.ProfilePicturePath,
+                    TeachNames = post.Staff.Roles.Select(r => r.AsString())
+                },
+                PostFiles = post.PostFiles?.Select(p => p.Path).ToList(),
+            };
+        }
     }
 }

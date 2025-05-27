@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CollegeUnity.Core.Entities
 {
-    public class Post
+    public class Post : SoftDelete
     {
         [Key]
         public int Id { get; set; }

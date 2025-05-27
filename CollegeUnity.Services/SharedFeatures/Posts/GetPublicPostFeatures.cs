@@ -26,7 +26,7 @@ namespace CollegeUnity.Services.SharedFeatures.Posts
         {
             int filterNumber = (int)postParameters.FilterPost;
             PagedList<Post> posts = await _repositoryManager.PostRepository.GetVotesWithConditionsAsync(
-                p => p.IsPublic == true &&
+                p => p.IsPublic == true && p.IsDelete == false &&
                     (filterNumber == 0 || p.Staff.Roles.Contains((Roles)filterNumber)),
                 postParameters,
                 false,

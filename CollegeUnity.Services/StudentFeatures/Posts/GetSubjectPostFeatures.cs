@@ -24,7 +24,7 @@ namespace CollegeUnity.Services.StudentFeatures.Posts
         public async Task<PagedList<GSubjectPostDto>> GetSubjectPosts(int userId, GetSubjectPostParameters parameters)
         {
             PagedList<Post> posts = await _repositoryManager.PostRepository.GetVotesWithConditionsAsync(
-                p => p.SubjectId == parameters.Id,
+                p => p.SubjectId == parameters.Id && p.IsDelete == false,
                 parameters,
                 false,
                 i => i.PostFiles,

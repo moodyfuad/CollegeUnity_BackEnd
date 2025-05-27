@@ -54,7 +54,7 @@ namespace CollegeUnity.Services.SharedFeatures.Posts
                 subjects = await _getMySubjects.GetSubjectsBy(level, major, acceptanceType);
             }
 
-            Expression<Func<Post, bool>> filter = p =>
+            Expression<Func<Post, bool>> filter = p => p.IsDelete == false &&
                 subjects.Contains((int)p.SubjectId) ||
                 (
                     p.ForLevel == level &&

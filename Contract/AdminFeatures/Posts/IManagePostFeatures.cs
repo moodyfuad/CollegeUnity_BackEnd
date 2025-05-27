@@ -1,4 +1,5 @@
-﻿using CollegeUnity.Core.Dtos.PostDtos.Get;
+﻿using CollegeUnity.Core.Dtos.FailureResualtDtos;
+using CollegeUnity.Core.Dtos.PostDtos.Get;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Helpers;
 using System;
@@ -11,6 +12,7 @@ namespace CollegeUnity.Contract.AdminFeatures.Posts
 {
     public interface IManagePostFeatures
     {
-        //Task<PagedList<GPostDto>> GetPostsDetails(DateTime dateTime, GetPostsDetailsParameters parameters);
+        Task<PagedList<GPostsByAdmin>> GetPostsDetails(GetPostsDetailsParameters parameters);
+        Task<ResultDto> DeletePost(int postId);
     }
 }
