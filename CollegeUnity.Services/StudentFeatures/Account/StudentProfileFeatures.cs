@@ -97,8 +97,6 @@ namespace CollegeUnity.Services.StudentFeatures.Account
             string hashedPassword = PasswordHasherHelper.Hash(student, dto.New);
             student.Password = hashedPassword;
             student.ConfirmPassword = hashedPassword;
-            student.Password = dto.New;
-            student.ConfirmPassword = dto.New;
 
             await _repositories.SaveChangesAsync();
 
