@@ -14,6 +14,7 @@ namespace CollegeUnity.API.Controllers.ChatMessages
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(ActiveUserAttribute))]
     public class MessagesController : ControllerBase
     {
         private readonly IMessageFeatures _messageFeatures;

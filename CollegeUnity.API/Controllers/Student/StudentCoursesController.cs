@@ -15,6 +15,7 @@ namespace CollegeUnity.API.Controllers.Student
     [Route("api/Student/Courses")]
     [ApiController]
     [Authorize(Roles = nameof(Roles.Student))]
+    [ServiceFilter(typeof(ActiveUserAttribute))]
     public class StudentCoursesController : ControllerBase
     {
         private readonly IStudentCoursesFeatures _studentCoursesFeatures;

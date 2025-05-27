@@ -69,6 +69,8 @@ using CollegeUnity.Contract.SharedFeatures.Posts;
 using CollegeUnity.Services.SharedFeatures.Posts;
 using CollegeUnity.Contract.StudentFeatures.Post;
 using CollegeUnity.Services.StudentFeatures.Posts;
+using CollegeUnity.Contract.AdminFeatures.Posts;
+using CollegeUnity.Services.AdminFeatures.Posts;
 
 namespace CollegeUnity.Services
 {
@@ -119,6 +121,7 @@ namespace CollegeUnity.Services
         {
             // Admin Features
             services.AddScoped<IManageCommunityFeatures, ManageCommunityFeatures>();
+            services.AddScoped<IManagePostFeatures, ManagePostFeatures>();
             services.AddScoped<IManageStaffFeatures, ManageStaffFeatures>();
             services.AddScoped<IManageSubjectFeatures, ManageSubjectFeatures>();
             services.AddScoped<IManageCoursesFeatures, ManageCoursesFeatures>();

@@ -13,6 +13,7 @@ namespace CollegeUnity.API.Controllers.Communites
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(ActiveUserAttribute))]
     public class CommunityController : ControllerBase
     {
         private readonly IStudentCommunityFeatures _studentCommunityFeatures;

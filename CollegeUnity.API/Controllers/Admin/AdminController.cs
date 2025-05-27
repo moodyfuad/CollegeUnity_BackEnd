@@ -3,6 +3,7 @@ using CollegeUnity.API.Filters;
 using CollegeUnity.Contract.AdminFeatures.Communites;
 using CollegeUnity.Contract.AdminFeatures.Courses;
 using CollegeUnity.Contract.AdminFeatures.FeedBacks;
+using CollegeUnity.Contract.AdminFeatures.Posts;
 using CollegeUnity.Contract.AdminFeatures.ScheduleFiles;
 using CollegeUnity.Contract.AdminFeatures.Staffs;
 using CollegeUnity.Contract.AdminFeatures.Student;
@@ -17,6 +18,7 @@ using CollegeUnity.Core.Dtos.CourseDtos;
 using CollegeUnity.Core.Dtos.FailureResualtDtos;
 using CollegeUnity.Core.Dtos.FeedBackDtos.Create;
 using CollegeUnity.Core.Dtos.FeedBackDtos.Get;
+using CollegeUnity.Core.Dtos.PostDtos.Get;
 using CollegeUnity.Core.Dtos.QueryStrings;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Dtos.ScheduleFilesDtos.Create;
@@ -50,13 +52,16 @@ namespace CollegeUnity.API.Controllers.Admin
         private readonly IManageScheduleFilesFeatures _manageScheduleFilesFeatures;
         private readonly IGetScheduleFilesFeatures _getScheduleFilesFeatures;
         private readonly IManageFeedBackFeatures _manageFeedBackFeatures;
+        private readonly IManagePostFeatures _managePostFeatures;
 
         public AdminController(IManageStaffFeatures manageStaffFeatures, IManageCommunityFeatures manageCommunityFeatures,
             IManageCoursesFeatures manageCoursesFeatures, IManageStudentFeatures manageStudentFeatures, IManageScheduleFilesFeatures manageScheduleFilesFeatures,
             IGetScheduleFilesFeatures getScheduleFilesFeatures,
-            IManageFeedBackFeatures manageFeedBackFeatures
+            IManageFeedBackFeatures manageFeedBackFeatures,
+            IManagePostFeatures managePostFeatures
             )
         {
+            _managePostFeatures = managePostFeatures;
             _manageStaffFeatures = manageStaffFeatures;
             _manageCommunityFeatures = manageCommunityFeatures;
             _manageCoursesFeatures = manageCoursesFeatures;
@@ -142,8 +147,8 @@ namespace CollegeUnity.API.Controllers.Admin
             return new JsonResult(ApiResponse<bool?>.Success(null));
         }
 
-        [HttpPut("Student/{studentId}/Level/{Level}")]
-        public async Task<IActionResult> UodateStateOfLevelUpgradeForStudent(int studentId, Level level)
+        [HttpPut("Student/{studentId}/Level")]
+        public async Task<IActionResult> UodateStateOfLevelUpgradeForStudent(int studentId, [FromBody] Level level)
         {
             var isSuccess = await _manageStudentFeatures.OpenUpgradeStudentLevel(studentId, level);
             if (isSuccess.success)
@@ -268,6 +273,13 @@ namespace CollegeUnity.API.Controllers.Admin
             return new JsonResult(ApiResponse<PagedList<GCommunitesDto>>.Success(communites));
         }
 
+        [HttpGet("Posts")]
+        public async Task<IActionResult> GetPosts([FromQuery] GetPostsDetailsParameters parameters)
+        {
+            var communites = await _managePostFeatures.GetPostsDetails(parameters);
+            return new JsonResult(ApiResponse<PagedList<GPostsByAdmin>>.Success(communites));
+        }
+
         [HttpGet("Community/Admins")]
         public async Task<IActionResult> GetCommunityAdmins([FromQuery] GetStudentCommunityAdminsParameters parameters)
         {
@@ -352,6 +364,19 @@ namespace CollegeUnity.API.Controllers.Admin
         public async Task<IActionResult> RemoveAdmin(int studentId, int communityId)
         {
             var isSuccess = await _manageCommunityFeatures.RemoveAdminFromCommunites(studentId, communityId);
+
+            if (isSuccess.success)
+            {
+                return new JsonResult(ApiResponse<bool?>.Success(null));
+            }
+
+            return new JsonResult(ApiResponse<bool?>.BadRequest(isSuccess.message));
+        }
+
+        [HttpDelete("Post/{postId}")]
+        public async Task<IActionResult> RemovePost(int postId)
+        {
+            var isSuccess = await _managePostFeatures.DeletePost(postId);
 
             if (isSuccess.success)
             {

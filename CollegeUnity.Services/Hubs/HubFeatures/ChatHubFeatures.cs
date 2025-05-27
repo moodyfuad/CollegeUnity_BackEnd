@@ -72,6 +72,9 @@ namespace CollegeUnity.Services.Hubs.HubFeatures
             var studentRole = await _repositoryManager.StudentCommunityRepository
                 .GetStudentRoleInCommunity(senderId, dto.CommunityId);
 
+            if (studentRole == CommunityMemberRoles.Blocked)
+                throw new UnauthorizedAccessException("You are not allowed to send messages in this community.");
+
             var communityType = await _repositoryManager.CommunityRepository
                 .TypeOfCommunity(dto.CommunityId);
 

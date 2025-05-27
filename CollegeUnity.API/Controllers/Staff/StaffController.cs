@@ -35,6 +35,7 @@ namespace CollegeUnity.API.Controllers.Staff
     $"{nameof(Roles.RegistrationAdmissionEmployee)}")]
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(ActiveUserAttribute))]
     public class StaffController : ControllerBase
     {
 

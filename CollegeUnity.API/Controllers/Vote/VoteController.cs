@@ -13,6 +13,7 @@ namespace CollegeUnity.API.Controllers.Vote
 {
     [Route("api/Post/")]
     [ApiController]
+    [ServiceFilter(typeof(ActiveUserAttribute))]
     public class VoteController : ControllerBase
     {
         private readonly IVoteFeatures voteFeatures;

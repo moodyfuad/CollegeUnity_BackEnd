@@ -21,6 +21,7 @@ namespace CollegeUnity.API.Controllers.Staff
         $" {nameof(Roles.RegistrationAdmissionEmployee)}," +
         $" {nameof(Roles.Dean)}, {nameof(Roles.HeadOfCSDepartment)}," +
         $" {nameof(Roles.HeadOfITDepartment)}")]
+    [ServiceFilter(typeof(ActiveUserAttribute))]
     public class StaffRequestsController : ControllerBase
     {
         private readonly IStaffRequestsFeatures _staffRequests;

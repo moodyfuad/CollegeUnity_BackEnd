@@ -21,6 +21,7 @@ namespace CollegeUnity.API.Controllers.Comment
     [Route("api/post/{postId:int}/")]
     [ApiController]
     [Authorize]
+    [ServiceFilter(typeof(ActiveUserAttribute))]
     public class CommentController(ICommentFeatures _commentFeatures) : ControllerBase
     {
         [HttpPost("comment")]

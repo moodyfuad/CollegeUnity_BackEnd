@@ -1,4 +1,5 @@
-﻿using CollegeUnity.API.Middlerware_Extentions;
+﻿using CollegeUnity.API.Filters;
+using CollegeUnity.API.Middlerware_Extentions;
 using CollegeUnity.Contract.Services_Contract;
 using CollegeUnity.Contract.Services_Contract.ServiceAbstraction;
 using CollegeUnity.Contract.SharedFeatures.Posts;
@@ -22,9 +23,9 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CollegeUnity.API.Controllers.Post
 {
-
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(ActiveUserAttribute))]
     public class PostController : ControllerBase
     {
         private readonly IGetPublicPostFeatures _getPublicPostFeatures;

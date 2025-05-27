@@ -10,6 +10,7 @@ namespace CollegeUnity.Core.Enums
     {
         Normal,
         Admin,
-        SuperAdmin
+        SuperAdmin,
+        Blocked
     }
 }

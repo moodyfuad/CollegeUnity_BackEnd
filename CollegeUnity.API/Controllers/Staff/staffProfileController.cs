@@ -11,6 +11,7 @@ namespace CollegeUnity.API.Controllers.Staff
 {
     [Route("api/Staff/profile")]
     [ApiController]
+    [ServiceFilter(typeof(ActiveUserAttribute))]
     public class staffProfileController : ControllerBase
     {
         private readonly IStaffProfileFeatures _staffProfileFeatures;

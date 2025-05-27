@@ -43,6 +43,7 @@ builder.Services.AddEFLayerDI();
 
 // Features DI
 builder.Services.AddFeaturesLayerDI();
+builder.Services.AddScoped<ActiveUserAttribute>();
 
 
 // jwt authentication

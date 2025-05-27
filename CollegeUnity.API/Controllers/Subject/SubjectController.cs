@@ -12,6 +12,7 @@ namespace CollegeUnity.API.Controllers.Subject
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(ActiveUserAttribute))]
     public class SubjectController : ControllerBase
     {
         private readonly IManageSubjectFeatures _manageSubjectFeatures;
