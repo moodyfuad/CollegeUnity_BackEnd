@@ -33,6 +33,7 @@ namespace CollegeUnity.Core.MappingExtensions.StudentExtensions.Get
                 AcceptanceType = student.AcceptanceType,
                 Major = student.Major,
                 ProfilePicturePath = student.ProfilePicturePath,
+                IsLevelEditAble = student.IsLevelEditable
             };
         }
 

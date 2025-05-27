@@ -25,5 +25,6 @@ namespace CollegeUnity.Core.Dtos.StudentFeatures
         public Major Major { get; set; }
         public Level Level { get; set; }
         public AcceptanceType AcceptanceType { get; set; }
+        public bool IsLevelEditAble { get; set; }
     }
 }
