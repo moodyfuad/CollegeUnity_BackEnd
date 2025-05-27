@@ -7,6 +7,7 @@ using CollegeUnity.Core.Entities;
 using CollegeUnity.Core.Helpers;
 using CollegeUnity.Core.MappingExtensions;
 using CollegeUnity.Core.MappingExtensions.PostExtensions.Get;
+using LinqKit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,12 +27,21 @@ namespace CollegeUnity.Services.AdminFeatures.Posts
 
         public async Task<PagedList<GPostsByAdmin>> GetPostsDetails(GetPostsDetailsParameters parameters)
         {
-            Expression<Func<Post, bool>> condition =
-                d => d.CreatedAt.Date == parameters.DateTime.Date ||
-                (d.EditedAt != null && d.EditedAt.Value.Date == parameters.DateTime.Date);
-            var posts = await _repositoryManager.PostRepository.GetRangeByConditionsAsync(condition, parameters);
+            Expression<Func<Post, bool>> condition = d => true;
+
+            if (parameters.DateTime != null)
+            {
+                var date = parameters.DateTime.Value.Date;
+                condition = condition.And(d =>
+                    d.CreatedAt.Date == date ||
+                    (d.EditedAt != null && d.EditedAt.Value.Date == date));
+            }
+
+            var posts = await _repositoryManager.PostRepository.GetRangeByConditionsAsync(condition, parameters, i => i.Staff);
             return posts.MapPagedList(GetPostExtention.ToGetPost);
         }
+
+
 
         public async Task<ResultDto> DeletePost(int postId)
         {

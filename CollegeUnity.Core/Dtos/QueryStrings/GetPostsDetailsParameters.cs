@@ -8,6 +8,6 @@ namespace CollegeUnity.Core.Dtos.QueryStrings
 {
     public class GetPostsDetailsParameters : QueryStringParameters
     {
-        public DateTime DateTime { get; set; }
+        public DateTime? DateTime { get; set; }
     }
 }
