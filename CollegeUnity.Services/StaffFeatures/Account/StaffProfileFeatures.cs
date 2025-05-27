@@ -82,17 +82,10 @@ namespace CollegeUnity.Services.StaffFeatures.Account
                 throw new KeyNotFoundException("Student Not Found");
             }
 
-            //if (dto.Old != staff.Password)
-            //{
-            //    return ApiResponse<bool>.BadRequest("Old Password Does Not Match");
-            //}
-
-            //if (PasswordHasherHelper.VerifyPassword(staff, dto.Old))
-            //{
-            //    return ApiResponse<bool>.BadRequest("Old Password Does Not Match");
-            //}
-
-
+            if (!PasswordHasherHelper.VerifyPassword(staff, dto.Old))
+            {
+                return ApiResponse<bool>.BadRequest("Old Password Does Not Match");
+            }
 
             string hashedPassword = PasswordHasherHelper.Hash(staff, dto.New);
             staff.Password = hashedPassword;

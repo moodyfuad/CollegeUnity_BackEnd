@@ -239,7 +239,7 @@ namespace CollegeUnity.API.Controllers.Post
         public async Task<IActionResult> DeleteMyPost(int postId)
         {
             var staffId = User.GetUserId();
-            
+
             if (await _basePost.DeleteAsync(staffId, postId))
             {
                 return new JsonResult(ApiResponse<bool?>.Success(null));

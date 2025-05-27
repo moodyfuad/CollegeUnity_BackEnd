@@ -93,25 +93,16 @@ namespace CollegeUnity.Services.StudentFeatures.Account
         private async Task<ApiResponse<string?>> CreateStudent(Student student, bool forCreate = true)
         {
             string msg = "Sign up Information Updated";
+            string hashedPassword = PasswordHasherHelper.Hash(student, student.Password);
+            student.Password = hashedPassword;
+            student.ConfirmPassword = hashedPassword;
             if (forCreate)
             {
-                // TODO: password hashing 
-                var passwordHasher = new PasswordHasher<User>();
-                string hashedPassword = passwordHasher.HashPassword(student, student.Password);
-                student.Password = hashedPassword;
-                student.ConfirmPassword = hashedPassword;
-                student = await _repositoryManager.StudentRepository.CreateAsync(student);
+                await _repositoryManager.StudentRepository.CreateAsync(student);
                 msg = "Sign up Success";
             }
 
-            try
-            {
-                await _repositoryManager.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                return ApiResponse<string?>.InternalServerError("Sign up failed", [ex.Message]);
-            }
+            await _repositoryManager.SaveChangesAsync();
 
             return ApiResponse<string>.Success(null, msg);
         }
