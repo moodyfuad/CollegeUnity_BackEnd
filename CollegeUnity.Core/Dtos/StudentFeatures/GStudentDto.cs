@@ -13,6 +13,7 @@ namespace CollegeUnity.Core.Dtos.StudentFeatures
         public int Id { get; set; }
         public required string FirstName { get; set; }
         public required string LastName { get; set; }
+        public required string MiddleName { get; set; } = string.Empty;
         public required string Email { get; set; }
         public required string Phone { get; set; }
         public required Gender Gender { get; set; }

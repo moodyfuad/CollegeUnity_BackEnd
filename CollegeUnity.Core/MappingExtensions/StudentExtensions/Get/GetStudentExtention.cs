@@ -20,6 +20,7 @@ namespace CollegeUnity.Core.MappingExtensions.StudentExtensions.Get
             {
                 Id = student.Id,
                 FirstName = student.FirstName,
+                MiddleName = student.MiddleName,
                 LastName = student.LastName,
                 Gender = student.Gender,
                 BirthDate = student.BirthDate,
