@@ -228,6 +228,9 @@ namespace CollegeUnity.EF.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TypeOfFeedBack")
+                        .HasColumnType("int");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
@@ -264,6 +267,9 @@ namespace CollegeUnity.EF.Migrations
 
                     b.Property<int?>("ForMajor")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsPublic")
                         .HasColumnType("bit");

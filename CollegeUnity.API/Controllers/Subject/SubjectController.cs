@@ -12,16 +12,13 @@ namespace CollegeUnity.API.Controllers.Subject
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(ActiveUserAttribute))]
     public class SubjectController : ControllerBase
     {
         private readonly IManageSubjectFeatures _manageSubjectFeatures;
-        private readonly IStudentSubjectFeatures _studentSubjectFeatures;
 
-        public SubjectController(IStudentSubjectFeatures studentSubjectFeatures, IManageSubjectFeatures manageSubjectFeatures)
+        public SubjectController(IManageSubjectFeatures manageSubjectFeatures)
         {
             _manageSubjectFeatures = manageSubjectFeatures;
-            _studentSubjectFeatures = studentSubjectFeatures;
         }
 
         [HttpPost("Create")]
