@@ -1,4 +1,5 @@
-﻿using CollegeUnity.Contract.SharedFeatures.Feedbacks;
+﻿using CollegeUnity.API.Middlerware_Extentions;
+using CollegeUnity.Contract.SharedFeatures.Feedbacks;
 using CollegeUnity.Core.Dtos.FeedBackDtos.Create;
 using CollegeUnity.Core.Dtos.ResponseDto;
 using CollegeUnity.Core.Enums;
@@ -28,8 +29,9 @@ namespace CollegeUnity.API.Controllers.FeedBacks
         }
 
         [HttpPost("Send")]
-        public async Task<IActionResult> SendFeedback(int userId, CFeedBackResponseDto dto)
+        public async Task<IActionResult> SendFeedback(CFeedBackResponseDto dto)
         {
+            var userId = User.GetUserId();
             var result = await _sendFeedBackFeatures.SendFeedBack(userId, dto);
             if (result.success)
             {

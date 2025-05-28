@@ -27,13 +27,7 @@ public class ActiveUserAttribute : Attribute, IAsyncActionFilter
 
         if (accountStatus == CollegeUnity.Core.Enums.AccountStatus.Deactive)
         {
-            var response = ApiResponse<bool>.Unauthorized("User account inactive");
-
-            context.Result = new JsonResult(response)
-            {
-                StatusCode = StatusCodes.Status401Unauthorized
-            };
-            return;
+            throw new UnauthorizedAccessException("User account is inactive");
         }
 
         await next();

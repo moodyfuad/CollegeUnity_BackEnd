@@ -22,7 +22,7 @@ namespace CollegeUnity.Core.Helpers
                 case EducationDegree.Doctor:
                     return "دكتوراه";
                 case EducationDegree.Professor:
-                    return "أستاذ";
+                    return "بروفيسور";
                 default:
                     throw new ArgumentOutOfRangeException(nameof(degree), degree, "Invalid education degree");
             }

@@ -71,6 +71,8 @@ using CollegeUnity.Contract.StudentFeatures.Post;
 using CollegeUnity.Services.StudentFeatures.Posts;
 using CollegeUnity.Contract.AdminFeatures.Posts;
 using CollegeUnity.Services.AdminFeatures.Posts;
+using CollegeUnity.Contract.SharedFeatures.Feedbacks;
+using CollegeUnity.Services.SharedFeatures.Feedbacks;
 
 namespace CollegeUnity.Services
 {
@@ -135,6 +137,7 @@ namespace CollegeUnity.Services
         private static IServiceCollection AddStudentFeaturesDI(this IServiceCollection services)
         {
             // Student Features
+            services.AddScoped<ISendFeedBackFeatures, SendFeedBackFeatures>();
             services.AddScoped<ISignUpFeatures, SignUpFeature>();
             services.AddScoped<IStudentRequestsFeatures, StudentRequestsFeatures>();
             services.AddScoped<IStudentSubjectFeatures, StudentSubjectFeatures>();
