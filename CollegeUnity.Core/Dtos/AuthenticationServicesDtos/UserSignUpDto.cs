@@ -30,7 +30,7 @@ namespace CollegeUnity.Core.Dtos.AuthenticationDtos
         [Required(ErrorMessage = "Password is required")]
         [ContainsDigit(minNumberOfDigits:1)]
         [ContainsLowerCase(minNumberOfLowerCase:1)]
-        [ContainsUpperCase(maxNumberOfUpperCase:1)]
+        [ContainsUpperCase(minNumberOfUpperCase:1)]
         [MinLength(8, ErrorMessage = "password must have at least 8 characters")]
         public required string Password { get; set; }
 
