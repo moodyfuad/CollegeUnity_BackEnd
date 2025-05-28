@@ -46,6 +46,9 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
             try
             {
                 await _repositoryManager.StaffRepository.CreateAsync(staff);
+                var password = PasswordHasherHelper.Hash(staff, dto.Password);
+                staff.Password = password;
+                staff.ConfirmPassword = password;
                 await _repositoryManager.SaveChangesAsync();
 
                 if (dto.ProfilePictureFile != null)
@@ -149,8 +152,9 @@ namespace CollegeUnity.Services.AdminFeatures.Staffs
                 return false;
             }
 
-            staff.Password = dto.password;
-            staff.ConfirmPassword = dto.password;
+            var password = PasswordHasherHelper.Hash(staff, dto.password);
+            staff.Password = password;
+            staff.ConfirmPassword = password;
             await _repositoryManager.StaffRepository.Update(staff);
             await _repositoryManager.SaveChangesAsync();
             return true;
